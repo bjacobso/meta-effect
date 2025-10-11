@@ -1,12 +1,14 @@
 # Meta Effect
 
-> Not a framework. Not even npm packages. Just primitives you copy into your codebase.
+> Not a framework. Not an npm package. Just Meta Effects.
 
 ## What is Meta Effect?
 
-Meta Effect is a collection of **vendorable components** for building web applications with Effect-TS. Inspired by shadcn/ui, these aren't packages you install - they're code you copy directly into your project and own.
+Meta Effect is a collection of **vendorable components** for building web applications with Effect-TS. Inspired by shadcn/ui, these aren't packages you install - they're **Meta Effects** you copy directly into your project and own.
 
 Each component is a concise (~50-100 lines), focused primitive that shows how to compose Effect with Vite, Remix, HTMX, and other frameworks. Copy what you need, leave what you don't, and customize everything.
+
+**Meta Effects** = Minimal, Effect-based primitives you vendor into your codebase.
 
 ## Installation
 
@@ -298,8 +300,8 @@ This project asks: "What if shadcn/ui's philosophy applied to Effect bindings?"
 
 Instead of installing `@effect/remix`, you copy `with-effect.ts` (60 lines) into your codebase. You see exactly how Effect composes with Remix. You modify it for your needs. You own it.
 
-That's Meta Effect.
+That's a **Meta Effect**.
 
 ---
 
-**Not a framework. Not packages. Just primitives you copy and own.**
+**Not a framework. Not an npm package. Just Meta Effects.**

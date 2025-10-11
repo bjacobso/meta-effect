@@ -1,6 +1,6 @@
 # Meta Effect Registry
 
-This directory contains vendorable components for Meta Effect. These are not npm packages - they're designed to be copied directly into your project where you own and can customize them.
+This directory contains vendorable **Meta Effects** - primitives for composing Effect with web frameworks. These are not npm packages - they're designed to be copied directly into your project where you own and can customize them.
 
 ## Philosophy
 
