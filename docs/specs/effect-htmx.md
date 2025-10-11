@@ -1,12 +1,14 @@
 # effect-htmx Specification
 
 **Status**: Planned
-**Package**: `meta-effect/packages/effect-htmx`
+**Components**: See [`registry/effect-htmx/`](../../registry/effect-htmx/) (coming soon)
 **Last Updated**: 2025-10-10
 
 ## Overview
 
-`effect-htmx` explores building hypermedia-driven applications with Effect's HttpApi as the backend. It embraces HTMX's philosophy of extending HTML as the engine of application state while gaining Effect's composability, type safety, and service architecture.
+`effect-htmx` will be a collection of vendorable components for building hypermedia-driven applications with Effect's HttpApi. These will be code you copy into your project with `npx meta-effect add`, not npm packages.
+
+Target: 3-5 components, ~200-300 lines total, each component ~50-100 lines.
 
 ## Core Primitives
 

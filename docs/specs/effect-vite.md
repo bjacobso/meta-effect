@@ -1,12 +1,14 @@
 # effect-vite Specification
 
 **Status**: In Development
-**Package**: `meta-effect/packages/effect-vite`
+**Components**: See [`registry/effect-vite/`](../../registry/effect-vite/)
 **Last Updated**: 2025-10-10
 
 ## Overview
 
-`effect-vite` is a first-principles exploration of integrating Effect's HttpApi with Vite's dev server and reactive atoms. It provides a unified primitive for building type-safe, reactive web applications with Effect.
+`effect-vite` is a collection of vendorable components (~275 lines total) for integrating Effect's HttpApi with Vite's dev server and reactive atoms. These aren't npm packages - they're code you copy into your project with `npx meta-effect add`.
+
+Each component is ~50-100 lines and designed to be modified for your needs.
 
 ## Core Primitives
 

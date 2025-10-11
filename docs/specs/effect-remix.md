@@ -1,12 +1,14 @@
 # effect-remix Specification
 
 **Status**: In Development
-**Package**: `meta-effect/packages/effect-remix`
+**Components**: See [`registry/effect-remix/`](../../registry/effect-remix/)
 **Last Updated**: 2025-10-10
 
 ## Overview
 
-`effect-remix` explores composing Effect services with Remix's loader, action, and route patterns. It maintains Remix's web fundamentals philosophy while gaining Effect's type safety, composability, and dependency injection.
+`effect-remix` is a collection of vendorable components (~245 lines total) for composing Effect services with Remix loaders, actions, and routes. These aren't npm packages - they're code you copy into your project with `npx meta-effect add`.
+
+Each component is ~50-100 lines and maintains Remix's web fundamentals while adding Effect's type safety.
 
 ## Core Primitives
 

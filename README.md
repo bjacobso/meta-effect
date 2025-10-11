@@ -1,243 +1,305 @@
 # Meta Effect
 
-> Building Effect bindings from first principles - a systematic exploration of composing Effect-TS primitives with modern web frameworks.
+> Not a framework. Not even npm packages. Just primitives you copy into your codebase.
 
 ## What is Meta Effect?
 
-Meta Effect is an exploration of building shared Effect bindings for different web frameworks and rendering strategies. Rather than creating a new meta-framework, we're discovering the fundamental primitives needed to compose Effect with Vite, Remix, HTMX, and beyond.
+Meta Effect is a collection of **vendorable components** for building web applications with Effect-TS. Inspired by shadcn/ui, these aren't packages you install - they're code you copy directly into your project and own.
 
-Each package in `meta-effect/` represents a first-principles implementation of Effect bindings for a specific framework, with corresponding living documentation in `docs/specs/`.
+Each component is a concise (~50-100 lines), focused primitive that shows how to compose Effect with Vite, Remix, HTMX, and other frameworks. Copy what you need, leave what you don't, and customize everything.
 
-## Project Structure
+## Installation
 
+Add components to your project with the CLI:
+
+```bash
+# Add a single component
+npx meta-effect add api-atom
+
+# Add all Vite components
+npx meta-effect add vite-full
+
+# Add all Remix components
+npx meta-effect add remix-full
+
+# List available components
+npx meta-effect list
 ```
-meta-effect/
-├── packages/
-│   ├── effect-vite/     → Vite + HttpApi + Atom integration
-│   ├── effect-remix/    → Remix with Effect data loading
-│   └── effect-htmx/     → HTMX with Effect backend (planned)
-docs/specs/
-├── effect-vite.md       → Living spec for Vite bindings
-├── effect-remix.md      → Living spec for Remix bindings
-└── effect-htmx.md       → Living spec for HTMX bindings
-```
 
-Each package is designed from first principles to answer:
+Components are copied to `src/lib/` in your project. You own them. Modify freely.
+
+## Available Components
+
+### effect-vite (~275 lines total)
+
+Build reactive Vite apps with Effect HttpApi:
+
+- **http-api** - Type-safe API definitions (~65 lines)
+- **vite-plugin** - Dev server integration (~60 lines)
+- **api-atom** - Reactive atoms for APIs (~80 lines)
+- **route-atom** - URL-synchronized atoms (~70 lines)
+
+### effect-remix (~245 lines total)
+
+Compose Effect services with Remix:
+
+- **with-effect** - Simple loader/action helpers (~60 lines)
+- **effect-loader** - Advanced loader patterns (~90 lines)
+- **effect-action** - Form actions with validation (~95 lines)
+
+### effect-htmx (planned)
+
+Hypermedia-driven apps with Effect:
+
+- **html-response** - HTML rendering utilities
+- **htmx-attrs** - Type-safe HTMX attributes
+- **sse-stream** - Server-sent events
+
+## Why Vendorable?
+
+Traditional npm packages create abstraction boundaries. You can't see inside them, and customizing behavior means fighting the abstraction.
+
+With vendored components:
+
+- ✅ **Full Visibility**: See exactly what's happening (~50 lines)
+- ✅ **Zero Lock-in**: Update on your schedule
+- ✅ **Easy Customization**: Modify the source directly
+- ✅ **Educational**: Learn Effect patterns by reading
+- ✅ **Framework Flexibility**: Adapt to your framework version
+
+Like shadcn/ui, but for Effect.
+
+## Philosophy
+
+Meta Effect is an exploration of Effect from first principles. We're not building abstractions - we're discovering primitives.
+
+Each component asks:
 - How do Effect primitives naturally compose with this framework?
-- What shared abstractions emerge across different rendering strategies?
-- Can we build a unified mental model for Effect-based web applications?
+- What's the minimal code needed?
+- Can this fit in ~50-100 lines?
 
-## Overview
-
-Meta Effect explores how Effect's battle-tested primitives - Services, Layers, Effects, Schemas - can be composed with modern web frameworks. We're not abstracting frameworks away; we're finding the natural integration points.
+The goal is discovery, not invention.
 
 ### Principles
 
-- **Effect-First** - Every operation is an Effect - services, data loading, mutations
-- **Framework Integration** - Compose with existing frameworks rather than replace them
-- **Type-Safe End-to-End** - From database to UI with Effect Schema validation
-- **Shared Primitives** - Discover common patterns across different rendering strategies
-- **Living Documentation** - Each package has a living spec that evolves with implementation
+- **Minimal** - Each component is ~50-100 lines
+- **Vendorable** - Copy into your codebase, you own it
+- **Composable** - Mix and match what you need
+- **Educational** - Learn Effect patterns by reading
+- **Framework-Aware** - Integrate with, don't replace
 
-## Bindings
+## Component Registry
 
-### 🔨 effect-vite
-**Status**: In Development
-**Spec**: [docs/specs/effect-vite.md](docs/specs/effect-vite.md)
+All components live in [`registry/`](./registry/) with metadata in [`registry.json`](./registry/registry.json).
 
-Vite + HttpApi + Atom integration providing a unified primitive for building reactive Effect applications with Vite's dev server.
+**Component Structure**:
+```
+registry/
+├── effect-vite/
+│   ├── http-api.ts        # ~65 lines
+│   ├── vite-plugin.ts     # ~60 lines
+│   ├── api-atom.ts        # ~80 lines
+│   └── route-atom.ts      # ~70 lines
+├── effect-remix/
+│   ├── with-effect.ts     # ~60 lines
+│   ├── effect-loader.ts   # ~90 lines
+│   └── effect-action.ts   # ~95 lines
+└── effect-htmx/           # Coming soon
+```
 
-**Core Concepts**:
-- HttpApi routes served via Vite dev server
-- Reactive atoms for client state with Effect integration
-- Type-safe RPC between client and server
-- Hot module replacement for Effect services
-
-### 🎵 effect-remix
-**Status**: In Development
-**Spec**: [docs/specs/effect-remix.md](docs/specs/effect-remix.md)
-
-Remix bindings that compose Effect services with Remix loaders, actions, and routes.
-
-**Core Concepts**:
-- Effect services in Remix loaders
-- Type-safe action handlers with Effect error handling
-- Layer-based dependency injection for routes
-- Progressive enhancement with Effect
-
-### 🔗 effect-htmx
-**Status**: Planned
-**Spec**: [docs/specs/effect-htmx.md](docs/specs/effect-htmx.md)
-
-HTMX with Effect backend for hypermedia-driven applications.
-
-**Core Concepts**:
-- Effect HttpApi as HTMX backend
-- HTML-first responses with Effect Schema validation
-- Stream-based partial updates
-- Effect services for server-side state
+See [registry/README.md](./registry/README.md) for details.
 
 ## Documentation
 
-### Living Specifications
+### Component Specifications
 
-- [**effect-vite Spec**](docs/specs/effect-vite.md) - Vite integration specification
-- [**effect-remix Spec**](docs/specs/effect-remix.md) - Remix integration specification
-- [**effect-htmx Spec**](docs/specs/effect-htmx.md) - HTMX integration specification
+Each component type has a living specification that evolves with implementation:
 
-### Core Framework Concepts
+- [**effect-vite Spec**](docs/specs/effect-vite.md) - Vite components and patterns
+- [**effect-remix Spec**](docs/specs/effect-remix.md) - Remix components and patterns
+- [**effect-htmx Spec**](docs/specs/effect-htmx.md) - HTMX components and patterns
+
+### Design & Philosophy
 
 - [**Framework Overview**](docs/core/overview.md) - Meta Effect architecture and philosophy
-- [**Architecture Guide**](docs/core/architecture.md) - Technical deep-dive into the design
-- [**@effect/vite Architecture**](docs/core/effect-vite-architecture.md) - Visual guide to Vite + HttpApi + Atom
-- [**Remix Vision**](docs/core/remix-vision.md) - Effect with Remix philosophy
+- [**Architecture Guide**](docs/core/architecture.md) - Technical deep-dive
+- [**Remix Vision**](docs/core/remix-vision.md) - Effect + web fundamentals
 
-### Tools & Development
+### Historical RFCs
 
-- [**CLI Documentation**](docs/tools/cli.md) - AST-aware codebase exploration tools
-- [**Worktree Management**](docs/tools/worktree.md) - Git worktree integration
+The original vision explored a meta-framework. We pivoted to vendorable components:
 
-### Advanced Integrations
-
-- [**AI Primitives**](docs/integrations/ai.md) - Schema-driven AI tool generation
-- [**Git Operations**](docs/integrations/git.md) - Git as composable Effects
-
-### RFCs & Design History
-
-- [**Main Framework RFC**](docs/rfcs/effect-meta-rfc.md) - Original meta-framework vision
-- [**@effect/vite RFC**](docs/rfcs/effect-vite-rfc.md) - Vite + HttpApi + Atom primitive RFC
-- [**CLI Tooling RFC**](docs/rfcs/cli-rfc.md) - CLI design and implementation
-- [**Original Vision RFC**](docs/rfcs/original-rfc.md) - Initial framework vision
+- [**Effect Meta RFC**](docs/rfcs/effect-meta-rfc.md) - Original meta-framework idea
+- [**@effect/vite RFC**](docs/rfcs/effect-vite-rfc.md) - Vite integration exploration
+- [**Original Vision**](docs/rfcs/original-rfc.md) - Where it all started
 
 ## Quick Examples
 
-### effect-vite: Type-Safe RPC with Atoms
+After adding components with `npx meta-effect add`, use them in your app:
+
+### effect-vite
 
 ```typescript
-// server/api.ts - Define HttpApi
-export class UserApi extends HttpApi.Tag<UserApi>()("UserApi", {
-  listUsers: HttpApi.get("users", "/users"),
-  getUser: HttpApi.get("user", "/users/:id")
-}) {}
+// 1. Add components
+// npx meta-effect add vite-full
 
-// client/atoms.ts - Consume via atoms
-const userAtom = ApiAtom.query(UserApi, "getUser", {
-  params: { id: "123" }
+// 2. Define your API (src/server/api.ts)
+import { HttpApi, HttpApiEndpoint, HttpApiGroup } from "@effect/platform"
+import { Schema } from "effect"
+
+export class UserApi extends HttpApiGroup.make("users")
+  .add(HttpApiEndpoint.get("list", "/users"))
+{}
+
+// 3. Use in Vite config
+import { effectVite } from './lib/effect-vite/vite-plugin'
+
+export default defineConfig({
+  plugins: [effectVite({ api: UserApi, layer: AppLayer })]
 })
 
-// client/component.tsx
-function UserProfile() {
-  const user = useAtomValue(userAtom)
-  return <div>{user.name}</div>
+// 4. Create reactive atoms (src/atoms/users.ts)
+import { apiAtom } from './lib/effect-vite/api-atom'
+
+export const usersAtom = apiAtom({
+  query: () => fetch('/api/users').then(r => r.json()),
+  key: 'users-list'
+})
+
+// 5. Use in component
+import { useAtomValue } from 'jotai'
+
+function UserList() {
+  const users = useAtomValue(usersAtom)
+  return <ul>{users.map(u => <li>{u.name}</li>)}</ul>
 }
 ```
 
-### effect-remix: Effect Services in Loaders
+### effect-remix
 
 ```typescript
-// routes/users.$id.tsx
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  return await Effect.runPromise(
+// 1. Add components
+// npx meta-effect add remix-full
+
+// 2. Use in route loader (app/routes/users.$id.tsx)
+import { withEffect } from '~/lib/effect-remix/with-effect'
+import { UserService } from '~/services'
+import { AppLayer } from '~/server/layer'
+
+export const loader = withEffect(AppLayer, ({ params }) =>
+  Effect.gen(function* () {
+    const user = yield* UserService.findById(params.id)
+    const posts = yield* PostService.findByAuthor(params.id)
+    return { user, posts }
+  })
+)
+
+// 3. Use in action
+import { effectAction } from '~/lib/effect-remix/effect-action'
+
+export const action = effectAction({
+  layer: AppLayer,
+  schema: CreateUserSchema,
+  handler: ({ validated }) =>
     Effect.gen(function* () {
-      const user = yield* UserService.findById(params.id)
-      const posts = yield* PostService.findByAuthor(params.id)
-      return { user, posts }
-    }).pipe(Effect.provide(AppLayer))
-  )
-}
-```
-
-### effect-htmx: Hypermedia with Effect
-
-```typescript
-// server/routes.ts
-export const TodosApi = HttpApi.make({
-  createTodo: HttpApi.post("create", "/todos")
-    .pipe(HttpApi.setPayload(CreateTodoSchema))
-    .pipe(HttpApi.setResponse(Html.html))
-})
-
-// Returns HTML fragment for HTMX
-Effect.gen(function* () {
-  const todo = yield* TodoService.create(input)
-  return Html.render(<TodoItem todo={todo} />)
+      const user = yield* UserService.create(validated)
+      return redirect(`/users/${user.id}`)
+    })
 })
 ```
 
 ## Project Status
 
-**Status**: Early Exploration Phase
+**Current**: Building the component registry and CLI
 
-We're building first-principles implementations of Effect bindings for different frameworks to discover shared patterns and abstractions.
+### Completed
+- ✅ Component registry structure
+- ✅ effect-vite components (7 components, ~275 lines)
+- ✅ effect-remix components (3 components, ~245 lines)
+- ✅ Registry metadata (registry.json)
 
-## Roadmap
+### In Progress
+- 🚧 CLI `add` command implementation
+- 🚧 Component documentation improvements
+- 🚧 Example applications
 
-### Phase 1: First Implementations (Current)
-- ✅ effect-vite: Basic HttpApi + Vite integration
-- 🚧 effect-vite: Atom integration with type-safe RPC
-- 🚧 effect-remix: Service composition with loaders
-- 📋 effect-htmx: HTML-first responses with HttpApi
-
-### Phase 2: Shared Primitives
-- Discover common patterns across bindings
-- Extract shared Effect composition utilities
-- Unified error handling strategies
-- Common testing patterns
-
-### Phase 3: Developer Experience
-- CLI tools for scaffolding
-- Dev server integrations
-- Hot module replacement for Effect services
-- Visual debugging tools
+### Planned
+- 📋 effect-htmx components
+- 📋 Component testing utilities
+- 📋 Interactive component browser
+- 📋 Video tutorials showing customization
 
 ## Contributing
 
-Meta Effect is an open exploration and we welcome contributions!
+Found a useful pattern? Add it to the registry!
 
-### How to Contribute
+### Adding a Component
 
-1. **Try a Binding**
-   - Clone the repo and experiment with `meta-effect/packages/`
-   - Share your experience and findings
+1. **Keep it Small**: ~50-100 lines maximum
+2. **Document Usage**: Include a detailed header comment with examples
+3. **List Dependencies**: Only peer dependencies (user installs them)
+4. **Add to Registry**: Update `registry/registry.json` with metadata
 
-2. **Improve Living Specs**
-   - Each binding has a living spec in `docs/specs/`
-   - Suggest improvements or clarifications
+Example component structure:
 
-3. **Build New Bindings**
-   - Interested in effect-solidjs? effect-qwik? effect-fresh?
-   - Start from first principles and document your journey
+```typescript
+/**
+ * Component Name
+ *
+ * Brief description of what this component does and why it's useful.
+ *
+ * @example
+ * ```ts
+ * // Show a complete, working example
+ * import { component } from './lib/effect-vite/component'
+ *
+ * // Usage example
+ * ```
+ *
+ * Copy this file into your project and customize for your needs.
+ */
 
-4. **Join the Discussion**
-   - [Effect Discord #ideas channel](https://discord.gg/effect-ts)
-   - Share patterns and abstractions you discover
+// Implementation (~50-100 lines)
+```
 
-### Key Questions We're Exploring
+### Building New Component Types
 
-- What are the minimal primitives needed for Effect + web framework integration?
-- Which patterns are universal across Vite, Remix, HTMX, and others?
-- How can we maintain framework idioms while gaining Effect benefits?
-- What does "Effect-native" web development feel like?
+Interested in effect-solidjs? effect-qwik? effect-fresh?
 
-## Philosophy
+1. Create `registry/effect-framework/` directory
+2. Build 3-5 core components (~50-100 lines each)
+3. Add spec doc in `docs/specs/effect-framework.md`
+4. Update `registry.json`
 
-Meta Effect is not trying to create a new framework. We're exploring how Effect's composable primitives naturally integrate with existing frameworks. Each binding teaches us something about the shared patterns, and those patterns inform future bindings.
+### Join the Discussion
 
-The goal is discovery, not invention.
+- [Effect Discord #ideas channel](https://discord.gg/effect-ts)
+- Share your customizations and patterns
+- Ask questions about Effect integration
 
 ## License
 
-MIT
+MIT - Copy freely!
 
 ## Acknowledgments
 
-Meta Effect builds on:
-- The Effect-TS team and ecosystem
-- Vite's brilliant dev server architecture
-- Remix's web fundamentals philosophy
-- HTMX's hypermedia-driven approach
-- The `@effect-atom` reactive state library
+Meta Effect builds on brilliant work from:
+
+- **Effect-TS** - Composable, type-safe effects
+- **shadcn/ui** - Vendorable component philosophy
+- **Vite** - Blazing-fast dev server
+- **Remix** - Web fundamentals done right
+- **HTMX** - Hypermedia-driven simplicity
+- **Jotai** - Primitive and flexible React state
+
+## Inspiration
+
+This project asks: "What if shadcn/ui's philosophy applied to Effect bindings?"
+
+Instead of installing `@effect/remix`, you copy `with-effect.ts` (60 lines) into your codebase. You see exactly how Effect composes with Remix. You modify it for your needs. You own it.
+
+That's Meta Effect.
 
 ---
 
-*Meta Effect: Building Effect bindings from first principles, one framework at a time.*
+**Not a framework. Not packages. Just primitives you copy and own.**
