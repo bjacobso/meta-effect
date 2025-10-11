@@ -1,535 +1,174 @@
-# Effect Meta: Composable Meta-Framework Built on Effect
+# Effect Meta
 
-> A meta-framework built entirely on Effect primitives that provides unified, type-safe, and composable full-stack web applications with fine-grained reactivity.
+> A composable meta-framework built entirely on Effect-TS primitives, providing unified, type-safe, and composable full-stack web applications with fine-grained reactivity.
 
-**Status**: Draft � **Date**: 2025-09-30
+## Quick Start
 
----
+```bash
+# Coming soon - Effect Meta is in early design phase
+npm create effect-meta@latest my-app
+cd my-app
+npm run dev
+```
 
-## Table of Contents
+## Overview
 
-1. [Vision](#vision)
-2. [Core Thesis](#core-thesis)
-3. [Key Innovations](#key-innovations)
-4. [Architecture](#architecture)
-5. [Developer Experience](#developer-experience)
-6. [Technical Design](#technical-design)
-7. [Roadmap](#roadmap)
-8. [Getting Involved](#getting-involved)
+Effect Meta represents a paradigm shift in web framework design: instead of reinventing common patterns, we leverage Effect's battle-tested primitives with fine-grained reactive atoms to build a truly composable meta-framework.
 
----
+### Key Features
 
-## Vision
+- **Effect-First Architecture** - Every route, middleware, and data loader is an Effect
+- **Fine-Grained Reactivity** - Powered by `@effect-atom/atom-react` for optimal client state management
+- **Type-Safe End-to-End** - From database to UI with zero runtime overhead
+- **Framework Agnostic** - Same code runs on Remix, Next.js, or as an SPA
+- **Built-in Best Practices** - Automatic parallelization, caching, error handling, and observability
 
-**Effect Meta aims to become the killer app for Effect-TS** by solving the meta-framework problem through composable primitives rather than framework-specific abstractions.
+## Documentation
 
-### The Problem
+### Core Framework
 
-Modern meta-frameworks (Remix, Next.js, TanStack Start) each reimplement similar concerns with different APIs:
+- [**Framework Overview**](docs/core/overview.md) - Detailed introduction to Effect Meta's architecture and philosophy
+- [**Architecture Guide**](docs/core/architecture.md) - Technical deep-dive into the framework design
+- [**@effect/vite Architecture**](docs/core/effect-vite-architecture.md) - Visual guide to Vite + HttpApi + Atom integration
+- [**Remix Vision**](docs/core/remix-vision.md) - How Effect Meta captures the early Remix philosophy
 
-- Data fetching and loading states
-- Caching and revalidation
-- Error boundaries
-- Middleware and authentication
-- Request deduplication
-- Parallel data loading
+### Tools & CLI
 
-**Result**: Framework lock-in, limited composability, inconsistent developer experience.
+- [**CLI Documentation**](docs/tools/cli.md) - AST-aware codebase exploration and management tools
+- [**Worktree Management**](docs/tools/worktree.md) - Git worktree integration for Effect Meta projects
 
-### The Solution
+### Integrations
 
-**Leverage Effect's battle-tested primitives** that already solve these problems:
+- [**AI Primitives**](docs/integrations/ai.md) - Schema-driven AI tool generation and integration
+- [**Git Operations**](docs/integrations/git.md) - Git operations as composable Effects
 
-| Meta-Framework Concern | Effect Primitive                  |
-| ---------------------- | --------------------------------- |
-| Data loading           | `Effect<A, E, R>`                 |
-| Caching                | `Effect.cached` / `Layer.memoize` |
-| Client reactivity      | `@effect-atom/atom-react`         |
-| Middleware             | Effect composition                |
-| Error boundaries       | Typed error channel               |
-| Streaming              | `Stream`                          |
-| Parallel loading       | `Effect.all`                      |
-| Dependency injection   | `Context` + `Layer`               |
-| Observability          | Built-in spans & tracing          |
+### RFCs & Design Documents
 
----
+- [**Main Framework RFC**](docs/rfcs/effect-meta-rfc.md) - Complete technical specification
+- [**@effect/vite RFC**](docs/rfcs/effect-vite-rfc.md) - Unified Vite + HttpApi + Atom primitive
+- [**CLI Tooling RFC**](docs/rfcs/cli-rfc.md) - CLI design and implementation details
+- [**Original Vision RFC**](docs/rfcs/original-rfc.md) - Initial framework vision and principles
 
-## Core Thesis
+## Core Concepts
 
-**Effect already contains all the primitives that meta-frameworks need.**
-
-Rather than building yet another meta-framework from scratch, Effect Meta exposes these primitives through a declarative, framework-agnostic API.
-
-### What Makes This Different
-
-1. **Atoms for Client Reactivity**: Fine-grained reactive state via `@effect-atom/atom-react`
-2. **Routes as Effects**: Every route is `Effect<Response, Error, Context>`
-3. **Type-Safe Throughout**: End-to-end types from database � API � atom � UI
-4. **Framework Agnostic**: Same code, different adapters (Remix, Next.js, SPA)
-5. **Automatic Optimization**: Effect runtime handles parallelization, caching, deduplication
-
----
-
-## Key Innovations
-
-### 1. Routes as Effects with Reactive Atoms
+### Routes as Effects
 
 ```typescript
-import { Atom, Result, useAtomValue } from "@effect-atom/atom-react";
-import * as Meta from "@effect/meta";
-
-// Route params as reactive atom
-const userParamsAtom = RouteAtom.params({
-  schema: Schema.Struct({ id: Schema.String }),
-});
-
-// Data atom - automatically refetches when params change
-const userProfileAtom = Atom.make(
-  Effect.fnUntraced(function* (get: Atom.Context) {
-    const params = get(userParamsAtom);
-
-    const [user, posts] = yield* Effect.all([
-      get.result(
-        ApiAtom.query("users", "getById", {
-          path: { id: params.id },
-          reactivityKeys: [`user-${params.id}`],
-        })
-      ),
-      get.result(
-        ApiAtom.query("posts", "listByAuthor", {
-          urlParams: { authorId: params.id },
-          reactivityKeys: [`posts-author-${params.id}`],
-        })
-      ),
-    ]);
-
-    return { user: user.value, posts: posts.value };
-  })
-);
-
-const UserProfile = Meta.Route.make({
+const UserRoute = Meta.Route.make({
   path: "/users/:id",
-  component: () => {
-    const profileResult = useAtomValue(userProfileAtom);
-
-    return Result.match(profileResult, {
-      onInitial: () => <div>Loading...</div>,
-      onFailure: (error) => <ErrorView error={error} />,
-      onSuccess: (response) => <ProfileView data={response.value} />,
-    });
-  },
-});
-```
-
-**Benefits**:
-
--  Atoms auto-refetch when route params change
--  Parallel data loading via `Effect.all`
--  Type-safe loading/error/success states
--  No prop drilling
-
-### 2. AtomHttpApi Integration
-
-```typescript
-import { AtomHttpApi } from "@effect-atom/atom-react";
-
-// Define API atom from your ts-rest contract
-export class ApiAtom extends AtomHttpApi.Tag<ApiAtom>()("ApiAtom", {
-  api: InternalApi, // Your API contract
-  httpClient: FetchHttpClient.layer,
-  baseUrl: window.location.origin,
-}) {}
-
-// Query atoms for reads
-const userAtom = ApiAtom.query("users", "getById", {
-  path: { id: "123" },
-  reactivityKeys: ["user-123"],
-});
-
-// Mutation atoms for writes
-const updateUserAtom = ApiAtom.mutation("users", "updateById");
-
-// Use in components
-function UserProfile() {
-  const userResult = useAtomValue(userAtom);
-  const updateUser = useAtomSet(updateUserAtom);
-
-  const handleUpdate = (data: UserUpdate) => {
-    updateUser({
-      path: { id: "123" },
-      payload: data,
-      reactivityKeys: ["user-123"], // Triggers userAtom refetch
-    });
-  };
-
-  return Result.match(userResult, {
-    onInitial: () => <Loading />,
-    onFailure: (error) => <Error error={error} />,
-    onSuccess: (response) => <UserView user={response.value} />,
-  });
-}
-```
-
-**Benefits**:
-
--  Type inference from API contract to UI
--  Automatic query/mutation distinction
--  Granular cache invalidation via reactivity keys
--  Built-in loading states
-
-### 3. URL State Synchronization
-
-```typescript
-// Bidirectional URL � atom binding
-const searchParamsAtom = RouteAtom.searchParams({
-  schema: Schema.Struct({
-    page: Schema.optionalWith(Schema.NumberFromString, { default: () => 1 }),
-    query: Schema.optionalWith(Schema.String, { default: () => "" }),
-    status: Schema.optionalWith(Schema.Literal("active", "completed"), {
-      default: () => "active" as const,
-    }),
+  data: Effect.gen(function* () {
+    const { id } = yield* RouteParams
+    const user = yield* UserService.findById(id)
+    const posts = yield* PostService.findByAuthor(id)
+    return { user, posts }
   }),
-  replace: false,
-});
-
-// Derived atom - auto-derives from search params
-const itemsListAtom = Atom.make(
-  Effect.fnUntraced(function* (get: Atom.Context) {
-    const params = get(searchParamsAtom);
-
-    yield* Effect.sleep("200 millis"); // Debounce
-
-    return yield* get.result(
-      ApiAtom.query("items", "list", {
-        urlParams: params,
-        reactivityKeys: ["items-list", JSON.stringify(params)],
-      })
-    );
-  })
-);
+  component: ({ data }) => <UserProfile {...data} />
+})
 ```
 
-**Benefits**:
-
--  URL is single source of truth
--  Type-safe search params via Effect Schema
--  Automatic URL updates
--  Shareable URLs with filter state
-
-### 4. Composable Middleware
+### Reactive Atoms for Client State
 
 ```typescript
-const AuthMiddleware = Meta.Middleware.make("auth", () =>
+const searchAtom = RouteAtom.searchParams({
+  schema: Schema.Struct({
+    query: Schema.String,
+    page: Schema.NumberFromString
+  })
+})
+
+const resultsAtom = Atom.make(
+  Effect.gen(function* (get) {
+    const params = get(searchAtom)
+    return yield* SearchService.query(params)
+  })
+)
+```
+
+### Composable Middleware
+
+```typescript
+const AuthMiddleware = Meta.Middleware.make("auth",
   Effect.gen(function* () {
-    const session = yield* SessionService.getCurrent();
-    if (!session) return yield* Effect.fail(new Unauthorized());
-    return { user: session.user };
+    const session = yield* SessionService.current
+    if (!session) return yield* Effect.fail(new Unauthorized())
+    return { user: session.user }
   })
-);
-
-const ProtectedRoute = Meta.Route.make({
-  path: "/admin",
-  middleware: [LoggingMiddleware, TracingMiddleware, AuthMiddleware],
-  data: (_, { user }) => AdminService.getDashboard(user.id),
-  component: ({ data }) => <AdminDashboard {...data} />,
-});
+)
 ```
 
----
+## Project Status
 
-## Architecture
+**Status**: Early Design Phase (RFC Stage)
 
-### Core Abstractions
-
-```typescript
-// Route - fundamental unit
-interface Route<Path, Params, Data, Error, Deps> {
-  path: Path;
-  data: (params: Params) => Effect<Data, Error, Deps>;
-  middleware: ReadonlyArray<Middleware<any, any, any>>;
-  component: Component<{ data: Data; params: Params }>;
-}
-
-// Middleware - composable effects
-interface Middleware<Output, Error, Deps> {
-  name: string;
-  effect: (ctx: RequestContext) => Effect<Output, Error, Deps>;
-}
-
-// App - composition root
-interface App<Routes> {
-  routes: Routes;
-  layer: Layer<any, any, any>;
-  toRemix(): RemixApp;
-  toNext(): NextApp;
-  toVite(): ViteApp;
-}
-```
-
-### Request Lifecycle
-
-1. **Request** � Parsed into `RequestContext`
-2. **Middleware** � Composed as `Effect.flatMap` chain
-3. **Route matching** � Type-safe params extraction
-4. **Data loading** � Atoms fetch in parallel via `Effect.all`
-5. **Rendering** � Server/client based on strategy
-6. **Mutations** � Trigger atom updates via reactivity keys
-7. **Error handling** � Typed errors through Effect channel
-
-### Effect Runtime Integration
-
-Effect Meta creates a fiber-per-request runtime for:
-
-- Request-scoped services (session, tracing)
-- Proper cancellation
-- Isolated observability spans
-
----
-
-## Developer Experience
-
-### Real-World Example: Analytics Dashboard
-
-**Before (Traditional Remix)**:
-
-```typescript
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const session = await getSession(request);
-  const user = await requireUser(session);
-  const account = await requireAccount(session);
-
-  // Sequential fetches (waterfall)
-  const customViews = await getAccountCustomViews(user, account);
-  const tasks = await getTasks(account.id);
-  const analytics = await getAnalytics(account.id);
-  const employees = await getEmployees(account.id);
-
-  return json({ user, account, customViews, tasks, analytics, employees });
-};
-```
-
-**After (Effect Meta with Atoms)**:
-
-```typescript
-// Individual atoms
-const tasksAtom = Atom.make(/* ... */);
-const analyticsAtom = Atom.make(/* ... */);
-const employeesAtom = Atom.make(/* ... */);
-
-// Composite atom - parallel fetching
-const dashboardDataAtom = Atom.make(
-  Effect.fnUntraced(function* (get: Atom.Context) {
-    const [tasks, analytics, employees] = yield* Effect.all([
-      get.result(tasksAtom),
-      get.result(analyticsAtom),
-      get.result(employeesAtom),
-    ]);
-
-    return {
-      tasks: tasks.value,
-      analytics: analytics.value,
-      employees: employees.value,
-    };
-  })
-);
-
-const AnalyticsRoute = Meta.Route.make({
-  path: "/analytics",
-  component: () => {
-    const dataResult = useAtomValue(dashboardDataAtom);
-    return Result.match(dataResult, {
-      onInitial: () => <Loading />,
-      onFailure: (error) => <ErrorPage error={error} />,
-      onSuccess: (response) => <DashboardView {...response.value} />,
-    });
-  },
-});
-```
-
-**Improvements**:
-
--  Automatic parallelization (4 concurrent requests)
--  Fine-grained reactivity (charts subscribe to specific atoms)
--  Reusable atoms across routes
--  Built-in caching with TTL
--  Type-safe errors
--  No prop drilling
-
-### Testing Story
-
-```typescript
-import { Effect, Layer } from "effect";
-
-describe("UserSettingsRoute", () => {
-  const MockUserService = Layer.succeed(UserService, {
-    getById: (id) => Effect.succeed({ id, name: "Test User" }),
-    updateSettings: (id, input) => Effect.succeed({ ...input }),
-  });
-
-  const TestLayer = Layer.mergeAll(MockUserService, MockNotificationService);
-
-  it("loads user settings", async () => {
-    const result = await UserSettingsRoute.data({ id: "user-123" }).pipe(
-      Effect.provide(TestLayer),
-      Effect.runPromise
-    );
-
-    expect(result.user.name).toBe("Test User");
-  });
-});
-```
-
-**Benefits**:
-
--  No HTTP/database mocking
--  Fast, isolated unit tests
--  Test atoms independently
--  Easy error case testing with `Effect.flip`
-
----
-
-## Technical Design
-
-### Rendering Strategies
-
-Different meta-frameworks = different configurations:
-
-```typescript
-// Remix-style: Server-first, progressive enhancement
-const RemixStrategy = Meta.RenderStrategy.make({
-  rendering: "server",
-  hydration: "progressive",
-  forms: "native-html",
-  caching: "none",
-});
-
-// Next.js: Server components + streaming
-const NextStrategy = Meta.RenderStrategy.make({
-  rendering: "server-components",
-  streaming: true,
-  caching: "aggressive",
-});
-
-// SPA: Client-first
-const SPAStrategy = Meta.RenderStrategy.make({
-  rendering: "client",
-  hydration: "full",
-  navigation: "client-side",
-});
-```
-
-### Comparison with Existing Frameworks
-
-| Feature           | Traditional            | Effect Meta                |
-| ----------------- | ---------------------- | -------------------------- |
-| Type Safety       | Partial                | Full (DB � atom � UI)      |
-| Error Handling    | try/catch              | Typed Effect errors        |
-| Parallel Loading  | Manual `Promise.all()` | Automatic via atoms        |
-| Client Reactivity | Manual state sync      | Automatic atoms            |
-| URL State Sync    | Manual                 | `RouteAtom.searchParams()` |
-| Caching           | Framework-specific     | Atom TTL + reactivity keys |
-| Testing           | Mock HTTP/DB           | Mock services via Layer    |
-| Framework Lock-in | High                   | Low (adapters)             |
-
----
+We're currently gathering community feedback on the design and API. See our [Contributing](#contributing) section to get involved.
 
 ## Roadmap
 
-### Phase 1: Core Primitives (3-6 months)
+### Phase 1: Core Primitives (Current)
+- Define Route, Middleware, and App abstractions
+- Atom integration design
+- React component patterns
 
-- [ ] `Meta.Route` with data/actions/middleware
-- [ ] Atom integration for client reactivity
-- [ ] Basic React support
-- [ ] Proof-of-concept
+### Phase 2: Implementation
+- Core framework implementation
+- React integration
+- Basic routing and data loading
 
-### Phase 2: React Integration (3-6 months)
+### Phase 3: Adapters & Primitives
+- **@effect/vite** - First-class Vite + HttpApi + Atom primitive (see [RFC](docs/rfcs/effect-vite-rfc.md))
+- Remix adapter
+- Next.js adapter
 
-- [ ] `Meta.Form` with progressive enhancement
-- [ ] Server Components support
-- [ ] Streaming support
-- [ ] Islands architecture
-- [ ] Full `@effect-atom/atom-react` integration
+### Phase 4: Ecosystem
+- CLI tools
+- DevTools
+- Visual route editor
 
-### Phase 3: Adapters (6-12 months)
+## Contributing
 
-- [ ] Remix adapter (`app.toRemix()`)
-- [ ] Next.js adapter (`app.toNext()`)
-- [ ] Vite/SPA adapter (`app.toVite()`)
-- [ ] Migration guides & codemods
-
-### Phase 4: Advanced Features (Ongoing)
-
-- [ ] Edge runtime support
-- [ ] Real-time subscriptions via `Stream`
-- [ ] Offline-first patterns
-- [ ] Code generation from Effect Schemas
-- [ ] Visual route editor
-- [ ] Performance monitoring
-
----
-
-## Getting Involved
-
-Effect Meta is in early design phase. We're seeking:
-
-### Community Feedback
-
-- **Discord**: [Effect Discord #ideas](https://discord.gg/effect-ts)
-- **GitHub**: [Effect Discussions](https://github.com/Effect-TS/effect/discussions)
-- **Twitter**: Share thoughts with #EffectMeta
-
-### Key Questions for Community
-
-1. Should Effect Meta require Effect Schema or support Zod/others?
-2. Server Components vs. server-first rendering?
-3. Client-side Effect runtime strategy (full, selective, none)?
-4. File-based routing or code-based?
-5. Relationship to `@effect/platform` HttpApi?
+Effect Meta is in early design phase and we welcome community input!
 
 ### How to Contribute
 
-1. **Design Feedback**: Review RFCs and provide input
-2. **Prototype Development**: Help build proof-of-concept
-3. **Documentation**: Improve examples and guides
-4. **Migration Tooling**: Build codemods and adapters
+1. **Join the Discussion**
+   - [Effect Discord #ideas channel](https://discord.gg/effect-ts)
+   - [GitHub Discussions](https://github.com/Effect-TS/effect/discussions)
 
----
+2. **Review RFCs**
+   - Read our [design documents](docs/rfcs/)
+   - Provide feedback on proposed APIs
 
-## Resources
+3. **Share Ideas**
+   - Tweet with #EffectMeta
+   - Open issues for feature requests
 
-- **[EFFECT_META_RFC.md](./EFFECT_META_RFC.md)**: Detailed technical RFC with complete API examples
-- **[RFC.md](./RFC.md)**: High-level vision and design principles
-- **[EFFECT_META_CLI_RFC.md](./EFFECT_META_CLI_RFC.md)**: CLI tooling for AST-aware codebase exploration
-- **[context-clean.md](./context-clean.md)**: Initial brainstorming and raw context
+### Key Questions for Community
 
----
+- Should Effect Meta require Effect Schema or support other validation libraries?
+- Server Components vs. server-first rendering preference?
+- File-based vs. code-based routing?
+- Integration with existing Effect ecosystem packages?
 
-## Success Criteria
+## Success Metrics
 
 - **DX**: Install to deploy in < 5 minutes
-- **Performance**: Lighthouse score > 95 out of box
-- **Type Safety**: 100% coverage including runtime boundaries
+- **Performance**: Lighthouse score > 95 out of the box
+- **Type Safety**: 100% type coverage including runtime boundaries
 - **Bundle Size**: < 50kb framework overhead
 - **Learning Curve**: Productive within first day for Remix/Next developers
 
----
+## License
 
-## Conclusion
+MIT
 
-Effect Meta represents a paradigm shift: **leverage Effect's battle-tested primitives with fine-grained reactive atoms** rather than reinventing the wheel.
+## Acknowledgments
 
-By combining Effect's composable abstractions with `@effect-atom/atom-react`'s reactivity, we achieve:
-
--  End-to-end type safety
--  Fine-grained client reactivity
--  Automatic parallelization & caching
--  URL state synchronization
--  Built-in observability
--  Framework portability
--  Testability by design
-
-**This could be the killer app that makes Effect the standard for full-stack TypeScript.**
+Effect Meta builds on the incredible work of:
+- The Effect-TS team and ecosystem
+- Early Remix's vision of web fundamentals
+- The React Server Components architecture
+- The `@effect-atom` reactive state management library
 
 ---
 
-_Last updated: 2025-09-30_
+*Effect Meta aims to become the killer app for Effect-TS by solving the meta-framework problem through composable primitives rather than framework-specific abstractions.*
