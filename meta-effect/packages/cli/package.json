@@ -1,9 +1,9 @@
 {
-  "name": "@template/cli",
+  "name": "@meta-effect/cli",
   "version": "0.0.0",
   "type": "module",
   "license": "MIT",
-  "description": "The CLI template",
+  "description": "CLI tools for Meta Effect projects",
   "repository": {
     "type": "git",
     "url": "<PLACEHOLDER>",
@@ -27,14 +27,14 @@
     "@effect/cli": "latest",
     "@effect/platform": "latest",
     "@effect/platform-node": "latest",
-    "@template/domain": "workspace:^",
+    "@meta-effect/effect-vite": "workspace:^",
     "effect": "latest"
   },
   "devDependencies": {
     "@effect/cli": "latest",
     "@effect/platform": "latest",
     "@effect/platform-node": "latest",
-    "@template/domain": "workspace:^",
+    "@meta-effect/effect-vite": "workspace:^",
     "effect": "latest"
   },
   "effect": {

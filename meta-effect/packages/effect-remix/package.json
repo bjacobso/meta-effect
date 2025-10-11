@@ -1,13 +1,13 @@
 {
-  "name": "@template/server",
+  "name": "@meta-effect/effect-remix",
   "version": "0.0.0",
   "type": "module",
   "license": "MIT",
-  "description": "The server template",
+  "description": "Effect bindings for Remix with loader and action integration",
   "repository": {
     "type": "git",
     "url": "<PLACEHOLDER>",
-    "directory": "packages/server"
+    "directory": "packages/effect-remix"
   },
   "publishConfig": {
     "access": "public",
@@ -26,7 +26,7 @@
   "dependencies": {
     "@effect/platform": "latest",
     "@effect/platform-node": "latest",
-    "@template/domain": "workspace:^",
+    "@meta-effect/effect-vite": "workspace:^",
     "effect": "latest"
   },
   "effect": {

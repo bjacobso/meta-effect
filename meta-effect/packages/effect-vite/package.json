@@ -1,13 +1,13 @@
 {
-  "name": "@template/domain",
+  "name": "@meta-effect/effect-vite",
   "version": "0.0.0",
   "type": "module",
   "license": "MIT",
-  "description": "The domain template",
+  "description": "Effect bindings for Vite with HttpApi and Atom integration",
   "repository": {
     "type": "git",
     "url": "<PLACEHOLDER>",
-    "directory": "packages/domain"
+    "directory": "packages/effect-vite"
   },
   "publishConfig": {
     "access": "public",
