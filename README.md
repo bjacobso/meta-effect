@@ -49,6 +49,15 @@ Compose Effect services with Remix:
 - **effect-loader** - Advanced loader patterns (~90 lines)
 - **effect-action** - Form actions with validation (~95 lines)
 
+### effect-ci (~400 lines total)
+
+Build typed CI/CD pipelines with Effect:
+
+- **ci-types** - Schema types for git/GitHub data (~60 lines)
+- **shell-runner** - Typed git/gh/claude commands (~140 lines)
+- **transforms** - Pipeline transform utilities (~130 lines)
+- **release-plan** - Weekly release automation (~180 lines)
+
 ### effect-htmx (planned)
 
 Hypermedia-driven apps with Effect:
@@ -106,6 +115,11 @@ registry/
 │   ├── with-effect.ts     # ~60 lines
 │   ├── effect-loader.ts   # ~90 lines
 │   └── effect-action.ts   # ~95 lines
+├── effect-ci/
+│   ├── types.ts           # ~60 lines
+│   ├── shell-runner.ts    # ~140 lines
+│   ├── transforms.ts      # ~130 lines
+│   └── release-plan.ts    # ~180 lines
 └── effect-htmx/           # Coming soon
 ```
 
@@ -119,6 +133,7 @@ Each component type has a living specification that evolves with implementation:
 
 - [**effect-vite Spec**](docs/specs/effect-vite.md) - Vite components and patterns
 - [**effect-remix Spec**](docs/specs/effect-remix.md) - Remix components and patterns
+- [**effect-ci Spec**](docs/specs/effect-ci.md) - CI/CD pipeline components
 - [**effect-htmx Spec**](docs/specs/effect-htmx.md) - HTMX components and patterns
 
 ### Design & Philosophy
@@ -210,14 +225,60 @@ export const action = effectAction({
 })
 ```
 
+### effect-ci
+
+```bash
+# 1. Add components
+# npx meta-effect add ci-full
+
+# 2. Run locally to generate weekly release notes
+npx tsx lib/effect-ci/release-plan.ts run
+
+# 3. Preview without side effects
+npx tsx lib/effect-ci/release-plan.ts run --dry-run
+
+# 4. Custom date range
+npx tsx lib/effect-ci/release-plan.ts run \
+  --since 2025-10-10T00:00:00Z \
+  --until 2025-10-17T00:00:00Z
+
+# 5. Generate GitHub Actions workflow
+npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.yml
+
+# Environment variables needed:
+# export ANTHROPIC_API_KEY=sk-...
+# export GITHUB_TOKEN=ghp_...
+```
+
+Customize the plan in [release-plan.ts](registry/effect-ci/release-plan.ts#L50):
+
+```typescript
+export const weeklyPlan: ReleasePlan = {
+  name: "weekly-release",
+  window: { kind: "lastDays", days: 7 },
+  model: "claude-3-5-sonnet-latest",
+  maxChangelog: 70,
+  labelFilter: ["user-facing"],  // Optional: filter by PR labels
+  output: {
+    toMarkdownFile: "release_notes.md",
+    toJsonFile: "release_notes.json",
+    toGithubRelease: (d) => ({
+      tag: `weekly-${d.toISOString().slice(0, 10)}`,
+      title: `Weekly Release Notes – ${d.toISOString().slice(0, 10)}`
+    })
+  }
+}
+```
+
 ## Project Status
 
 **Current**: Building the component registry and CLI
 
 ### Completed
 - ✅ Component registry structure
-- ✅ effect-vite components (7 components, ~275 lines)
+- ✅ effect-vite components (4 components, ~275 lines)
 - ✅ effect-remix components (3 components, ~245 lines)
+- ✅ effect-ci components (4 components, ~400 lines)
 - ✅ Registry metadata (registry.json)
 
 ### In Progress

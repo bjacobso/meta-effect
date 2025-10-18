@@ -56,6 +56,38 @@
       "files": ["effect-remix/effect-action.ts"],
       "dependencies": ["@remix-run/node", "effect"],
       "tags": ["remix", "action", "validation", "forms"]
+    },
+    {
+      "name": "ci-types",
+      "type": "effect-ci",
+      "description": "Effect Schema types for CI/CD pipelines: Commit, PR, ReleaseJSON",
+      "files": ["effect-ci/types.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "schema", "types"]
+    },
+    {
+      "name": "shell-runner",
+      "type": "effect-ci",
+      "description": "Typed wrappers around git, gh, and claude CLI commands",
+      "files": ["effect-ci/shell-runner.ts"],
+      "dependencies": ["effect", "@effect/platform", "@effect/platform-node"],
+      "tags": ["ci", "shell", "command"]
+    },
+    {
+      "name": "transforms",
+      "type": "effect-ci",
+      "description": "Pure transform utilities: parse, dedupe, filter, prompt building",
+      "files": ["effect-ci/transforms.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "transform", "pipeline"]
+    },
+    {
+      "name": "release-plan",
+      "type": "effect-ci",
+      "description": "Effect CLI program for generating weekly release notes",
+      "files": ["effect-ci/release-plan.ts"],
+      "dependencies": ["effect", "@effect/cli", "@effect/platform", "@effect/platform-node"],
+      "tags": ["ci", "cli", "release-notes", "github-actions"]
     }
   ],
   "presets": [
@@ -78,6 +110,11 @@
       "name": "remix-minimal",
       "description": "Minimal effect-remix with basic helpers",
       "components": ["with-effect"]
+    },
+    {
+      "name": "ci-full",
+      "description": "Complete effect-ci setup for release automation",
+      "components": ["ci-types", "shell-runner", "transforms", "release-plan"]
     }
   ]
 }
