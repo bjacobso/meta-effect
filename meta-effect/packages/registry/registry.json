@@ -1,0 +1,120 @@
+{
+  "$schema": "./schema.json",
+  "components": [
+    {
+      "name": "http-api",
+      "type": "effect-vite",
+      "description": "Type-safe HttpApi definition with Effect Schema validation",
+      "files": ["effect-vite/http-api.ts"],
+      "dependencies": ["@effect/platform", "effect"],
+      "tags": ["api", "schema", "vite"]
+    },
+    {
+      "name": "vite-plugin",
+      "type": "effect-vite",
+      "description": "Vite plugin that mounts Effect HttpApi as dev server middleware",
+      "files": ["effect-vite/vite-plugin.ts"],
+      "dependencies": ["@effect/platform", "effect", "vite"],
+      "tags": ["vite", "plugin", "dev-server"]
+    },
+    {
+      "name": "api-atom",
+      "type": "effect-vite",
+      "description": "Reactive atoms for Effect HttpApi with caching and invalidation",
+      "files": ["effect-vite/api-atom.ts"],
+      "dependencies": ["jotai", "effect"],
+      "tags": ["atoms", "reactivity", "caching"]
+    },
+    {
+      "name": "route-atom",
+      "type": "effect-vite",
+      "description": "Atoms synchronized with URL search params and route params",
+      "files": ["effect-vite/route-atom.ts"],
+      "dependencies": ["jotai", "effect"],
+      "tags": ["atoms", "routing", "url"]
+    },
+    {
+      "name": "with-effect",
+      "type": "effect-remix",
+      "description": "Simple helpers for wrapping Remix loaders/actions with Effect",
+      "files": ["effect-remix/with-effect.ts"],
+      "dependencies": ["@remix-run/node", "effect"],
+      "tags": ["remix", "loader", "action"]
+    },
+    {
+      "name": "effect-loader",
+      "type": "effect-remix",
+      "description": "Advanced Effect loader patterns with error handling",
+      "files": ["effect-remix/effect-loader.ts"],
+      "dependencies": ["@remix-run/node", "effect"],
+      "tags": ["remix", "loader", "error-handling"]
+    },
+    {
+      "name": "effect-action",
+      "type": "effect-remix",
+      "description": "Effect action helpers with Schema validation",
+      "files": ["effect-remix/effect-action.ts"],
+      "dependencies": ["@remix-run/node", "effect"],
+      "tags": ["remix", "action", "validation", "forms"]
+    },
+    {
+      "name": "ci-types",
+      "type": "effect-ci",
+      "description": "Effect Schema types for CI/CD pipelines: Commit, PR, ReleaseJSON",
+      "files": ["effect-ci/types.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "schema", "types"]
+    },
+    {
+      "name": "shell-runner",
+      "type": "effect-ci",
+      "description": "Typed wrappers around git, gh, and claude CLI commands",
+      "files": ["effect-ci/shell-runner.ts"],
+      "dependencies": ["effect", "@effect/platform", "@effect/platform-node"],
+      "tags": ["ci", "shell", "command"]
+    },
+    {
+      "name": "transforms",
+      "type": "effect-ci",
+      "description": "Pure transform utilities: parse, dedupe, filter, prompt building",
+      "files": ["effect-ci/transforms.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "transform", "pipeline"]
+    },
+    {
+      "name": "release-plan",
+      "type": "effect-ci",
+      "description": "Effect CLI program for generating weekly release notes",
+      "files": ["effect-ci/release-plan.ts"],
+      "dependencies": ["effect", "@effect/cli", "@effect/platform", "@effect/platform-node"],
+      "tags": ["ci", "cli", "release-notes", "github-actions"]
+    }
+  ],
+  "presets": [
+    {
+      "name": "vite-full",
+      "description": "Complete effect-vite setup with all components",
+      "components": ["http-api", "vite-plugin", "api-atom", "route-atom"]
+    },
+    {
+      "name": "remix-full",
+      "description": "Complete effect-remix setup with all components",
+      "components": ["with-effect", "effect-loader", "effect-action"]
+    },
+    {
+      "name": "vite-minimal",
+      "description": "Minimal effect-vite with just HttpApi",
+      "components": ["http-api", "vite-plugin"]
+    },
+    {
+      "name": "remix-minimal",
+      "description": "Minimal effect-remix with basic helpers",
+      "components": ["with-effect"]
+    },
+    {
+      "name": "ci-full",
+      "description": "Complete effect-ci setup for release automation",
+      "components": ["ci-types", "shell-runner", "transforms", "release-plan"]
+    }
+  ]
+}

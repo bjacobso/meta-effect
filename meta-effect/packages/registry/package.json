@@ -1,0 +1,54 @@
+{
+  "name": "@meta-effect/registry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vendorable Effect components - source of truth for CLI copying",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/effect-meta",
+    "directory": "packages/registry"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest --coverage",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "example:ci": "tsx src/effect-ci/release-plan.ts run --dry-run",
+    "example:ci:workflow": "tsx src/effect-ci/release-plan.ts emit-workflow"
+  },
+  "peerDependencies": {
+    "@effect/cli": "^0.41.0",
+    "@effect/platform": "^0.63.0",
+    "@effect/platform-node": "^0.58.0",
+    "@remix-run/node": "^2.0.0",
+    "effect": "^3.0.0",
+    "jotai": "^2.0.0",
+    "vite": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@remix-run/node": {
+      "optional": true
+    },
+    "jotai": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@effect/cli": "latest",
+    "@effect/platform": "latest",
+    "@effect/platform-node": "latest",
+    "@types/node": "^22.8.5",
+    "effect": "latest",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.0"
+  }
+}
