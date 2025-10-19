@@ -73,7 +73,6 @@ describe("form-to-github-inputs", () => {
       description: "Notify team",
       type: "boolean",
       default: false,
-      required: false,
     })
   })
 
@@ -95,11 +94,11 @@ describe("form-to-github-inputs", () => {
     expect(inputs.timeout).toMatchObject({
       description: "Timeout (seconds)",
       type: "number",
-      default: "300",
+      default: 300,
     })
   })
 
-  it("should skip conditional fields", () => {
+  it("should include conditional fields (GHA limitation)", () => {
     const form: FormIR = {
       id: "test",
       fields: [
@@ -121,7 +120,8 @@ describe("form-to-github-inputs", () => {
     const inputs = toGithubInputs(form)
 
     expect(inputs.always).toBeDefined()
-    expect(inputs.conditional).toBeUndefined()
+    // GHA doesn't support conditional inputs, so all fields are included
+    expect(inputs.conditional).toBeDefined()
   })
 
   it("should handle optional fields", () => {
@@ -142,8 +142,9 @@ describe("form-to-github-inputs", () => {
     expect(inputs.notes).toMatchObject({
       description: "Release Notes",
       type: "string",
-      required: false,
     })
+    // Required is only set when true, not when false
+    expect(inputs.notes.required).toBeUndefined()
   })
 
   it("should compile multiple fields", () => {
