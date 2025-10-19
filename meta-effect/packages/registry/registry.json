@@ -88,6 +88,30 @@
       "files": ["effect-ci/release-plan.ts"],
       "dependencies": ["effect", "@effect/cli", "@effect/platform", "@effect/platform-node"],
       "tags": ["ci", "cli", "release-notes", "github-actions"]
+    },
+    {
+      "name": "livestore-service",
+      "type": "effect-livestore",
+      "description": "Effect Service wrapper for LiveStore with typed dispatch, queries, and subscriptions",
+      "files": ["effect-livestore/livestore-service.ts"],
+      "dependencies": ["effect", "@livestore/livestore"],
+      "tags": ["livestore", "service", "event-sourcing"]
+    },
+    {
+      "name": "event-helpers",
+      "type": "effect-livestore",
+      "description": "Type-safe event creators and dispatchers with Effect Schema validation",
+      "files": ["effect-livestore/event-helpers.ts"],
+      "dependencies": ["effect", "@livestore/livestore"],
+      "tags": ["livestore", "events", "validation"]
+    },
+    {
+      "name": "livestore-atom",
+      "type": "effect-livestore",
+      "description": "Reactive Jotai atoms that auto-subscribe to LiveStore queries",
+      "files": ["effect-livestore/livestore-atom.ts"],
+      "dependencies": ["jotai", "@livestore/livestore"],
+      "tags": ["livestore", "atoms", "reactivity"]
     }
   ],
   "presets": [
@@ -115,6 +139,11 @@
       "name": "ci-full",
       "description": "Complete effect-ci setup for release automation",
       "components": ["ci-types", "shell-runner", "transforms", "release-plan"]
+    },
+    {
+      "name": "livestore-full",
+      "description": "Complete effect-livestore setup with all components",
+      "components": ["livestore-service", "event-helpers", "livestore-atom"]
     }
   ]
 }
