@@ -38,6 +38,17 @@ Components for Remix applications with Effect services:
 
 **Total**: ~245 lines
 
+### effect-prisma
+
+Components for Prisma ORM with Effect services:
+
+| Component | Description | Lines |
+|-----------|-------------|-------|
+| `db-client` | Prisma Client wrapper with Effect | ~105 |
+| `db-transaction` | Advanced transaction patterns | ~110 |
+
+**Total**: ~215 lines
+
 ### effect-htmx
 
 Components for HTMX with Effect backend (coming soon):
@@ -84,6 +95,9 @@ registry/
 │   ├── with-effect.ts
 │   ├── effect-loader.ts
 │   └── effect-action.ts
+├── effect-prisma/         # Prisma ORM components
+│   ├── db-client.ts
+│   └── db-transaction.ts
 └── effect-htmx/           # HTMX-related components (planned)
     ├── html-response.ts
     └── htmx-attrs.ts
@@ -110,6 +124,13 @@ After adding a component, it's **yours**. Common customizations:
 - Request-scoped caching
 - Performance monitoring
 - Rate limiting
+
+### db-client
+- Add query caching
+- Connection pool management
+- Query logging
+- Performance metrics
+- Retry strategies
 
 ## Why Not npm Packages?
 

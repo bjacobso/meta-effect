@@ -112,6 +112,22 @@
       "files": ["effect-livestore/livestore-atom.ts"],
       "dependencies": ["jotai", "@livestore/livestore"],
       "tags": ["livestore", "atoms", "reactivity"]
+    },
+    {
+      "name": "db-client",
+      "type": "effect-prisma",
+      "description": "Prisma Client wrapped in Effect service with error handling",
+      "files": ["effect-prisma/db-client.ts"],
+      "dependencies": ["@prisma/client", "effect"],
+      "tags": ["prisma", "database", "service"]
+    },
+    {
+      "name": "db-transaction",
+      "type": "effect-prisma",
+      "description": "Advanced transaction patterns with nested transaction support",
+      "files": ["effect-prisma/db-transaction.ts"],
+      "dependencies": ["@prisma/client", "effect"],
+      "tags": ["prisma", "database", "transactions"]
     }
   ],
   "presets": [
@@ -144,6 +160,16 @@
       "name": "livestore-full",
       "description": "Complete effect-livestore setup with all components",
       "components": ["livestore-service", "event-helpers", "livestore-atom"]
+    },
+    {
+      "name": "prisma-full",
+      "description": "Complete effect-prisma setup with transactions",
+      "components": ["db-client", "db-transaction"]
+    },
+    {
+      "name": "prisma-minimal",
+      "description": "Minimal effect-prisma with basic client wrapper",
+      "components": ["db-client"]
     }
   ]
 }
