@@ -90,6 +90,46 @@
       "tags": ["ci", "cli", "release-notes", "github-actions"]
     },
     {
+      "name": "dag-types",
+      "type": "effect-ci",
+      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows",
+      "files": ["effect-ci/dag-types.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "dag", "schema", "workflow"]
+    },
+    {
+      "name": "dag-builder",
+      "type": "effect-ci",
+      "description": "Ergonomic builder functions for constructing DAG nodes and edges",
+      "files": ["effect-ci/dag-builder.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "dag", "builder", "workflow"]
+    },
+    {
+      "name": "dag-config",
+      "type": "effect-ci",
+      "description": "Main orchestration for DAGs with validation and JSON/YAML serialization",
+      "files": ["effect-ci/dag-config.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "dag", "config", "workflow"]
+    },
+    {
+      "name": "dag-validation",
+      "type": "effect-ci",
+      "description": "Pure validation functions for DAGs: edge references, cycles, self-loops",
+      "files": ["effect-ci/dag-validation.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "dag", "validation", "workflow"]
+    },
+    {
+      "name": "dag-workflow",
+      "type": "effect-ci",
+      "description": "High-level declarative DSL for defining CI/CD workflows",
+      "files": ["effect-ci/dag-workflow.ts"],
+      "dependencies": ["effect"],
+      "tags": ["ci", "dag", "dsl", "workflow"]
+    },
+    {
       "name": "livestore-service",
       "type": "effect-livestore",
       "description": "Effect Service wrapper for LiveStore with typed dispatch, queries, and subscriptions",
@@ -153,8 +193,18 @@
     },
     {
       "name": "ci-full",
-      "description": "Complete effect-ci setup for release automation",
+      "description": "Complete effect-ci setup for release automation and DAG workflows",
+      "components": ["ci-types", "shell-runner", "transforms", "release-plan", "dag-types", "dag-builder", "dag-config", "dag-validation", "dag-workflow"]
+    },
+    {
+      "name": "ci-release",
+      "description": "Release automation components only",
       "components": ["ci-types", "shell-runner", "transforms", "release-plan"]
+    },
+    {
+      "name": "ci-dag",
+      "description": "DAG workflow definition and validation components",
+      "components": ["dag-types", "dag-builder", "dag-config", "dag-validation", "dag-workflow"]
     },
     {
       "name": "livestore-full",
