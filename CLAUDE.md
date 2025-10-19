@@ -131,6 +131,33 @@ export class MyService extends Effect.Service<MyService>()("MyService", {
 }) {}
 ```
 
+### Declarative DSL Pattern
+
+For complex configurations, provide a declarative API inspired by Effect RPC/HttpApi:
+
+```typescript
+// Example: dag-workflow.ts
+class BuildWorkflow extends Workflow.make(
+  "build",
+  "1.0.0",
+  { triggers: [...], defaults: {...} },
+  // Nodes (like Rpc.make)
+  Task.make("checkout", { uses: "..." }),
+  Gate.make("only_main", { condition: "..." }),
+  // Edges
+  Edge.make("checkout", "only_main")
+) {}
+
+// Usage
+const validated = BuildWorkflow.parseSync()
+```
+
+**When to use**:
+- Configuration involves many related entities (nodes + edges, endpoints + groups)
+- Type inference benefits from variadic arguments
+- Users are familiar with Effect RPC/HttpApi patterns
+- The DSL layer composes validated primitives (not implementing core logic)
+
 ### Vendorable Component Pattern
 
 Each vendorable component follows this structure:
@@ -198,6 +225,22 @@ To add `effect-solidjs`:
 4. Update `registry/registry.json` with new components
 5. Update root `README.md` with new section
 
+### Creating a Declarative DSL Component
+
+When configuration complexity warrants a RPC-like DSL (like `dag-workflow.ts`):
+
+1. **Start with primitives** - Build validated base schemas first (types, validation)
+2. **Create builders** - Simple `.make()` functions for each entity type
+3. **Build DSL layer** - Variadic `YourThing.make()` that groups entities
+4. **Keep it composable** - DSL should orchestrate, not reimplement
+5. **Provide both APIs** - DSL for ergonomics, builders for flexibility
+
+Example structure:
+- `thing-types.ts` (~100-150 lines) - Base schemas
+- `thing-validation.ts` (~150-200 lines) - Pure validation
+- `thing-builder.ts` (~80-100 lines) - Simple builders
+- `thing-dsl.ts` (~200-250 lines) - Declarative API ⭐
+
 ### Updating Component Line Counts
 
 When components grow/shrink, update counts in:
@@ -230,6 +273,12 @@ The `meta-effect/` monorepo is legacy. New development focuses on `registry/`. T
 If a component exceeds 100 lines, split it. Example: `effect-loader` could become:
 - `effect-loader-basic.ts` (~60 lines)
 - `effect-loader-errors.ts` (~40 lines)
+
+**Exception for DSL layers**: Components that provide declarative APIs (like `dag-workflow.ts` at ~210 lines) can exceed 100 lines if they're focused, self-contained, and provide significant ergonomic value. These should:
+- Be primarily type definitions and builders (not complex logic)
+- Compose smaller, validated primitives (dag-types, dag-validation, etc.)
+- Follow established Effect patterns (RpcGroup.make, HttpApi, etc.)
+- Remain readable and understandable in one sitting
 
 ### Version-Free Philosophy
 

@@ -49,14 +49,22 @@ Compose Effect services with Remix:
 - **effect-loader** - Advanced loader patterns (~90 lines)
 - **effect-action** - Form actions with validation (~95 lines)
 
-### effect-ci (~400 lines total)
+### effect-ci (~1090 lines total)
 
 Build typed CI/CD pipelines with Effect:
 
+**Release Automation (~400 lines)**:
 - **ci-types** - Schema types for git/GitHub data (~60 lines)
 - **shell-runner** - Typed git/gh/claude commands (~140 lines)
 - **transforms** - Pipeline transform utilities (~130 lines)
 - **release-plan** - Weekly release automation (~180 lines)
+
+**DAG Workflows (~690 lines)**:
+- **dag-workflow** - Declarative RPC-like DSL (~210 lines) ⭐
+- **dag-types** - Node, Edge, Trigger schemas (~136 lines)
+- **dag-validation** - Cycle detection, reference validation (~173 lines)
+- **dag-builder** - Ergonomic builder helpers (~90 lines)
+- **dag-config** - Main DagConfig with JSON/YAML (~135 lines)
 
 ### effect-htmx (planned)
 
@@ -116,10 +124,15 @@ registry/
 │   ├── effect-loader.ts   # ~90 lines
 │   └── effect-action.ts   # ~95 lines
 ├── effect-ci/
-│   ├── types.ts           # ~60 lines
+│   ├── types.ts           # ~60 lines (release automation)
 │   ├── shell-runner.ts    # ~140 lines
 │   ├── transforms.ts      # ~130 lines
-│   └── release-plan.ts    # ~180 lines
+│   ├── release-plan.ts    # ~180 lines
+│   ├── dag-workflow.ts    # ~210 lines (DAG workflows) ⭐
+│   ├── dag-types.ts       # ~136 lines
+│   ├── dag-validation.ts  # ~173 lines
+│   ├── dag-builder.ts     # ~90 lines
+│   └── dag-config.ts      # ~135 lines
 └── effect-htmx/           # Coming soon
 ```
 
@@ -270,6 +283,46 @@ export const weeklyPlan: ReleasePlan = {
 }
 ```
 
+**DAG Workflows** - Define typed CI/CD workflows with declarative DSL:
+
+```typescript
+import { Workflow, Task, Gate, Fanout, Fanin, Edge } from './lib/effect-ci/dag-workflow'
+import { PushTrigger } from './lib/effect-ci/dag-types'
+
+// Define workflow as a class (RPC-like DSL)
+class BuildAndRelease extends Workflow.make(
+  "build_and_release",
+  "1.0.0",
+  {
+    triggers: [PushTrigger.make({ branches: ["main"] })],
+    defaults: {
+      retry: { maxAttempts: 3 },
+      env: { NODE_ENV: "production" }
+    }
+  },
+  // Nodes (like Rpc.make in Effect)
+  Task.make("checkout", { uses: "actions/checkout@v4" }),
+  Gate.make("only_main", { condition: "github.ref == 'refs/heads/main'" }),
+  Fanout.make("parallel_builds"),
+  Task.make("build_web", { run: "pnpm build --filter web" }),
+  Task.make("build_api", { run: "pnpm build --filter api" }),
+  Fanin.make("join_builds"),
+  Task.make("release", { run: "pnpm release", secrets: ["NPM_TOKEN"] }),
+  // Edges
+  Edge.make("checkout", "only_main"),
+  Edge.make("only_main", "parallel_builds", { condition: "expr" }),
+  Edge.make("parallel_builds", "build_web"),
+  Edge.make("parallel_builds", "build_api"),
+  Edge.make("build_web", "join_builds"),
+  Edge.make("build_api", "join_builds"),
+  Edge.make("join_builds", "release")
+) {}
+
+// Validate and use
+const validated = BuildAndRelease.parseSync()
+// Or with Effect: BuildAndRelease.parse()
+```
+
 ## Project Status
 
 **Current**: Building the component registry and CLI
@@ -278,7 +331,9 @@ export const weeklyPlan: ReleasePlan = {
 - ✅ Component registry structure
 - ✅ effect-vite components (4 components, ~275 lines)
 - ✅ effect-remix components (3 components, ~245 lines)
-- ✅ effect-ci components (4 components, ~400 lines)
+- ✅ effect-ci components (9 components, ~1090 lines)
+  - Release automation (4 components, ~400 lines)
+  - DAG workflows with declarative DSL (5 components, ~690 lines)
 - ✅ Registry metadata (registry.json)
 
 ### In Progress
