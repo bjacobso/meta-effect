@@ -7,9 +7,8 @@
 import { Effect, Schema } from "effect"
 import type { Registry, RegistryComponent, ComponentWithCode } from "./registry-types"
 
-// In a real app, these would be loaded from the registry package
-// For demo purposes, we'll fetch from the repo structure
-const REGISTRY_BASE = "../meta-effect/packages/registry"
+// Registry files are copied to public directory at build time
+const REGISTRY_BASE = "/registry"
 
 export const loadRegistry = (): Effect.Effect<Registry, Error> =>
   Effect.tryPromise({

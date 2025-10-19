@@ -25,7 +25,7 @@ This Vite app provides a visual interface for browsing and exploring all compone
 # Install dependencies
 pnpm install
 
-# Start dev server
+# Start dev server (automatically copies registry files)
 pnpm dev
 
 # Build for production
@@ -33,6 +33,8 @@ pnpm build
 ```
 
 The app will be available at http://localhost:5173/
+
+**Note**: The `dev` and `build` scripts automatically copy registry files from `../meta-effect/packages/registry/` into the `public/registry/` directory. This ensures the latest component data is always available.
 
 ## Architecture
 

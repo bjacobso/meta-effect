@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "copy-registry": "mkdir -p public/registry/src && cp ../meta-effect/packages/registry/registry.json public/registry/ && cp -r ../meta-effect/packages/registry/src/* public/registry/src/",
+    "dev": "pnpm copy-registry && vite",
+    "build": "pnpm copy-registry && tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
