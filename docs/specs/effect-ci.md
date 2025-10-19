@@ -12,7 +12,7 @@ Think "prompts on steroids" - typed, testable, composable automation scripts.
 
 **Components**:
 - Release automation (~400 lines): types, shell-runner, transforms, release-plan
-- DAG workflows (~690 lines): dag-workflow, dag-types, dag-validation, dag-builder, dag-config
+- DAG workflows (~860 lines): dag-workflow, dag-types, dag-validation, dag-builder, dag-config, dag-interpreter, dag-to-mermaid
 
 ## Core Primitives
 
@@ -149,7 +149,7 @@ Effect.runPromise(runPlan(weeklyPlan))
 
 ### 5. DAG Workflow Configuration
 
-Typed CI/CD workflow definitions with validation (~690 lines total across 5 files):
+Typed CI/CD workflow definitions with validation and execution (~860 lines total across 7 files):
 
 #### dag-workflow.ts (~210 lines) - Declarative DSL (Recommended)
 
@@ -373,6 +373,137 @@ npx tsx lib/effect-ci/release-plan.ts run --dry-run
 npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.yml
 ```
 
+#### dag-interpreter.ts (~100 lines) - Local DAG Execution (NEW)
+
+Execute DAG workflows locally with topological sorting, retry, and timeout:
+
+```typescript
+import { runDag, TaskRunner } from './lib/effect-ci/dag-interpreter'
+import { Effect, Command } from 'effect'
+
+// Define task runner service
+const localRunner: TaskRunner = {
+  runTask: (task: TaskNode, context: Record<string, unknown>) =>
+    Effect.gen(function*() {
+      if (task.run) {
+        // Execute shell command
+        const result = yield* Command.make("sh", "-c", task.run).pipe(
+          Command.exitCode
+        )
+        if (result !== 0) {
+          return yield* Effect.fail(new Error(`Task ${task.id} failed`))
+        }
+      } else if (task.uses) {
+        // Handle GitHub Actions
+        console.log(`Would run action: ${task.uses}`)
+      }
+    }),
+
+  evaluateGate: (gate: GateNode, context: Record<string, unknown>) =>
+    Effect.gen(function*() {
+      // Evaluate condition (integrate with effect-expressions)
+      const evaluator = yield* ExpressionEvaluator
+      return yield* evaluator.evalBoolean(gate.condition, context)
+    }),
+
+  onFanout: (fanout: FanoutNode) =>
+    Effect.log(`Starting parallel execution: ${fanout.id}`),
+
+  onFanin: (fanin: FaninNode) =>
+    Effect.log(`Joining parallel execution: ${fanin.id}`)
+}
+
+// Execute workflow locally
+const program = runDag(BuildAndRelease.config).pipe(
+  Effect.provideService(TaskRunner, localRunner)
+)
+
+Effect.runPromise(program)
+```
+
+**Key Features**:
+- **Topological Sort**: Executes nodes in dependency order
+- **Parallel Execution**: Runs independent nodes concurrently
+- **Retry/Timeout**: Per-node retry policies and timeouts
+- **Context Propagation**: Passes data between nodes
+- **Error Handling**: Typed errors with node context
+- **Service-Based**: Swap execution strategy via dependency injection
+
+**Execution Algorithm**:
+1. Build adjacency list from edges
+2. Compute indegree for each node
+3. Find zero-indegree nodes (entry points)
+4. Execute batch in parallel using `Effect.forEach` with unbounded concurrency
+5. For each completed node:
+   - Evaluate outgoing edge conditions
+   - Decrement indegree of neighbors
+   - Add zero-indegree neighbors to next batch
+6. Repeat until all nodes executed or gate blocks propagation
+
+**Integration with effect-collect**:
+```typescript
+import { CollectService } from './lib/effect-collect/collect-service'
+
+const runnerWithCollect: TaskRunner = {
+  runTask: (task, ctx) => {
+    if (task._tag === "collect") {
+      const collect = yield* CollectService
+      const data = yield* collect.collect(task.formId)
+      ctx[task.formId] = data
+    } else {
+      // ... normal task execution
+    }
+  },
+  // ...
+}
+```
+
+#### dag-to-mermaid.ts (~50 lines) - Visualization (NEW)
+
+Generate Mermaid diagrams from DAG workflows:
+
+```typescript
+import { dagToMermaid } from './lib/effect-ci/dag-to-mermaid'
+
+const diagram = dagToMermaid(BuildAndRelease.config)
+console.log(diagram)
+
+// Output:
+// graph TD
+//   checkout --> only_main
+//   only_main --> parallel_builds
+//   parallel_builds --> build_web
+//   parallel_builds --> build_api
+//   build_web --> join_builds
+//   build_api --> join_builds
+//   join_builds --> release
+//
+//   only_main{only_main}
+//   parallel_builds((parallel_builds))
+//   join_builds((join_builds))
+```
+
+**Node Shapes**:
+- `Task` → Rectangle `[task]`
+- `Gate` → Diamond `{gate}`
+- `Fanout/Fanin` → Circle `((fanout))`
+- `Collect` → Stadium `([collect])`
+
+**GitHub Integration**:
+```markdown
+<!-- In README.md or docs/ -->
+## Workflow Diagram
+
+```mermaid
+graph TD
+  checkout --> only_main
+  only_main --> deploy
+  only_main{Condition: only_main}
+```
+```
+
+GitHub automatically renders Mermaid diagrams in markdown!
+
 ## Architecture Diagram
 
 ```
@@ -487,12 +618,14 @@ npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.y
   - Transform utilities (parse, dedupe, filter, prompt, extract)
   - Effect Schema types (Commit, PR, ReleaseJSON)
   - Weekly release plan example
-- All 5 DAG workflow components (~690 lines)
+- All 7 DAG workflow components (~860 lines)
   - dag-workflow.ts - **Declarative RPC-like DSL (recommended)**
   - dag-types.ts - Node, Edge, Trigger schemas
   - dag-validation.ts - Cycle detection, reference validation
   - dag-builder.ts - Ergonomic builder helpers (lower-level)
   - dag-config.ts - Main DagConfig with JSON/YAML support
+  - dag-interpreter.ts - **Local execution engine (NEW)**
+  - dag-to-mermaid.ts - **Visualization generator (NEW)**
 
 ### 🚧 Planned Enhancements
 - **Release Automation**:
@@ -502,11 +635,11 @@ npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.y
   - Label-based approval guards (require `release:approved` label)
   - Custom LLM provider adapters (OpenAI, Gemini, etc.)
 - **DAG Workflows**:
-  - DAG executor runtime (run workflows locally)
-  - GitHub Actions YAML emitter (convert DAG to .yml)
-  - Workflow visualization (Mermaid/Graphviz output)
+  - GitHub Actions YAML emitter (move to effect-compilers)
   - DAG composition (embed sub-DAGs)
-  - Conditional edge expressions (JSX-like syntax)
+  - Conditional edge expressions (advanced gate logic)
+  - Integration with effect-collect for human-in-the-loop
+  - Integration with effect-expressions for gate evaluation
 
 ## Example Application Structure
 
@@ -522,12 +655,17 @@ my-project/
 │       ├── dag-types.ts        # DAG schema types (136 lines)
 │       ├── dag-validation.ts   # DAG validation (173 lines)
 │       ├── dag-builder.ts      # DAG builder helpers (90 lines)
-│       └── dag-config.ts       # DAG config + examples (135 lines)
+│       ├── dag-config.ts       # DAG config + examples (135 lines)
+│       ├── dag-interpreter.ts  # Local executor (100 lines) ⭐ NEW
+│       └── dag-to-mermaid.ts   # Visualization (50 lines) ⭐ NEW
 ├── workflows/
 │   └── build-and-release.ts   # Custom workflow classes
 ├── .github/
 │   └── workflows/
 │       └── weekly-release.yml # Generated from emit-workflow
+├── docs/
+│   └── workflows/             # Generated diagrams
+│       └── build-and-release.md  # Mermaid visualization
 └── package.json
 ```
 
@@ -816,6 +954,13 @@ describe('release plan', () => {
 
 ## Related Documents
 
+### Meta Effect Specs
+- [effect-forms Spec](./effect-forms.md) - Form schema primitives (integrates with DAG collect nodes)
+- [effect-collect Spec](./effect-collect.md) - Human-in-the-loop primitives (integrates with DAG interpreter)
+- [effect-expressions Spec](./effect-expressions.md) - Expression evaluators (for gate conditions)
+- [effect-compilers Spec](./effect-compilers.md) - Multi-target code generation (DAG → GHA/Step Functions)
+
+### External Docs
 - [Effect CLI Docs](https://effect.website/docs/cli) - Official Effect CLI documentation
 - [Effect Platform Command](https://effect.website/docs/platform/command) - Command execution docs
 - [Effect Schema](https://effect.website/docs/schema) - Schema validation docs
