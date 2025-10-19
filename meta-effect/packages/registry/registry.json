@@ -2,7 +2,152 @@
   "$schema": "./schema.json",
   "components": [
     {
-      "name": "ci-pipeline-types",
+      "name": "dag-builder",
+      "type": "effect-ci",
+      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
+      "files": [
+        "effect-ci/dag-builder.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "builder",
+        "ci",
+        "dag"
+      ]
+    },
+    {
+      "name": "dag-config",
+      "type": "effect-ci",
+      "description": "Main orchestration for typed CI/CD workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
+      "files": [
+        "effect-ci/dag-config.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/Schema",
+        "yaml"
+      ],
+      "tags": [
+        "builder",
+        "ci",
+        "config",
+        "dag",
+        "schema",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-types",
+      "type": "effect-ci",
+      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration.",
+      "files": [
+        "effect-ci/dag-types.ts"
+      ],
+      "dependencies": [
+        "effect/Brand",
+        "effect/Schema"
+      ],
+      "tags": [
+        "ci",
+        "config",
+        "dag",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "dag-validation",
+      "type": "effect-ci",
+      "description": "Pure validation functions for CI/CD workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
+      "files": [
+        "effect-ci/dag-validation.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/HashMap",
+        "effect/HashSet",
+        "effect/ParseResult",
+        "effect/Schema"
+      ],
+      "tags": [
+        "ci",
+        "dag",
+        "schema",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-workflow",
+      "type": "effect-ci",
+      "description": "High-level declarative API for defining CI/CD workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
+      "files": [
+        "effect-ci/dag-workflow.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "ci",
+        "dag",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "release-plan",
+      "type": "effect-ci",
+      "description": "Effect CLI program for generating weekly release notes from git/GitHub activity. Composes git, gh, and Claude CLI commands into typed pipelines.",
+      "files": [
+        "effect-ci/release-plan.ts"
+      ],
+      "dependencies": [
+        "@effect/cli",
+        "@effect/platform-node",
+        "@effect/platform/FileSystem",
+        "effect"
+      ],
+      "tags": [
+        "ci",
+        "shell"
+      ]
+    },
+    {
+      "name": "shell-runner",
+      "type": "effect-ci",
+      "description": "Effect-based wrappers around git, gh, and claude CLI commands. Uses @effect/platform/Command for pure, typed shell execution.",
+      "files": [
+        "effect-ci/shell-runner.ts"
+      ],
+      "dependencies": [
+        "@effect/platform/Command",
+        "effect"
+      ],
+      "tags": [
+        "ci",
+        "forms",
+        "shell"
+      ]
+    },
+    {
+      "name": "transforms",
+      "type": "effect-ci",
+      "description": "Pure transformation utilities for CI/CD data processing. Includes parsers, deduplication, bucketing, and prompt templates.",
+      "files": [
+        "effect-ci/transforms.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "ci",
+        "forms"
+      ]
+    },
+    {
+      "name": "types",
       "type": "effect-ci",
       "description": "Effect Schema types for strongly-typed CI/CD pipelines. Provides validation for git commits, GitHub PRs, and LLM-generated release notes.",
       "files": [
@@ -13,166 +158,71 @@
       ],
       "tags": [
         "ci",
-        "schema"
+        "schema",
+        "types",
+        "validation"
       ]
     },
     {
-      "name": "pipeline-transforms",
-      "type": "effect-ci",
-      "description": "Pure transformation utilities for CI/CD data processing. Includes parsers, deduplication, bucketing, and prompt templates.",
+      "name": "compiler-service",
+      "type": "effect-compilers",
+      "description": "Generic interface for all compilers. Defines the contract for compiling from a source schema to a target format with validation and preview.",
       "files": [
-        "effect-ci/transforms.ts"
-      ],
-      "dependencies": [
-        "effect"
-      ],
-      "tags": [
-        "ci"
-      ]
-    },
-    {
-      "name": "release-plan-dsl",
-      "type": "effect-ci",
-      "description": "Effect CLI program for generating weekly release notes from git/GitHub activity. Composes git, gh, and Claude CLI commands into typed pipelines.",
-      "files": [
-        "effect-ci/release-plan.ts"
-      ],
-      "dependencies": [
-        "@effect/cli",
-        "@effect/platform",
-        "@effect/platform-node",
-        "effect"
-      ],
-      "tags": [
-        "ci"
-      ]
-    },
-    {
-      "name": "shell-command-runners",
-      "type": "effect-ci",
-      "description": "Effect-based wrappers around git, gh, and claude CLI commands. Uses @effect/platform/Command for pure, typed shell execution.",
-      "files": [
-        "effect-ci/shell-runner.ts"
-      ],
-      "dependencies": [
-        "@effect/platform",
-        "effect"
-      ],
-      "tags": [
-        "ci"
-      ]
-    },
-    {
-      "name": "dag-builder-helpers",
-      "type": "effect-dag",
-      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
-      "files": [
-        "effect-dag/dag-builder.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "dag",
-        "workflow"
-      ]
-    },
-    {
-      "name": "dag-config",
-      "type": "effect-dag",
-      "description": "Main orchestration for typed workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
-      "files": [
-        "effect-dag/dag-config.ts"
+        "effect-compilers/compiler-service.ts"
       ],
       "dependencies": [
         "effect",
+        "effect/Effect",
+        "effect/Schema"
+      ],
+      "tags": [
+        "compilers",
+        "forms",
+        "schema",
+        "service",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-to-github-actions",
+      "type": "effect-compilers",
+      "description": "Compiles workflow DAGs to GitHub Actions YAML structure. Maps tasks to jobs, gates to if conditions, and handles dependencies, secrets, and triggers.",
+      "files": [
+        "effect-compilers/dag-to-github-actions.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
         "yaml"
       ],
       "tags": [
+        "ci",
+        "compilers",
         "dag",
-        "workflow"
+        "remix"
       ]
     },
     {
-      "name": "dag-interpreter",
-      "type": "effect-dag",
-      "description": "Local execution engine for workflow DAGs. Executes nodes in topological order with support for parallel execution, retry policies, and custom task runners.",
+      "name": "dag-to-step-functions",
+      "type": "effect-compilers",
+      "description": "Compiles workflow DAGs to AWS Step Functions ASL (Amazon States Language). Maps tasks to Task states, gates to Choice states, and handles parallel execution.",
       "files": [
-        "effect-dag/dag-interpreter.ts"
+        "effect-compilers/dag-to-step-functions.ts"
       ],
       "dependencies": [
-        "effect"
+        "effect",
+        "effect/Effect"
       ],
       "tags": [
-        "dag",
-        "execution",
-        "workflow"
+        "compilers",
+        "dag"
       ]
     },
     {
-      "name": "dag-to-mermaid",
-      "type": "effect-dag",
-      "description": "Generate Mermaid diagrams from workflow DAGs for visualization and documentation. GitHub automatically renders Mermaid in markdown files.",
-      "files": [
-        "effect-dag/dag-to-mermaid.ts"
-      ],
-      "dependencies": [
-        "node:fs"
-      ],
-      "tags": [
-        "dag",
-        "diagrams",
-        "visualization",
-        "workflow"
-      ]
-    },
-    {
-      "name": "dag-types",
-      "type": "effect-dag",
-      "description": "Branded types and Effect Schema definitions for typed workflow DAGs. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration. General-purpose primitives for orchestration, pipelines, and automation.",
-      "files": [
-        "effect-dag/dag-types.ts"
-      ],
-      "dependencies": [
-        "effect"
-      ],
-      "tags": [
-        "dag",
-        "schema",
-        "workflow"
-      ]
-    },
-    {
-      "name": "dag-validation",
-      "type": "effect-dag",
-      "description": "Pure validation functions for workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
-      "files": [
-        "effect-dag/dag-validation.ts"
-      ],
-      "dependencies": [
-        "effect"
-      ],
-      "tags": [
-        "dag",
-        "validation",
-        "workflow"
-      ]
-    },
-    {
-      "name": "dag-workflow-dsl",
-      "type": "effect-dag",
-      "description": "High-level declarative API for defining workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
-      "files": [
-        "effect-dag/dag-workflow.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "dag",
-        "workflow"
-      ]
-    },
-    {
-      "name": "event-helpers-component",
+      "name": "event-helpers",
       "type": "effect-livestore",
-      "description": "Type-safe event creators and dispatchers for LiveStore with Effect Schema validation and automatic error handling. * LiveStore uses event sourcing, where all state changes are described as immutable events. This component provides helpers to create and dispatch events in an Effect-friendly way with full type safety.",
+      "description": "Type-safe event creators and dispatchers for LiveStore with Effect Schema validation and automatic error handling. LiveStore uses event sourcing, where all state changes are described as immutable events. This component provides helpers to create and dispatch events in an Effect-friendly way with full type safety.",
       "files": [
         "effect-livestore/event-helpers.ts"
       ],
@@ -181,13 +231,19 @@
         "effect"
       ],
       "tags": [
-        "livestore"
+        "ci",
+        "error-handling",
+        "events",
+        "livestore",
+        "schema",
+        "types",
+        "validation"
       ]
     },
     {
-      "name": "livestore-atom-component",
+      "name": "livestore-atom",
       "type": "effect-livestore",
-      "description": "Reactive Jotai atoms that automatically subscribe to LiveStore queries, providing fine-grained reactivity for UI components. * LiveStore queries are automatically reactive - when events mutate the underlying SQLite state, subscribed queries re-execute. This component bridges that reactivity into Jotai's atom model.",
+      "description": "Reactive Jotai atoms that automatically subscribe to LiveStore queries, providing fine-grained reactivity for UI components. LiveStore queries are automatically reactive - when events mutate the underlying SQLite state, subscribed queries re-execute. This component bridges that reactivity into Jotai's atom model.",
       "files": [
         "effect-livestore/livestore-atom.ts"
       ],
@@ -196,13 +252,14 @@
       ],
       "tags": [
         "atoms",
+        "events",
         "livestore"
       ]
     },
     {
-      "name": "livestore-service-component",
+      "name": "livestore-service",
       "type": "effect-livestore",
-      "description": "Effect Service wrapper around LiveStore instance providing type-safe event dispatch, queries, and subscriptions as Effects and Streams. * This component demonstrates the Service pattern for managing LiveStore lifecycle and providing a functional API for event sourcing operations.",
+      "description": "Effect Service wrapper around LiveStore instance providing type-safe event dispatch, queries, and subscriptions as Effects and Streams. This component demonstrates the Service pattern for managing LiveStore lifecycle and providing a functional API for event sourcing operations.",
       "files": [
         "effect-livestore/livestore-service.ts"
       ],
@@ -211,29 +268,15 @@
         "effect"
       ],
       "tags": [
-        "livestore"
+        "api",
+        "ci",
+        "events",
+        "livestore",
+        "service"
       ]
     },
     {
-      "name": "advanced-prisma-transaction-component",
-      "type": "effect-prisma",
-      "description": "Demonstrates advanced transaction patterns with Prisma's interactive transaction API, including nested transaction support, manual commit/rollback, and scoped transaction lifecycle. * Requires Prisma Client Extensions for $begin, $commit, $rollback. See: https://www.prisma.io/docs/orm/prisma-client/queries/transactions#interactive-transactions-api",
-      "files": [
-        "effect-prisma/db-transaction.ts"
-      ],
-      "dependencies": [
-        "@prisma/client",
-        "effect",
-        "~"
-      ],
-      "tags": [
-        "action",
-        "database",
-        "prisma"
-      ]
-    },
-    {
-      "name": "prisma-with-effect-component",
+      "name": "db-client",
       "type": "effect-prisma",
       "description": "Wraps Prisma Client in Effect services with automatic error handling and transaction support. Provides a clean way to compose database operations with other Effect services.",
       "files": [
@@ -241,16 +284,61 @@
       ],
       "dependencies": [
         "@prisma/client",
-        "effect",
-        "~"
+        "effect"
       ],
       "tags": [
         "database",
-        "prisma"
+        "error-handling",
+        "prisma",
+        "remix",
+        "service",
+        "shell",
+        "transactions"
       ]
     },
     {
-      "name": "effect-action-component",
+      "name": "db-transaction",
+      "type": "effect-prisma",
+      "description": "Demonstrates advanced transaction patterns with Prisma's interactive transaction API, including nested transaction support, manual commit/rollback, and scoped transaction lifecycle. Requires Prisma Client Extensions for $begin, $commit, $rollback. See: https://www.prisma.io/docs/orm/prisma-client/queries/transactions#interactive-transactions-api",
+      "files": [
+        "effect-prisma/db-transaction.ts"
+      ],
+      "dependencies": [
+        "@prisma/client",
+        "effect"
+      ],
+      "tags": [
+        "api",
+        "database",
+        "prisma",
+        "remix",
+        "shell",
+        "transactions"
+      ]
+    },
+    {
+      "name": "sql-generator",
+      "type": "effect-prisma",
+      "description": "Generates Effect Schema Model classes from Prisma schema using @effect/sql. Creates branded ID types, Model.Class definitions, and NotFound error classes.",
+      "files": [
+        "effect-prisma/sql-generator.ts"
+      ],
+      "dependencies": [
+        "@effect/sql",
+        "@prisma/generator-helper",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "tags": [
+        "database",
+        "error-handling",
+        "prisma",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "effect-action",
       "type": "effect-remix",
       "description": "Provides patterns for handling form actions in Remix using Effect services. Includes Schema validation, typed errors, and automatic error responses.",
       "files": [
@@ -258,16 +346,20 @@
       ],
       "dependencies": [
         "@remix-run/node",
-        "effect",
-        "~"
+        "effect"
       ],
       "tags": [
-        "action",
-        "remix"
+        "error-handling",
+        "forms",
+        "remix",
+        "schema",
+        "service",
+        "types",
+        "validation"
       ]
     },
     {
-      "name": "effect-loader-component",
+      "name": "effect-loader",
       "type": "effect-remix",
       "description": "Provides patterns for data loading in Remix using Effect services. Handles parallel loading, error boundaries, and request-scoped services.",
       "files": [
@@ -275,48 +367,53 @@
       ],
       "dependencies": [
         "@remix-run/node",
-        "effect",
-        "~"
+        "effect"
       ],
       "tags": [
-        "loader",
-        "remix"
+        "error-handling",
+        "remix",
+        "service"
       ]
     },
     {
-      "name": "remix-with-effect-component",
+      "name": "with-effect",
       "type": "effect-remix",
       "description": "Helper utilities for composing Effect services with Remix loaders and actions. Provides a clean way to run Effect programs in Remix route handlers with automatic Layer provision and error handling.",
       "files": [
         "effect-remix/with-effect.ts"
       ],
       "dependencies": [
-        "@remix-run/node",
-        "effect",
-        "~"
+        "effect"
       ],
       "tags": [
-        "remix"
+        "error-handling",
+        "remix",
+        "routing",
+        "service"
       ]
     },
     {
-      "name": "api-atom-component",
+      "name": "api-atom",
       "type": "effect-vite",
       "description": "Wraps HttpApi client calls in reactive atoms for fine-grained reactivity. Provides query (read) and mutation (write) atoms with automatic caching and invalidation.",
       "files": [
         "effect-vite/api-atom.ts"
       ],
       "dependencies": [
-        "jotai"
+        "jotai",
+        "jotai/utils"
       ],
       "tags": [
         "api",
         "atoms",
+        "schema",
+        "shell",
+        "validation",
         "vite"
       ]
     },
     {
-      "name": "http-api-definition-component",
+      "name": "http-api",
       "type": "effect-vite",
       "description": "Defines a type-safe HttpApi with Effect Schema validation. This is the core primitive for defining your API surface.",
       "files": [
@@ -328,11 +425,14 @@
       ],
       "tags": [
         "api",
+        "schema",
+        "types",
+        "validation",
         "vite"
       ]
     },
     {
-      "name": "route-atom-component",
+      "name": "route-atom",
       "type": "effect-vite",
       "description": "Synchronizes atoms with URL search params and route params. Changes to the atom automatically update the URL, and URL changes update the atom - providing two-way binding with the browser location.",
       "files": [
@@ -344,127 +444,157 @@
       ],
       "tags": [
         "atoms",
+        "routing",
         "vite"
       ]
     },
     {
-      "name": "vite-plugin-for-effect-httpapi",
+      "name": "vite-plugin",
       "type": "effect-vite",
       "description": "Mounts Effect HttpApi routes as Vite middleware during development. This allows your Effect services to run directly in the Vite dev server with hot module replacement.",
       "files": [
         "effect-vite/vite-plugin.ts"
       ],
       "dependencies": [
-        "@effect/platform",
-        "effect",
         "vite"
       ],
       "tags": [
         "api",
+        "routing",
+        "service",
         "vite"
       ]
     }
   ],
   "presets": [
     {
+      "name": "ci-dag",
+      "description": "DAG workflow definition and validation components",
+      "components": [
+        "dag-builder",
+        "dag-config",
+        "dag-types",
+        "dag-validation",
+        "dag-workflow"
+      ]
+    },
+    {
       "name": "ci-full",
       "description": "Complete effect-ci setup with all components",
       "components": [
-        "ci-pipeline-types",
-        "pipeline-transforms",
-        "release-plan-dsl",
-        "shell-command-runners"
+        "dag-builder",
+        "dag-config",
+        "dag-types",
+        "dag-validation",
+        "dag-workflow",
+        "release-plan",
+        "shell-runner",
+        "transforms",
+        "types"
       ]
     },
     {
       "name": "ci-minimal",
-      "description": "Minimal effect-ci with essential components",
+      "description": "Minimal effect-ci with basic helpers",
       "components": [
-        "ci-pipeline-types"
+        "dag-builder",
+        "dag-config"
       ]
     },
     {
-      "name": "dag-full",
-      "description": "Complete effect-dag setup with all components",
+      "name": "ci-release",
+      "description": "Release automation components only",
       "components": [
-        "dag-builder-helpers",
-        "dag-config",
-        "dag-interpreter",
-        "dag-to-mermaid",
-        "dag-types",
-        "dag-validation",
-        "dag-workflow-dsl"
+        "release-plan",
+        "shell-runner",
+        "transforms",
+        "types"
       ]
     },
     {
-      "name": "dag-minimal",
-      "description": "Minimal effect-dag with essential components",
+      "name": "compilers-full",
+      "description": "Complete effect-compilers setup with all components",
       "components": [
-        "dag-builder-helpers"
+        "compiler-service",
+        "dag-to-github-actions",
+        "dag-to-step-functions"
+      ]
+    },
+    {
+      "name": "compilers-minimal",
+      "description": "Minimal effect-compilers with basic helpers",
+      "components": [
+        "compiler-service",
+        "dag-to-github-actions"
       ]
     },
     {
       "name": "livestore-full",
       "description": "Complete effect-livestore setup with all components",
       "components": [
-        "event-helpers-component",
-        "livestore-atom-component",
-        "livestore-service-component"
+        "event-helpers",
+        "livestore-atom",
+        "livestore-service"
       ]
     },
     {
       "name": "livestore-minimal",
-      "description": "Minimal effect-livestore with essential components",
+      "description": "Minimal effect-livestore with basic helpers",
       "components": [
-        "event-helpers-component"
+        "livestore-atom",
+        "livestore-service"
       ]
     },
     {
       "name": "prisma-full",
       "description": "Complete effect-prisma setup with all components",
       "components": [
-        "advanced-prisma-transaction-component",
-        "prisma-with-effect-component"
+        "db-client",
+        "db-transaction",
+        "sql-generator"
       ]
     },
     {
       "name": "prisma-minimal",
-      "description": "Minimal effect-prisma with essential components",
+      "description": "Minimal effect-prisma with basic helpers",
       "components": [
-        "advanced-prisma-transaction-component"
+        "db-client",
+        "sql-generator"
       ]
     },
     {
       "name": "remix-full",
       "description": "Complete effect-remix setup with all components",
       "components": [
-        "effect-action-component",
-        "effect-loader-component",
-        "remix-with-effect-component"
+        "effect-action",
+        "effect-loader",
+        "with-effect"
       ]
     },
     {
       "name": "remix-minimal",
-      "description": "Minimal effect-remix with essential components",
+      "description": "Minimal effect-remix with basic helpers",
       "components": [
-        "effect-action-component"
+        "effect-action",
+        "effect-loader"
       ]
     },
     {
       "name": "vite-full",
       "description": "Complete effect-vite setup with all components",
       "components": [
-        "api-atom-component",
-        "http-api-definition-component",
-        "route-atom-component",
-        "vite-plugin-for-effect-httpapi"
+        "api-atom",
+        "http-api",
+        "route-atom",
+        "vite-plugin"
       ]
     },
     {
       "name": "vite-minimal",
-      "description": "Minimal effect-vite with essential components",
+      "description": "Minimal effect-vite with basic helpers",
       "components": [
-        "api-atom-component"
+        "api-atom",
+        "http-api"
       ]
     }
   ]

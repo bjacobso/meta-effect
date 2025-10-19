@@ -1,0 +1,56 @@
+// Example Prisma schema demonstrating prisma-effect-sql-generator
+//
+// This schema shows various field types and patterns that the generator handles:
+// - Auto-increment IDs
+// - Foreign key relations
+// - Optional fields
+// - Timestamp fields (createdAt, updatedAt)
+// - Different scalar types
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator effectSql {
+  provider = "node ./sql-generator.js"
+  output   = "./generated"
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  persons   Person[]
+}
+
+model Person {
+  id          Int       @id @default(autoincrement())
+  groupId     Int
+  firstName   String
+  lastName    String
+  email       String?
+  dateOfBirth DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  group       Group     @relation(fields: [groupId], references: [id])
+  posts       Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  authorId  Int
+  title     String
+  content   String
+  published Boolean  @default(false)
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    Person   @relation(fields: [authorId], references: [id])
+}
