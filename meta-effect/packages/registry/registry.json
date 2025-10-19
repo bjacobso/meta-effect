@@ -261,6 +261,27 @@
       ]
     },
     {
+      "name": "sql-generator",
+      "type": "effect-prisma",
+      "description": "Generates Effect Schema Model classes from Prisma schema using @effect/sql. Creates branded ID types, Model.Class definitions, and NotFound error classes.",
+      "files": [
+        "effect-prisma/sql-generator.ts"
+      ],
+      "dependencies": [
+        "@effect/sql",
+        "@prisma/generator-helper",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "tags": [
+        "database",
+        "error-handling",
+        "prisma",
+        "schema",
+        "types"
+      ]
+    },
+    {
       "name": "effect-action",
       "type": "effect-remix",
       "description": "Provides patterns for handling form actions in Remix using Effect services. Includes Schema validation, typed errors, and automatic error responses.",
@@ -456,14 +477,16 @@
       "description": "Complete effect-prisma setup with all components",
       "components": [
         "db-client",
-        "db-transaction"
+        "db-transaction",
+        "sql-generator"
       ]
     },
     {
       "name": "prisma-minimal",
-      "description": "Minimal effect-prisma with basic wrapper",
+      "description": "Minimal effect-prisma with basic helpers",
       "components": [
-        "db-client"
+        "db-client",
+        "sql-generator"
       ]
     },
     {
