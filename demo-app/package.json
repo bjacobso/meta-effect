@@ -1,0 +1,23 @@
+{
+  "name": "demo-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "copy-registry": "mkdir -p public/registry/src && cp ../meta-effect/packages/registry/registry.json public/registry/ && cp -r ../meta-effect/packages/registry/src/* public/registry/src/",
+    "dev": "pnpm copy-registry && vite",
+    "build": "pnpm copy-registry && tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/prismjs": "^1.26.5",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "@effect/platform": "^0.92.1",
+    "@effect/schema": "^0.75.5",
+    "effect": "^3.18.4",
+    "prismjs": "^1.30.0"
+  }
+}
