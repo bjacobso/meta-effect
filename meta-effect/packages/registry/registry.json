@@ -168,6 +168,14 @@
       "files": ["effect-prisma/db-transaction.ts"],
       "dependencies": ["@prisma/client", "effect"],
       "tags": ["prisma", "database", "transactions"]
+    },
+    {
+      "name": "sql-generator",
+      "type": "effect-prisma",
+      "description": "Prisma generator that creates Effect Schema Models using @effect/sql",
+      "files": ["effect-prisma/sql-generator.ts", "effect-prisma/example-schema.prisma"],
+      "dependencies": ["@prisma/generator-helper", "effect", "@effect/sql"],
+      "tags": ["prisma", "codegen", "sql", "schema"]
     }
   ],
   "presets": [
@@ -213,8 +221,8 @@
     },
     {
       "name": "prisma-full",
-      "description": "Complete effect-prisma setup with transactions",
-      "components": ["db-client", "db-transaction"]
+      "description": "Complete effect-prisma setup with transactions and SQL generator",
+      "components": ["db-client", "db-transaction", "sql-generator"]
     },
     {
       "name": "prisma-minimal",
