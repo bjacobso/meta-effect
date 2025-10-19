@@ -168,6 +168,38 @@
       "files": ["effect-prisma/db-transaction.ts"],
       "dependencies": ["@prisma/client", "effect"],
       "tags": ["prisma", "database", "transactions"]
+    },
+    {
+      "name": "form-schema",
+      "type": "effect-forms",
+      "description": "Type-safe FormIR schema with field types and AI hints for multi-target compilation",
+      "files": ["effect-forms/form-schema.ts"],
+      "dependencies": ["effect"],
+      "tags": ["forms", "schema", "validation"]
+    },
+    {
+      "name": "form-to-json-schema",
+      "type": "effect-forms",
+      "description": "Compiler that transforms FormIR to JSON Schema Draft 7 for validation",
+      "files": ["effect-forms/form-to-json-schema.ts"],
+      "dependencies": ["effect"],
+      "tags": ["forms", "json-schema", "compiler"]
+    },
+    {
+      "name": "form-to-github-inputs",
+      "type": "effect-forms",
+      "description": "Compiler that transforms FormIR to GitHub Actions workflow_dispatch inputs",
+      "files": ["effect-forms/form-to-github-inputs.ts"],
+      "dependencies": ["effect"],
+      "tags": ["forms", "github-actions", "compiler"]
+    },
+    {
+      "name": "form-to-react-shadcn",
+      "type": "effect-forms",
+      "description": "Code generator that produces React components with shadcn/ui and Zod validation",
+      "files": ["effect-forms/form-to-react-shadcn.ts"],
+      "dependencies": ["effect"],
+      "tags": ["forms", "react", "compiler", "codegen"]
     }
   ],
   "presets": [
@@ -220,6 +252,11 @@
       "name": "prisma-minimal",
       "description": "Minimal effect-prisma with basic client wrapper",
       "components": ["db-client"]
+    },
+    {
+      "name": "forms-full",
+      "description": "Complete effect-forms setup with all compilers",
+      "components": ["form-schema", "form-to-json-schema", "form-to-github-inputs", "form-to-react-shadcn"]
     }
   ]
 }
