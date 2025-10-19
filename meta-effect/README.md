@@ -16,9 +16,32 @@ Effect bindings for Remix with loader and action integration. Compose Effect ser
 
 **Spec**: [docs/specs/effect-remix.md](../docs/specs/effect-remix.md)
 
+### [@meta-effect/registry](./packages/registry)
+
+The vendorable components registry - the source of truth for all Meta Effect components. Contains effect-vite, effect-remix, effect-ci, and other vendorable primitives.
+
+**Spec**: See [docs/specs/](../docs/specs/) for individual component specs.
+
 ### [@meta-effect/cli](./packages/cli)
 
 CLI tools for Meta Effect projects. Scaffolding, development utilities, and project management.
+
+## GitHub Actions
+
+This repository includes automated workflows in `.github/workflows/`:
+
+### Weekly Release Notes
+
+Automatically generates release notes using the `effect-ci` components. See [.github/workflows/README.md](.github/workflows/README.md) for setup instructions.
+
+**Prerequisites:**
+- Add `ANTHROPIC_API_KEY` secret to repository settings
+- Enable workflow permissions for creating releases
+
+**To run manually:**
+1. Go to Actions tab
+2. Select "Weekly Release Notes" workflow
+3. Click "Run workflow"
 
 ## Development
 

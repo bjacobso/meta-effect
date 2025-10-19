@@ -1,0 +1,52 @@
+name: Weekly Release Notes
+
+on:
+  # Uncomment to enable weekly schedule after testing
+  # schedule:
+  #   - cron: "0 17 * * FRI" # Fridays at 10 AM PT (17:00 UTC)
+  workflow_dispatch: # Allow manual triggering for testing
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full git history for release notes
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ./meta-effect
+
+      - name: Run release plan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: pnpm tsx src/effect-ci/release-plan.ts run
+        working-directory: ./meta-effect/packages/registry
+
+      - name: Upload release artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: |
+            ./meta-effect/packages/registry/release_notes.md
+            ./meta-effect/packages/registry/release_notes.json
