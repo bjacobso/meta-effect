@@ -6,9 +6,13 @@
 
 ## Overview
 
-`effect-ci` is a collection of vendorable components (~400 lines total) for building typed CI/CD pipelines with Effect CLI, Effect Platform Command, and Effect Schema. These aren't GitHub Actions - they're TypeScript programs you run locally or in CI that compose shell commands (git, gh, claude) into strongly-typed pipelines.
+`effect-ci` is a collection of vendorable components (~880 lines total) for building typed CI/CD pipelines with Effect CLI, Effect Platform Command, and Effect Schema. These aren't GitHub Actions - they're TypeScript programs you run locally or in CI that compose shell commands (git, gh, claude) into strongly-typed pipelines.
 
 Think "prompts on steroids" - typed, testable, composable automation scripts.
+
+**Components**:
+- Release automation (~400 lines): types, shell-runner, transforms, release-plan
+- DAG workflows (~480 lines): dag-types, dag-validation, dag-builder, dag-config
 
 ## Core Primitives
 
@@ -143,6 +147,160 @@ const weeklyPlan: ReleasePlan = {
 Effect.runPromise(runPlan(weeklyPlan))
 ```
 
+### 5. DAG Workflow Configuration
+
+Typed CI/CD workflow definitions with validation (~480 lines total across 4 files):
+
+#### dag-types.ts (~136 lines)
+
+Core Effect Schema types for workflow primitives:
+
+```typescript
+import { task, gate, fanout, fanin, edge } from './lib/effect-ci/dag-types'
+import type { TaskNode, GateNode, FanoutNode, FaninNode } from './lib/effect-ci/dag-types'
+
+// Node types with branded IDs
+const checkoutNode: TaskNode = {
+  _tag: "task",
+  id: "checkout" as NodeId,
+  uses: "actions/checkout@v4",
+  env: { CI: "true" }
+}
+
+const gateNode: GateNode = {
+  _tag: "gate",
+  id: "only_main" as NodeId,
+  condition: "github.ref == 'refs/heads/main'"
+}
+
+const fanoutNode: FanoutNode = {
+  _tag: "fanout",
+  id: "parallel_builds" as NodeId
+}
+```
+
+**Type Definitions**:
+- `NodeId` - Branded string for node identifiers
+- `TaskNode` - Run shell command or use action (validates uses XOR run)
+- `GateNode` - Conditional execution gate
+- `FanoutNode` - Trigger parallel execution branches
+- `FaninNode` - Wait for parallel branches to complete
+- `Edge` - Connection between nodes with optional condition
+- `Trigger` - Push/PR/Schedule workflow triggers
+- `RetryPolicy` - Retry configuration with exponential backoff
+
+#### dag-builder.ts (~90 lines)
+
+Ergonomic builder functions for constructing workflows:
+
+```typescript
+import { task, gate, fanout, fanin, edge } from './lib/effect-ci/dag-builder'
+
+const nodes = [
+  task("checkout", { uses: "actions/checkout@v4" }),
+  gate("only_main", "github.ref == 'refs/heads/main'"),
+  fanout("parallel_builds"),
+  task("build_web", { run: "pnpm build --filter web" }),
+  task("build_api", { run: "pnpm build --filter api" }),
+  task("test_api", {
+    run: "pnpm test:api",
+    env: { CI: "true" },
+    retry: { maxAttempts: 3 }
+  }),
+  fanin("join_builds"),
+  task("release", {
+    run: "pnpm release",
+    secrets: ["NPM_TOKEN"]
+  }),
+]
+
+const edges = [
+  edge("checkout", "only_main"),
+  edge("only_main", "parallel_builds", "expr"),
+  edge("parallel_builds", "build_web"),
+  edge("parallel_builds", "build_api"),
+  edge("build_api", "test_api"),
+  edge("build_web", "join_builds"),
+  edge("test_api", "join_builds"),
+  edge("join_builds", "release"),
+]
+```
+
+**Builder Functions**:
+- `task(id, config)` - Create task node (run or uses)
+- `gate(id, condition)` - Create conditional gate
+- `fanout(id)` - Create parallel fanout
+- `fanin(id)` - Create parallel join
+- `edge(from, to, condition?)` - Create node connection
+
+#### dag-validation.ts (~173 lines)
+
+Pure validation functions for DAG correctness:
+
+```typescript
+import { validateDAG } from './lib/effect-ci/dag-validation'
+import { Effect } from 'effect'
+
+const result = await Effect.runPromise(
+  validateDAG({ nodes, edges })
+)
+// Returns validated config or ParseResult errors
+```
+
+**Validation Functions**:
+- `validateEdgeReferences()` - All edges reference existing nodes
+- `validateNoSelfLoops()` - No node -> node edges
+- `validateGateConditions()` - Gate nodes can't have "never" condition
+- `validateNoCycles()` - DFS cycle detection
+- `validateDAG()` - Run all validations in sequence
+
+#### dag-config.ts (~135 lines)
+
+Main orchestration with JSON/YAML serialization:
+
+```typescript
+import { DagConfig, parseDAG, parseDAGSync } from './lib/effect-ci/dag-config'
+import { task, gate, edge } from './lib/effect-ci/dag-builder'
+import YAML from 'yaml'
+
+const dag = {
+  name: "build_and_release",
+  version: "1.0.0",
+  triggers: [{ _tag: "push", branches: ["main"] }],
+  defaults: {
+    retry: { maxAttempts: 3 },
+    env: { NODE_ENV: "production" }
+  },
+  nodes: [
+    task("checkout", { uses: "actions/checkout@v4" }),
+    gate("only_main", "github.ref == 'refs/heads/main'"),
+    task("build", { run: "pnpm build" }),
+  ],
+  edges: [
+    edge("checkout", "only_main"),
+    edge("only_main", "build", "expr"),
+  ]
+}
+
+// Sync parsing (throws on error)
+const parsed = parseDAGSync(dag)
+
+// Effect parsing (better error handling)
+const program = parseDAG(dag).pipe(
+  Effect.tap(() => Effect.log("DAG validated")),
+  Effect.map(validated => ({
+    json: JSON.stringify(validated, null, 2),
+    yaml: YAML.stringify(validated)
+  }))
+)
+```
+
+**API Functions**:
+- `parseDAG(unknown)` - Effect-based validation
+- `parseDAGSync(unknown)` - Sync validation (throws)
+- `encodeDAG(DagConfig)` - Encode back to plain object
+- `exampleDAG` - Full example DAG configuration
+
 **CLI Commands**:
 
 ```bash
@@ -269,33 +427,51 @@ npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.y
 ## Implementation Status
 
 ### ✅ Implemented
-- All 4 core components (~400 lines)
-- Effect CLI with `run` and `emit-workflow` commands
-- Shell runners for git/gh/claude
-- Transform utilities (parse, dedupe, filter, prompt, extract)
-- Effect Schema types (Commit, PR, ReleaseJSON)
-- Weekly release plan example
+- All 4 release automation components (~400 lines)
+  - Effect CLI with `run` and `emit-workflow` commands
+  - Shell runners for git/gh/claude
+  - Transform utilities (parse, dedupe, filter, prompt, extract)
+  - Effect Schema types (Commit, PR, ReleaseJSON)
+  - Weekly release plan example
+- All 4 DAG workflow components (~480 lines)
+  - dag-types.ts - Node, Edge, Trigger schemas
+  - dag-validation.ts - Cycle detection, reference validation
+  - dag-builder.ts - Ergonomic builder helpers
+  - dag-config.ts - Main DagConfig with JSON/YAML support
 
 ### 🚧 Planned Enhancements
-- Monorepo bucketing (group PRs by `apps/*` vs `packages/*`)
-- Slack/Teams notification output
-- Multi-repo aggregation (combine PRs from multiple repos)
-- Label-based approval guards (require `release:approved` label)
-- Custom LLM provider adapters (OpenAI, Gemini, etc.)
+- **Release Automation**:
+  - Monorepo bucketing (group PRs by `apps/*` vs `packages/*`)
+  - Slack/Teams notification output
+  - Multi-repo aggregation (combine PRs from multiple repos)
+  - Label-based approval guards (require `release:approved` label)
+  - Custom LLM provider adapters (OpenAI, Gemini, etc.)
+- **DAG Workflows**:
+  - DAG executor runtime (run workflows locally)
+  - GitHub Actions YAML emitter (convert DAG to .yml)
+  - Workflow visualization (Mermaid/Graphviz output)
+  - DAG composition (embed sub-DAGs)
+  - Conditional edge expressions (JSX-like syntax)
 
 ## Example Application Structure
 
 ```
 my-project/
 ├── lib/
-│   └── effect-ci/          # Vendored components
-│       ├── types.ts        # Schema types (60 lines)
-│       ├── shell-runner.ts # Command wrappers (140 lines)
-│       ├── transforms.ts   # Transform utilities (130 lines)
-│       └── release-plan.ts # CLI program + DSL (180 lines)
+│   └── effect-ci/              # Vendored components
+│       ├── types.ts            # Release schema types (60 lines)
+│       ├── shell-runner.ts     # Command wrappers (140 lines)
+│       ├── transforms.ts       # Transform utilities (130 lines)
+│       ├── release-plan.ts     # CLI program + DSL (180 lines)
+│       ├── dag-types.ts        # DAG schema types (136 lines)
+│       ├── dag-validation.ts   # DAG validation (173 lines)
+│       ├── dag-builder.ts      # DAG builder helpers (90 lines)
+│       └── dag-config.ts       # DAG config + examples (135 lines)
+├── workflows/
+│   └── build-and-release.ts   # Custom DAG definitions
 ├── .github/
 │   └── workflows/
-│       └── weekly-release.yml  # Generated from emit-workflow
+│       └── weekly-release.yml # Generated from emit-workflow
 └── package.json
 ```
 
@@ -351,6 +527,73 @@ git push
 ```
 
 The generated workflow runs every Friday at 10 AM PT and creates a GitHub Release with both Markdown notes and a JSON asset for downstream systems (BI, support, etc.).
+
+### DAG Workflow Definition
+
+```typescript
+// workflows/build-and-release.ts
+import { parseDAGSync } from './lib/effect-ci/dag-config'
+import { task, gate, fanout, fanin, edge } from './lib/effect-ci/dag-builder'
+import YAML from 'yaml'
+import fs from 'node:fs'
+
+const dag = {
+  name: "build_and_release",
+  version: "1.0.0",
+  triggers: [
+    { _tag: "push" as const, branches: ["main"] }
+  ],
+  defaults: {
+    retry: {
+      maxAttempts: 3,
+      backoff: {
+        _tag: "exponential" as const,
+        baseDelayMs: 500,
+        factor: 2,
+        maxDelayMs: 10_000
+      }
+    },
+    env: { NODE_ENV: "production" }
+  },
+  nodes: [
+    task("checkout", { uses: "actions/checkout@v4" }),
+    gate("only_main", "github.ref == 'refs/heads/main'"),
+    fanout("parallel_builds"),
+    task("build_web", { run: "pnpm build --filter web" }),
+    task("build_api", { run: "pnpm build --filter api" }),
+    task("test_api", { run: "pnpm test:api", env: { CI: "true" } }),
+    fanin("join_builds"),
+    task("release", { run: "pnpm release", secrets: ["NPM_TOKEN"] }),
+  ],
+  edges: [
+    edge("checkout", "only_main"),
+    edge("only_main", "parallel_builds", "expr"),
+    edge("parallel_builds", "build_web"),
+    edge("parallel_builds", "build_api"),
+    edge("build_api", "test_api"),
+    edge("build_web", "join_builds"),
+    edge("test_api", "join_builds"),
+    edge("join_builds", "release"),
+  ]
+}
+
+// Validate and export
+const validated = parseDAGSync(dag)
+fs.writeFileSync("dag-output.json", JSON.stringify(validated, null, 2))
+fs.writeFileSync("dag-output.yaml", YAML.stringify(validated))
+
+console.log("✓ DAG validated successfully")
+```
+
+```bash
+# Validate DAG definition
+npx tsx workflows/build-and-release.ts
+
+# Output:
+# ✓ DAG validated successfully
+# - dag-output.json (validated JSON)
+# - dag-output.yaml (validated YAML)
+```
 
 ## Customization Patterns
 
