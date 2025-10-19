@@ -212,13 +212,23 @@ When components grow/shrink, update counts in:
 
 ### Testing Registry Components
 
-Components are tested by:
-1. Copy into a test project
-2. Verify TypeScript compilation
-3. Check dependencies are correct
-4. Ensure examples in header work
+**Registry Maintainers** (us): The registry components have comprehensive tests using vitest and @effect/vitest to ensure correctness:
+1. Pure functions (transforms, validation) have 100% coverage
+2. Effect-based logic uses `it.effect` from @effect/vitest
+3. Tests live co-located with source: `src/effect-ci/transforms.test.ts`
+4. Run with: `pnpm test` (already configured in package.json)
 
-No unit tests in registry - users test after vendoring.
+**Component Users** (them): After vendoring components into their project:
+1. Users own the code and can modify it freely
+2. Users add their own tests in their test suite
+3. Examples in component headers serve as test inspiration
+4. Registry tests serve as reference for expected behavior
+
+**Testing Patterns**:
+- Pure functions: Direct unit tests (see `transforms.test.ts`)
+- Effect validation: Use `it.effect` and `Effect.exit` (see `dag-validation.test.ts`)
+- Services: Mock dependencies with Effect's TestServices
+- Framework integrations: Test in isolation with mocked framework APIs
 
 ## Gotchas
 
