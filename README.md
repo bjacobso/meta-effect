@@ -101,11 +101,11 @@ The goal is discovery, not invention.
 
 ## Component Registry
 
-All components live in [`registry/`](./registry/) with metadata in [`registry.json`](./registry/registry.json).
+All components live in [`meta-effect/packages/registry/src/`](./meta-effect/packages/registry/src/) with metadata in [`registry.json`](./meta-effect/packages/registry/registry.json).
 
 **Component Structure**:
 ```
-registry/
+meta-effect/packages/registry/src/
 ├── effect-vite/
 │   ├── http-api.ts        # ~65 lines
 │   ├── vite-plugin.ts     # ~60 lines
@@ -119,11 +119,14 @@ registry/
 │   ├── types.ts           # ~60 lines
 │   ├── shell-runner.ts    # ~140 lines
 │   ├── transforms.ts      # ~130 lines
-│   └── release-plan.ts    # ~180 lines
+│   ├── release-plan.ts    # ~180 lines
+│   └── dag-*.ts           # DAG workflow components
+├── effect-livestore/      # LiveStore integration
+├── effect-prisma/         # Prisma database integration
 └── effect-htmx/           # Coming soon
 ```
 
-See [registry/README.md](./registry/README.md) for details.
+See [registry README](./meta-effect/packages/registry/README.md) for details.
 
 ## Documentation
 
@@ -250,7 +253,7 @@ npx tsx lib/effect-ci/release-plan.ts emit-workflow > .github/workflows/weekly.y
 # export GITHUB_TOKEN=ghp_...
 ```
 
-Customize the plan in [release-plan.ts](registry/effect-ci/release-plan.ts#L50):
+Customize the plan in [release-plan.ts](meta-effect/packages/registry/src/effect-ci/release-plan.ts#L50):
 
 ```typescript
 export const weeklyPlan: ReleasePlan = {
@@ -301,7 +304,7 @@ Found a useful pattern? Add it to the registry!
 1. **Keep it Small**: ~50-100 lines maximum
 2. **Document Usage**: Include a detailed header comment with examples
 3. **List Dependencies**: Only peer dependencies (user installs them)
-4. **Add to Registry**: Update `registry/registry.json` with metadata
+4. **Add to Registry**: Update `meta-effect/packages/registry/registry.json` with metadata
 
 Example component structure:
 
@@ -329,7 +332,7 @@ Example component structure:
 
 Interested in effect-solidjs? effect-qwik? effect-fresh?
 
-1. Create `registry/effect-framework/` directory
+1. Create `meta-effect/packages/registry/src/effect-framework/` directory
 2. Build 3-5 core components (~50-100 lines each)
 3. Add spec doc in `docs/specs/effect-framework.md`
 4. Update `registry.json`

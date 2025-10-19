@@ -14,25 +14,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 /
-├── registry/                    # The vendorable components (main deliverable)
-│   ├── registry.json           # Component metadata and dependencies
-│   ├── effect-vite/            # Vite + HttpApi + Atom components (~275 lines)
-│   ├── effect-remix/           # Remix + Effect components (~245 lines)
-│   └── effect-htmx/            # HTMX + Effect components (planned)
-├── meta-effect/                # Legacy monorepo (being phased out)
+├── meta-effect/                # Monorepo containing registry and packages
 │   └── packages/
-│       ├── cli/                # CLI for copying components (future: npx meta-effect add)
-│       ├── effect-vite/        # Old package structure
-│       └── effect-remix/       # Old package structure
+│       ├── registry/           # The vendorable components (main deliverable)
+│       │   ├── registry.json   # Component metadata and dependencies
+│       │   └── src/
+│       │       ├── effect-vite/    # Vite + HttpApi + Atom components
+│       │       ├── effect-remix/   # Remix + Effect components
+│       │       ├── effect-ci/      # CI/CD and DAG workflow components
+│       │       ├── effect-livestore/ # LiveStore integration components
+│       │       └── effect-prisma/  # Prisma database components
+│       ├── cli/                # CLI for copying components (npx meta-effect add)
+│       ├── effect-vite/        # Package for npm distribution
+│       └── effect-remix/       # Package for npm distribution
 └── docs/
     ├── specs/                  # Living specifications for each component type
     ├── core/                   # Architecture and philosophy docs
-    └── rfcs/                   # Historical design documents
+    ├── rfcs/                   # Design documents and proposals
+    ├── integrations/           # Integration guides
+    └── tools/                  # Development tooling docs
 ```
 
 ### Key Insight: Registry is the Product
 
-The `registry/` directory contains the actual deliverable - minimal, copy-paste-able TypeScript files. Everything else (monorepo, CLI, docs) exists to support this registry.
+The `meta-effect/packages/registry/` directory contains the actual deliverable - minimal, copy-paste-able TypeScript files. Everything else (monorepo, CLI, docs) exists to support this registry.
 
 ## Development Commands
 
@@ -69,7 +74,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ### Creating New Components
 
-When adding a new component to `registry/`:
+When adding a new component to `meta-effect/packages/registry/src/`:
 
 1. **Keep it minimal**: Target 50-100 lines
 2. **Add comprehensive header documentation**:
@@ -91,7 +96,7 @@ When adding a new component to `registry/`:
     */
    ```
 
-3. **Update `registry/registry.json`**:
+3. **Update `meta-effect/packages/registry/registry.json`**:
    ```json
    {
      "name": "component-name",
@@ -140,7 +145,7 @@ Each vendorable component follows this structure:
 3. **Implementation** (the minimal primitive)
 4. **No tests** (users test after copying)
 
-Example from `registry/effect-remix/with-effect.ts`:
+Example from `meta-effect/packages/registry/src/effect-remix/with-effect.ts`:
 - 60 lines total
 - Wraps Remix loaders/actions to run Effect programs
 - Provides automatic Layer provision
@@ -148,7 +153,7 @@ Example from `registry/effect-remix/with-effect.ts`:
 
 ### Registry Schema
 
-`registry/registry.json` defines:
+`meta-effect/packages/registry/registry.json` defines:
 - **Components**: Individual vendorable files
 - **Presets**: Bundles of related components (e.g., "vite-full")
 - **Dependencies**: Peer deps users must install
@@ -192,18 +197,18 @@ The project pivoted from building a meta-framework (see `docs/rfcs/`) to vendora
 
 To add `effect-solidjs`:
 
-1. Create `registry/effect-solidjs/` directory
+1. Create `meta-effect/packages/registry/src/effect-solidjs/` directory
 2. Build 3-5 core components (~50-100 lines each)
 3. Create `docs/specs/effect-solidjs.md`
-4. Update `registry/registry.json` with new components
+4. Update `meta-effect/packages/registry/registry.json` with new components
 5. Update root `README.md` with new section
 
 ### Updating Component Line Counts
 
 When components grow/shrink, update counts in:
-- `registry/README.md` (table)
+- `meta-effect/packages/registry/README.md` (table)
 - `README.md` (component list)
-- `registry/registry.json` (if significantly different)
+- `meta-effect/packages/registry/registry.json` (if significantly different)
 
 ### Testing Registry Components
 
@@ -221,9 +226,9 @@ No unit tests in registry - users test after vendoring.
 
 Resist urge to extract shared utilities across registry components. Each component should be self-contained and copy-paste-able, even if it means slight duplication.
 
-### Monorepo vs Registry
+### Registry Structure
 
-The `meta-effect/` monorepo is legacy. New development focuses on `registry/`. The monorepo may be removed in future.
+The registry lives inside the monorepo at `meta-effect/packages/registry/`. The vendorable components are in `src/` subdirectories (effect-vite/, effect-remix/, effect-ci/, etc.). The monorepo structure supports both the registry and optional npm packages for those who prefer traditional installation.
 
 ### Component Size Discipline
 
