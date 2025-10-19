@@ -58,6 +58,19 @@ Build typed CI/CD pipelines with Effect:
 - **transforms** - Pipeline transform utilities (~130 lines)
 - **release-plan** - Weekly release automation (~180 lines)
 
+### effect-workflow (RFC stage)
+
+Build typed DAG workflows with Effect:
+
+- **dag-schema** - Effect Schema for workflow DAGs (~80 lines)
+- **dag-interpreter** - Topological execution engine (~100 lines)
+- **form-schema** - Human-in-the-loop forms (~70 lines)
+- **compile-to-github-actions** - Generate GHA YAML (~100 lines)
+- **dag-transforms** - Validation, YAML, Mermaid diagrams (~70 lines)
+- **form-to-json-schema** - Form validation compiler (~60 lines)
+
+**Status**: [RFC under review](docs/rfcs/effect-workflow-rfc.md) - Feedback welcome!
+
 ### effect-htmx (planned)
 
 Hypermedia-driven apps with Effect:
@@ -142,9 +155,13 @@ Each component type has a living specification that evolves with implementation:
 - [**Architecture Guide**](docs/core/architecture.md) - Technical deep-dive
 - [**Remix Vision**](docs/core/remix-vision.md) - Effect + web fundamentals
 
-### Historical RFCs
+### RFCs (Request for Comments)
 
-The original vision explored a meta-framework. We pivoted to vendorable components:
+Active proposals under community review:
+
+- [**effect-workflow RFC**](docs/rfcs/effect-workflow-rfc.md) - Vendorable DAG workflow primitives (NEW! 🎉)
+
+Historical RFCs (the original vision explored a meta-framework; we pivoted to vendorable components):
 
 - [**Effect Meta RFC**](docs/rfcs/effect-meta-rfc.md) - Original meta-framework idea
 - [**@effect/vite RFC**](docs/rfcs/effect-vite-rfc.md) - Vite integration exploration
@@ -287,6 +304,7 @@ export const weeklyPlan: ReleasePlan = {
 - 🚧 Example applications
 
 ### Planned
+- 🔬 effect-workflow components (RFC stage - [review & feedback](docs/rfcs/effect-workflow-rfc.md))
 - 📋 effect-htmx components
 - 📋 Component testing utilities
 - 📋 Interactive component browser

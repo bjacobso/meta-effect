@@ -18,16 +18,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 │   ├── registry.json           # Component metadata and dependencies
 │   ├── effect-vite/            # Vite + HttpApi + Atom components (~275 lines)
 │   ├── effect-remix/           # Remix + Effect components (~245 lines)
+│   ├── effect-ci/              # CI/CD pipeline components (~400 lines)
+│   ├── effect-workflow/        # DAG workflow primitives (RFC stage, ~480 lines planned)
 │   └── effect-htmx/            # HTMX + Effect components (planned)
 ├── meta-effect/                # Legacy monorepo (being phased out)
 │   └── packages/
 │       ├── cli/                # CLI for copying components (future: npx meta-effect add)
-│       ├── effect-vite/        # Old package structure
-│       └── effect-remix/       # Old package structure
+│       ├── registry/           # Current home for components & examples
+│       └── ...                 # Old package structure
 └── docs/
     ├── specs/                  # Living specifications for each component type
     ├── core/                   # Architecture and philosophy docs
-    └── rfcs/                   # Historical design documents
+    └── rfcs/                   # RFCs: Active proposals + historical design documents
 ```
 
 ### Key Insight: Registry is the Product
@@ -182,21 +184,73 @@ Update `docs/specs/effect-{type}.md` when:
 
 Specs are "living documents" that evolve with the components.
 
+### RFCs vs Specs
+
+**RFCs (Request for Comments)**: Proposals for new component families or major changes
+- Create an RFC when introducing a new component family (like `effect-workflow`)
+- RFCs should follow the format in `docs/rfcs/effect-workflow-rfc.md`
+- Include: Problem Statement, Proposed Solution, Alternatives Considered, Open Questions
+- RFCs are reviewed before implementation begins
+- File location: `docs/rfcs/{name}-rfc.md`
+
+**Specs (Specifications)**: Living documentation for implemented components
+- Created after RFC approval or for existing component families
+- Updated as implementation evolves
+- Include: Architecture, Component Details, Examples, Customization Patterns
+- File location: `docs/specs/{component-type}.md`
+
+**When to create an RFC**:
+- ✅ New component family (effect-workflow, effect-htmx)
+- ✅ Major architectural changes to existing families
+- ✅ Complex features with multiple design options
+- ✅ Changes requiring community feedback
+
+**When NOT to create an RFC**:
+- ❌ Single new component within existing family (just update spec)
+- ❌ Bug fixes or minor improvements
+- ❌ Documentation updates
+- ❌ Internal refactoring that doesn't change APIs
+
 ### Historical Context
 
-The project pivoted from building a meta-framework (see `docs/rfcs/`) to vendorable components. Old RFCs remain for historical context but aren't the current direction.
+The project pivoted from building a meta-framework (see historical RFCs in `docs/rfcs/`) to vendorable components. Old RFCs remain for context but aren't the current direction.
+
+**Current Active RFCs**:
+- `effect-workflow-rfc.md` - Vendorable DAG workflow primitives (under review)
 
 ## Common Tasks
 
-### Adding a New Framework Type
+### Adding a New Component Family
 
-To add `effect-solidjs`:
+To add a new component family (e.g., `effect-solidjs`, `effect-workflow`):
 
-1. Create `registry/effect-solidjs/` directory
-2. Build 3-5 core components (~50-100 lines each)
-3. Create `docs/specs/effect-solidjs.md`
-4. Update `registry/registry.json` with new components
-5. Update root `README.md` with new section
+**Step 1: Create RFC**
+1. Create `docs/rfcs/effect-{name}-rfc.md` following the template
+2. Include:
+   - Executive Summary (vision, line counts, deliverables)
+   - Problem Statement (what gap are we filling?)
+   - Proposed Solution (component breakdown, architecture)
+   - Detailed Design (each component with examples)
+   - Alternatives Considered
+   - Open Questions (for community input)
+3. Update `README.md` to link RFC in "Active RFCs" section
+4. Gather community feedback before implementation
+
+**Step 2: Implement (after RFC approval)**
+1. Create `meta-effect/packages/registry/src/effect-{name}/` directory
+2. Build components (~50-100 lines each)
+3. Add examples in `meta-effect/packages/registry/examples/{name}/`
+4. Write tests in `meta-effect/packages/registry/tests/effect-{name}/`
+
+**Step 3: Document**
+1. Create `docs/specs/effect-{name}.md` (living specification)
+2. Update `meta-effect/packages/registry/registry.json` with components
+3. Update root `README.md`:
+   - Add to "Available Components" section
+   - Move from "Planned" to "Completed"
+   - Update line counts
+
+**Example**: See `effect-workflow` RFC and implementation plan for a complete example of this process.
 
 ### Updating Component Line Counts
 
