@@ -590,10 +590,10 @@ const routeRequest = Effect.gen(function*() {
 
 ## Integration with Other Primitives
 
-### With effect-ci DAG Workflows
+### With effect-dag Workflows
 
 ```typescript
-import { Workflow, Gate } from './lib/effect-ci/dag-workflow'
+import { Workflow, Gate } from './lib/effect-dag/dag-workflow'
 import { createCELEvaluator } from './lib/effect-expressions/expr-cel'
 
 class ConditionalWorkflow extends Workflow.make(
@@ -833,7 +833,7 @@ yield* celEvaluator.evalBoolean(userExpr, ctx) // Safe to evaluate
 
 ## Related Documents
 
-- [effect-ci Spec](./effect-ci.md) - Uses expressions for gate conditions
+- [effect-dag Spec](./effect-dag.md) - Uses expressions for gate conditions
 - [effect-collect Spec](./effect-collect.md) - Uses expressions for conditional fields
 - [effect-forms Spec](./effect-forms.md) - Uses expressions for field visibility
 - [CEL Specification](https://github.com/google/cel-spec) - CEL language spec

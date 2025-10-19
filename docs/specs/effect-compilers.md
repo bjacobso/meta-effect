@@ -50,7 +50,7 @@ Compile workflow DAGs to GitHub Actions YAML:
 
 ```typescript
 import { compileDagToGitHubActions } from './lib/effect-compilers/dag-to-github-actions'
-import { DagConfig } from './lib/effect-ci/dag-config'
+import { DagConfig } from './lib/effect-dag/dag-types'
 import YAML from 'yaml'
 
 const dag: DagConfig = {
@@ -98,7 +98,7 @@ const program = Effect.gen(function*() {
 **Implementation** (~80 lines):
 ```typescript
 import { Effect } from 'effect'
-import { DagConfig, TaskNode, GateNode } from './lib/effect-ci/dag-types'
+import { DagConfig, TaskNode, GateNode } from './lib/effect-dag/dag-types'
 
 export const compileDagToGitHubActions = (dag: DagConfig) =>
   Effect.gen(function*() {
@@ -497,7 +497,7 @@ Users customize compilation:
 ### 🚧 Future Enhancements
 
 - **dag-to-terraform.ts** - Generate Terraform resources
-- **dag-to-mermaid.ts** - Generate Mermaid diagrams (move from effect-ci)
+- **dag-to-mermaid.ts** - Generate Mermaid diagrams (note: moved to effect-dag)
 - **dag-to-temporal.ts** - Generate Temporal workflow code
 - **form-to-zod.ts** - Generate Zod schemas
 - **entity-to-prisma.ts** - Generate Prisma schemas
@@ -619,10 +619,10 @@ yield* writeFile("Jenkinsfile", groovy.stringify(jenkinsfile))
 
 ## Integration with Other Primitives
 
-### With effect-ci
+### With effect-dag
 
 ```typescript
-import { Workflow } from './lib/effect-ci/dag-workflow'
+import { Workflow } from './lib/effect-dag/dag-workflow'
 import { compileDagToGitHubActions } from './lib/effect-compilers/dag-to-github-actions'
 
 class MyWorkflow extends Workflow.make(
@@ -810,7 +810,8 @@ describe('compiled artifacts', () => {
 
 ## Related Documents
 
-- [effect-ci Spec](./effect-ci.md) - DAG workflow definitions
+- [effect-dag Spec](./effect-dag.md) - DAG workflow definitions
+- [effect-ci Spec](./effect-ci.md) - CI/CD automation (composes with effect-dag)
 - [effect-forms Spec](./effect-forms.md) - Form schema definitions
 - [GitHub Actions Docs](https://docs.github.com/en/actions) - Target platform docs
 - [AWS Step Functions ASL](https://states-language.net/) - ASL specification

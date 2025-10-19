@@ -317,7 +317,7 @@ Human input is unreliable:
 
 - **collect-node.ts** (~50 lines)
   - CollectNode schema with timeout/SLA/retry
-  - Integration with effect-ci DAG workflows
+  - Integration with effect-dag workflows
   - Metadata support for tracking
 
 - **collect-service.ts** (~70 lines)
@@ -486,12 +486,12 @@ describe('releaseWorkflow', () => {
 })
 ```
 
-## Integration with effect-ci DAG Workflows
+## Integration with effect-dag Workflows
 
 Collect nodes integrate seamlessly with DAG workflows:
 
 ```typescript
-import { Workflow, Task, Edge } from './lib/effect-ci/dag-workflow'
+import { Workflow, Task, Edge } from './lib/effect-dag/dag-workflow'
 import { Collect } from './lib/effect-collect/collect-node'
 
 class ReleaseWithApproval extends Workflow.make(
@@ -516,7 +516,7 @@ class ReleaseWithApproval extends Workflow.make(
 ) {}
 
 // Execute with collect service
-import { runDag } from './lib/effect-ci/dag-interpreter'
+import { runDag } from './lib/effect-dag/dag-interpreter'
 
 const program = runDag(ReleaseWithApproval.config).pipe(
   Effect.provideService(CollectService, createSlackCollector({
@@ -737,7 +737,7 @@ describe('collect-service', () => {
 ## Related Documents
 
 - [effect-forms Spec](./effect-forms.md) - Form schema definitions
-- [effect-ci Spec](./effect-ci.md) - DAG workflow integration
+- [effect-dag Spec](./effect-dag.md) - DAG workflow integration
 - [Effect Service Pattern](https://effect.website/docs/context-management/services) - Service documentation
 - [Effect Interruption](https://effect.website/docs/interruption-model) - Interruption model
 
