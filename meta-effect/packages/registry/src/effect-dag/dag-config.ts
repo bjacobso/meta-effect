@@ -1,28 +1,28 @@
 /**
  * DAG Config
  *
- * Main orchestration for typed CI/CD workflow DAGs. Combines types, validation,
+ * Main orchestration for typed workflow DAGs. Combines types, validation,
  * and builder helpers into a validated DagConfig schema with JSON/YAML serialization.
  *
  * @example
  * ```ts
- * import { DagConfig, parseDAG, parseDAGSync } from './lib/effect-ci/dag-config'
- * import { task, gate, edge } from './lib/effect-ci/dag-builder'
+ * import { DagConfig, parseDAG, parseDAGSync } from './lib/effect-dag/dag-config'
+ * import { task, gate, edge } from './lib/effect-dag/dag-builder'
  * import { Effect, Schema } from 'effect'
  * import YAML from 'yaml'
  *
  * const dag = {
- *   name: "build_and_release",
+ *   name: "data_pipeline",
  *   version: "1.0.0",
- *   triggers: [{ _tag: "push", branches: ["main"] }],
+ *   triggers: [{ _tag: "schedule", cron: "0 2 * * *" }],
  *   nodes: [
- *     task("checkout", { uses: "actions/checkout@v4" }),
- *     gate("only_main", "github.ref == 'refs/heads/main'"),
- *     task("build", { run: "pnpm build" }),
+ *     task("extract", { run: "python extract.py" }),
+ *     gate("quality_check", "row_count > 1000"),
+ *     task("transform", { run: "python transform.py" }),
  *   ],
  *   edges: [
- *     edge("checkout", "only_main"),
- *     edge("only_main", "build", "expr"),
+ *     edge("extract", "quality_check"),
+ *     edge("quality_check", "transform", "expr"),
  *   ]
  * }
  *

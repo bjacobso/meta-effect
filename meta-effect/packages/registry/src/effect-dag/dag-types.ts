@@ -1,23 +1,24 @@
 /**
  * DAG Types
  *
- * Branded types and Effect Schema definitions for typed CI/CD DAG workflows.
+ * Branded types and Effect Schema definitions for typed workflow DAGs.
  * Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration.
+ * General-purpose primitives for orchestration, pipelines, and automation.
  *
  * @example
  * ```ts
- * import { task, gate, edge, TaskNode } from './lib/effect-ci/dag-types'
+ * import { task, gate, edge, TaskNode } from './lib/effect-dag/dag-types'
  *
- * const checkoutNode: TaskNode = {
+ * const taskNode: TaskNode = {
  *   _tag: "task",
- *   id: "checkout" as NodeId,
- *   uses: "actions/checkout@v4"
+ *   id: "process_data" as NodeId,
+ *   run: "python process.py"
  * }
  *
  * const gateNode: GateNode = {
  *   _tag: "gate",
- *   id: "only_main" as NodeId,
- *   condition: "github.ref == 'refs/heads/main'"
+ *   id: "check_quality" as NodeId,
+ *   condition: "rows > 1000"
  * }
  * ```
  *

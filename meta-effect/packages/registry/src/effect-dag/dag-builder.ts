@@ -6,24 +6,24 @@
  *
  * @example
  * ```ts
- * import { task, gate, fanout, fanin, edge } from './lib/effect-ci/dag-builder'
+ * import { task, gate, fanout, fanin, edge } from './lib/effect-dag/dag-builder'
  *
  * const nodes = [
- *   task("checkout", { uses: "actions/checkout@v4" }),
- *   gate("only_main", "github.ref == 'refs/heads/main'"),
- *   fanout("parallel_builds"),
- *   task("build_web", { run: "pnpm build --filter web" }),
- *   task("build_api", { run: "pnpm build --filter api" }),
- *   fanin("join_builds"),
+ *   task("extract", { run: "python extract.py" }),
+ *   gate("quality_check", "row_count > 1000"),
+ *   fanout("parallel_transform"),
+ *   task("transform_a", { run: "python transform_a.py" }),
+ *   task("transform_b", { run: "python transform_b.py" }),
+ *   fanin("join_results"),
  * ]
  *
  * const edges = [
- *   edge("checkout", "only_main"),
- *   edge("only_main", "parallel_builds", "expr"),
- *   edge("parallel_builds", "build_web"),
- *   edge("parallel_builds", "build_api"),
- *   edge("build_web", "join_builds"),
- *   edge("build_api", "join_builds"),
+ *   edge("extract", "quality_check"),
+ *   edge("quality_check", "parallel_transform", "expr"),
+ *   edge("parallel_transform", "transform_a"),
+ *   edge("parallel_transform", "transform_b"),
+ *   edge("transform_a", "join_results"),
+ *   edge("transform_b", "join_results"),
  * ]
  * ```
  *

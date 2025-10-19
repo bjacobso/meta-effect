@@ -1,12 +1,12 @@
 /**
  * DAG Validation
  *
- * Pure validation functions for CI/CD workflow DAGs. Validates edge references,
+ * Pure validation functions for workflow DAGs. Validates edge references,
  * detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.
  *
  * @example
  * ```ts
- * import { validateDAG } from './lib/effect-ci/dag-validation'
+ * import { validateDAG } from './lib/effect-dag/dag-validation'
  * import { Effect } from 'effect'
  *
  * const result = await Effect.runPromise(
