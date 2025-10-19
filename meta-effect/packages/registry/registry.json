@@ -91,43 +91,59 @@
     },
     {
       "name": "dag-types",
-      "type": "effect-ci",
-      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows",
-      "files": ["effect-ci/dag-types.ts"],
+      "type": "effect-dag",
+      "description": "Branded types and Effect Schema definitions for typed workflow DAGs",
+      "files": ["effect-dag/dag-types.ts"],
       "dependencies": ["effect"],
-      "tags": ["ci", "dag", "schema", "workflow"]
+      "tags": ["dag", "schema", "workflow", "orchestration"]
     },
     {
       "name": "dag-builder",
-      "type": "effect-ci",
+      "type": "effect-dag",
       "description": "Ergonomic builder functions for constructing DAG nodes and edges",
-      "files": ["effect-ci/dag-builder.ts"],
+      "files": ["effect-dag/dag-builder.ts"],
       "dependencies": ["effect"],
-      "tags": ["ci", "dag", "builder", "workflow"]
+      "tags": ["dag", "builder", "workflow", "orchestration"]
     },
     {
       "name": "dag-config",
-      "type": "effect-ci",
+      "type": "effect-dag",
       "description": "Main orchestration for DAGs with validation and JSON/YAML serialization",
-      "files": ["effect-ci/dag-config.ts"],
+      "files": ["effect-dag/dag-config.ts"],
       "dependencies": ["effect"],
-      "tags": ["ci", "dag", "config", "workflow"]
+      "tags": ["dag", "config", "workflow", "validation"]
     },
     {
       "name": "dag-validation",
-      "type": "effect-ci",
+      "type": "effect-dag",
       "description": "Pure validation functions for DAGs: edge references, cycles, self-loops",
-      "files": ["effect-ci/dag-validation.ts"],
+      "files": ["effect-dag/dag-validation.ts"],
       "dependencies": ["effect"],
-      "tags": ["ci", "dag", "validation", "workflow"]
+      "tags": ["dag", "validation", "workflow"]
     },
     {
       "name": "dag-workflow",
-      "type": "effect-ci",
-      "description": "High-level declarative DSL for defining CI/CD workflows",
-      "files": ["effect-ci/dag-workflow.ts"],
+      "type": "effect-dag",
+      "description": "High-level declarative DSL for defining workflows",
+      "files": ["effect-dag/dag-workflow.ts"],
       "dependencies": ["effect"],
-      "tags": ["ci", "dag", "dsl", "workflow"]
+      "tags": ["dag", "dsl", "workflow", "orchestration"]
+    },
+    {
+      "name": "dag-interpreter",
+      "type": "effect-dag",
+      "description": "Local execution engine for workflow DAGs with topological sorting",
+      "files": ["effect-dag/dag-interpreter.ts"],
+      "dependencies": ["effect"],
+      "tags": ["dag", "interpreter", "execution", "workflow"]
+    },
+    {
+      "name": "dag-to-mermaid",
+      "type": "effect-dag",
+      "description": "Generate Mermaid diagrams from workflow DAGs for visualization",
+      "files": ["effect-dag/dag-to-mermaid.ts"],
+      "dependencies": ["effect"],
+      "tags": ["dag", "visualization", "mermaid", "diagrams"]
     },
     {
       "name": "livestore-service",
@@ -193,17 +209,17 @@
     },
     {
       "name": "ci-full",
-      "description": "Complete effect-ci setup for release automation and DAG workflows",
-      "components": ["ci-types", "shell-runner", "transforms", "release-plan", "dag-types", "dag-builder", "dag-config", "dag-validation", "dag-workflow"]
-    },
-    {
-      "name": "ci-release",
-      "description": "Release automation components only",
+      "description": "Complete effect-ci setup for release automation",
       "components": ["ci-types", "shell-runner", "transforms", "release-plan"]
     },
     {
-      "name": "ci-dag",
-      "description": "DAG workflow definition and validation components",
+      "name": "dag-full",
+      "description": "Complete effect-dag setup with execution and visualization",
+      "components": ["dag-types", "dag-builder", "dag-config", "dag-validation", "dag-workflow", "dag-interpreter", "dag-to-mermaid"]
+    },
+    {
+      "name": "dag-minimal",
+      "description": "Minimal effect-dag with definition and validation only",
       "components": ["dag-types", "dag-builder", "dag-config", "dag-validation", "dag-workflow"]
     },
     {

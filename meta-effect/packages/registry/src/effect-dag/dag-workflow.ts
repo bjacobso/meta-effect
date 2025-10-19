@@ -1,45 +1,45 @@
 /**
  * DAG Workflow DSL
  *
- * High-level declarative API for defining CI/CD workflows, inspired by Effect's
+ * High-level declarative API for defining workflows, inspired by Effect's
  * RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for
  * building validated workflow definitions.
  *
  * @example
  * ```ts
- * import { Workflow, Task, Gate, Fanout, Fanin, Edge } from './lib/effect-ci/dag-workflow'
- * import { PushTrigger } from './lib/effect-ci/dag-types'
+ * import { Workflow, Task, Gate, Fanout, Fanin, Edge } from './lib/effect-dag/dag-workflow'
+ * import { ScheduleTrigger } from './lib/effect-dag/dag-types'
  *
- * class BuildAndRelease extends Workflow.make(
- *   "build_and_release",
+ * class ETLPipeline extends Workflow.make(
+ *   "etl_pipeline",
  *   "1.0.0",
  *   {
- *     triggers: [PushTrigger.make({ branches: ["main"] })],
+ *     triggers: [ScheduleTrigger.make({ cron: "0 2 * * *" })],
  *     defaults: {
  *       retry: { maxAttempts: 3 },
- *       env: { NODE_ENV: "production" }
+ *       env: { PYTHONPATH: "/app" }
  *     }
  *   },
  *   // Nodes
- *   Task.make("checkout", { uses: "actions/checkout@v4" }),
- *   Gate.make("only_main", { condition: "github.ref == 'refs/heads/main'" }),
- *   Fanout.make("parallel_builds"),
- *   Task.make("build_web", { run: "pnpm build --filter web" }),
- *   Task.make("build_api", { run: "pnpm build --filter api" }),
- *   Fanin.make("join_builds"),
- *   Task.make("release", { run: "pnpm release", secrets: ["NPM_TOKEN"] }),
+ *   Task.make("extract", { run: "python extract.py" }),
+ *   Gate.make("quality_check", { condition: "row_count > 1000" }),
+ *   Fanout.make("parallel_transform"),
+ *   Task.make("transform_a", { run: "python transform_a.py" }),
+ *   Task.make("transform_b", { run: "python transform_b.py" }),
+ *   Fanin.make("join_results"),
+ *   Task.make("load", { run: "python load.py" }),
  *   // Edges
- *   Edge.make("checkout", "only_main"),
- *   Edge.make("only_main", "parallel_builds", { condition: "expr" }),
- *   Edge.make("parallel_builds", "build_web"),
- *   Edge.make("parallel_builds", "build_api"),
- *   Edge.make("build_web", "join_builds"),
- *   Edge.make("build_api", "join_builds"),
- *   Edge.make("join_builds", "release")
+ *   Edge.make("extract", "quality_check"),
+ *   Edge.make("quality_check", "parallel_transform", { condition: "expr" }),
+ *   Edge.make("parallel_transform", "transform_a"),
+ *   Edge.make("parallel_transform", "transform_b"),
+ *   Edge.make("transform_a", "join_results"),
+ *   Edge.make("transform_b", "join_results"),
+ *   Edge.make("join_results", "load")
  * ) {}
  *
  * // Use the workflow
- * const config = BuildAndRelease.config
+ * const config = ETLPipeline.config
  * const validated = parseDAGSync(config)
  * ```
  *
