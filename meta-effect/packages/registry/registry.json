@@ -168,6 +168,30 @@
       "files": ["effect-prisma/db-transaction.ts"],
       "dependencies": ["@prisma/client", "effect"],
       "tags": ["prisma", "database", "transactions"]
+    },
+    {
+      "name": "compiler-service",
+      "type": "effect-compilers",
+      "description": "Generic compiler interface for schema-to-code transformations",
+      "files": ["effect-compilers/compiler-service.ts"],
+      "dependencies": ["effect"],
+      "tags": ["compiler", "schema", "codegen"]
+    },
+    {
+      "name": "dag-to-github-actions",
+      "type": "effect-compilers",
+      "description": "Compile workflow DAGs to GitHub Actions YAML",
+      "files": ["effect-compilers/dag-to-github-actions.ts"],
+      "dependencies": ["effect"],
+      "tags": ["compiler", "dag", "github-actions", "ci"]
+    },
+    {
+      "name": "dag-to-step-functions",
+      "type": "effect-compilers",
+      "description": "Compile workflow DAGs to AWS Step Functions ASL",
+      "files": ["effect-compilers/dag-to-step-functions.ts"],
+      "dependencies": ["effect"],
+      "tags": ["compiler", "dag", "aws", "step-functions"]
     }
   ],
   "presets": [
@@ -220,6 +244,11 @@
       "name": "prisma-minimal",
       "description": "Minimal effect-prisma with basic client wrapper",
       "components": ["db-client"]
+    },
+    {
+      "name": "compilers-full",
+      "description": "Complete effect-compilers setup for multi-target code generation",
+      "components": ["compiler-service", "dag-to-github-actions", "dag-to-step-functions"]
     }
   ]
 }
