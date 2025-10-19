@@ -4,7 +4,7 @@
  * Loads registry.json and component source files using Effect
  */
 
-import { Effect, Schema } from "effect"
+import { Effect } from "effect"
 import type { Registry, RegistryComponent, ComponentWithCode } from "./registry-types"
 
 // Registry files are copied to public directory at build time
