@@ -18,6 +18,8 @@
     "coverage": "vitest --coverage",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
+    "registry:generate": "tsx scripts/generate-registry.ts",
+    "registry:check": "tsx scripts/generate-registry.ts --dry-run",
     "example:ci": "tsx src/effect-ci/release-plan.ts run --dry-run",
     "example:ci:workflow": "tsx src/effect-ci/release-plan.ts emit-workflow"
   },
