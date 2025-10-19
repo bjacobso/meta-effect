@@ -2,101 +2,6 @@
   "$schema": "./schema.json",
   "components": [
     {
-      "name": "dag-builder",
-      "type": "effect-ci",
-      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
-      "files": [
-        "effect-ci/dag-builder.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "api",
-        "builder",
-        "ci",
-        "dag"
-      ]
-    },
-    {
-      "name": "dag-config",
-      "type": "effect-ci",
-      "description": "Main orchestration for typed CI/CD workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
-      "files": [
-        "effect-ci/dag-config.ts"
-      ],
-      "dependencies": [
-        "effect",
-        "effect/Effect",
-        "effect/Schema",
-        "yaml"
-      ],
-      "tags": [
-        "builder",
-        "ci",
-        "config",
-        "dag",
-        "schema",
-        "types",
-        "validation"
-      ]
-    },
-    {
-      "name": "dag-types",
-      "type": "effect-ci",
-      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration.",
-      "files": [
-        "effect-ci/dag-types.ts"
-      ],
-      "dependencies": [
-        "effect/Brand",
-        "effect/Schema"
-      ],
-      "tags": [
-        "ci",
-        "config",
-        "dag",
-        "schema",
-        "types"
-      ]
-    },
-    {
-      "name": "dag-validation",
-      "type": "effect-ci",
-      "description": "Pure validation functions for CI/CD workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
-      "files": [
-        "effect-ci/dag-validation.ts"
-      ],
-      "dependencies": [
-        "effect",
-        "effect/Effect",
-        "effect/HashMap",
-        "effect/HashSet",
-        "effect/ParseResult",
-        "effect/Schema"
-      ],
-      "tags": [
-        "ci",
-        "dag",
-        "schema",
-        "validation"
-      ]
-    },
-    {
-      "name": "dag-workflow",
-      "type": "effect-ci",
-      "description": "High-level declarative API for defining CI/CD workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
-      "files": [
-        "effect-ci/dag-workflow.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "api",
-        "ci",
-        "dag",
-        "schema",
-        "types"
-      ]
-    },
-    {
       "name": "release-plan",
       "type": "effect-ci",
       "description": "Effect CLI program for generating weekly release notes from git/GitHub activity. Composes git, gh, and Claude CLI commands into typed pipelines.",
@@ -217,6 +122,128 @@
       "tags": [
         "compilers",
         "dag"
+      ]
+    },
+    {
+      "name": "dag-builder",
+      "type": "effect-dag",
+      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
+      "files": [
+        "effect-dag/dag-builder.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "builder",
+        "dag"
+      ]
+    },
+    {
+      "name": "dag-config",
+      "type": "effect-dag",
+      "description": "Main orchestration for typed workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
+      "files": [
+        "effect-dag/dag-config.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/Schema",
+        "yaml"
+      ],
+      "tags": [
+        "builder",
+        "config",
+        "dag",
+        "schema",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-interpreter",
+      "type": "effect-dag",
+      "description": "Local execution engine for workflow DAGs. Executes nodes in topological order with support for parallel execution, retry policies, and custom task runners.",
+      "files": [
+        "effect-dag/dag-interpreter.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Context",
+        "effect/Effect"
+      ],
+      "tags": [
+        "ci",
+        "dag"
+      ]
+    },
+    {
+      "name": "dag-to-mermaid",
+      "type": "effect-dag",
+      "description": "Generate Mermaid diagrams from workflow DAGs for visualization and documentation. GitHub automatically renders Mermaid in markdown files.",
+      "files": [
+        "effect-dag/dag-to-mermaid.ts"
+      ],
+      "dependencies": [
+        "node:fs"
+      ],
+      "tags": [
+        "dag"
+      ]
+    },
+    {
+      "name": "dag-types",
+      "type": "effect-dag",
+      "description": "Branded types and Effect Schema definitions for typed workflow DAGs. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration. General-purpose primitives for orchestration, pipelines, and automation.",
+      "files": [
+        "effect-dag/dag-types.ts"
+      ],
+      "dependencies": [
+        "effect/Brand",
+        "effect/Schema"
+      ],
+      "tags": [
+        "ci",
+        "config",
+        "dag",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "dag-validation",
+      "type": "effect-dag",
+      "description": "Pure validation functions for workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
+      "files": [
+        "effect-dag/dag-validation.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/HashMap",
+        "effect/HashSet",
+        "effect/ParseResult",
+        "effect/Schema"
+      ],
+      "tags": [
+        "dag",
+        "schema",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-workflow",
+      "type": "effect-dag",
+      "description": "High-level declarative API for defining workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
+      "files": [
+        "effect-dag/dag-workflow.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "dag",
+        "schema",
+        "types"
       ]
     },
     {
@@ -468,25 +495,9 @@
   ],
   "presets": [
     {
-      "name": "ci-dag",
-      "description": "DAG workflow definition and validation components",
-      "components": [
-        "dag-builder",
-        "dag-config",
-        "dag-types",
-        "dag-validation",
-        "dag-workflow"
-      ]
-    },
-    {
       "name": "ci-full",
       "description": "Complete effect-ci setup with all components",
       "components": [
-        "dag-builder",
-        "dag-config",
-        "dag-types",
-        "dag-validation",
-        "dag-workflow",
         "release-plan",
         "shell-runner",
         "transforms",
@@ -497,8 +508,8 @@
       "name": "ci-minimal",
       "description": "Minimal effect-ci with basic helpers",
       "components": [
-        "dag-builder",
-        "dag-config"
+        "release-plan",
+        "shell-runner"
       ]
     },
     {
@@ -526,6 +537,27 @@
       "components": [
         "compiler-service",
         "dag-to-github-actions"
+      ]
+    },
+    {
+      "name": "dag-full",
+      "description": "Complete effect-dag setup with all components",
+      "components": [
+        "dag-builder",
+        "dag-config",
+        "dag-interpreter",
+        "dag-to-mermaid",
+        "dag-types",
+        "dag-validation",
+        "dag-workflow"
+      ]
+    },
+    {
+      "name": "dag-minimal",
+      "description": "Minimal effect-dag with basic helpers",
+      "components": [
+        "dag-builder",
+        "dag-config"
       ]
     },
     {
