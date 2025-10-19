@@ -164,6 +164,62 @@
       ]
     },
     {
+      "name": "compiler-service",
+      "type": "effect-compilers",
+      "description": "Generic interface for all compilers. Defines the contract for compiling from a source schema to a target format with validation and preview.",
+      "files": [
+        "effect-compilers/compiler-service.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/Schema"
+      ],
+      "tags": [
+        "compilers",
+        "forms",
+        "schema",
+        "service",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-to-github-actions",
+      "type": "effect-compilers",
+      "description": "Compiles workflow DAGs to GitHub Actions YAML structure. Maps tasks to jobs, gates to if conditions, and handles dependencies, secrets, and triggers.",
+      "files": [
+        "effect-compilers/dag-to-github-actions.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "yaml"
+      ],
+      "tags": [
+        "ci",
+        "compilers",
+        "dag",
+        "remix"
+      ]
+    },
+    {
+      "name": "dag-to-step-functions",
+      "type": "effect-compilers",
+      "description": "Compiles workflow DAGs to AWS Step Functions ASL (Amazon States Language). Maps tasks to Task states, gates to Choice states, and handles parallel execution.",
+      "files": [
+        "effect-compilers/dag-to-step-functions.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect"
+      ],
+      "tags": [
+        "compilers",
+        "dag"
+      ]
+    },
+    {
       "name": "event-helpers",
       "type": "effect-livestore",
       "description": "Type-safe event creators and dispatchers for LiveStore with Effect Schema validation and automatic error handling. LiveStore uses event sourcing, where all state changes are described as immutable events. This component provides helpers to create and dispatch events in an Effect-friendly way with full type safety.",
@@ -453,6 +509,23 @@
         "shell-runner",
         "transforms",
         "types"
+      ]
+    },
+    {
+      "name": "compilers-full",
+      "description": "Complete effect-compilers setup with all components",
+      "components": [
+        "compiler-service",
+        "dag-to-github-actions",
+        "dag-to-step-functions"
+      ]
+    },
+    {
+      "name": "compilers-minimal",
+      "description": "Minimal effect-compilers with basic helpers",
+      "components": [
+        "compiler-service",
+        "dag-to-github-actions"
       ]
     },
     {
