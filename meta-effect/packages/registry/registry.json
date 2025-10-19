@@ -2,6 +2,101 @@
   "$schema": "./schema.json",
   "components": [
     {
+      "name": "dag-builder",
+      "type": "effect-ci",
+      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
+      "files": [
+        "effect-ci/dag-builder.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "builder",
+        "ci",
+        "dag"
+      ]
+    },
+    {
+      "name": "dag-config",
+      "type": "effect-ci",
+      "description": "Main orchestration for typed CI/CD workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
+      "files": [
+        "effect-ci/dag-config.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/Schema",
+        "yaml"
+      ],
+      "tags": [
+        "builder",
+        "ci",
+        "config",
+        "dag",
+        "schema",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-types",
+      "type": "effect-ci",
+      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration.",
+      "files": [
+        "effect-ci/dag-types.ts"
+      ],
+      "dependencies": [
+        "effect/Brand",
+        "effect/Schema"
+      ],
+      "tags": [
+        "ci",
+        "config",
+        "dag",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "dag-validation",
+      "type": "effect-ci",
+      "description": "Pure validation functions for CI/CD workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
+      "files": [
+        "effect-ci/dag-validation.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "effect/Effect",
+        "effect/HashMap",
+        "effect/HashSet",
+        "effect/ParseResult",
+        "effect/Schema"
+      ],
+      "tags": [
+        "ci",
+        "dag",
+        "schema",
+        "validation"
+      ]
+    },
+    {
+      "name": "dag-workflow",
+      "type": "effect-ci",
+      "description": "High-level declarative API for defining CI/CD workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
+      "files": [
+        "effect-ci/dag-workflow.ts"
+      ],
+      "dependencies": [],
+      "tags": [
+        "api",
+        "ci",
+        "dag",
+        "schema",
+        "types"
+      ]
+    },
+    {
       "name": "release-plan",
       "type": "effect-ci",
       "description": "Effect CLI program for generating weekly release notes from git/GitHub activity. Composes git, gh, and Claude CLI commands into typed pipelines.",
@@ -244,6 +339,80 @@
         "dag",
         "schema",
         "types"
+      ]
+    },
+    {
+      "name": "form-schema",
+      "type": "effect-forms",
+      "description": "Effect Schema types for declarative form definitions that compile to multiple targets (JSON Schema, GitHub Actions, React components, etc).",
+      "files": [
+        "effect-forms/form-schema.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "forms",
+        "remix",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "form-to-github-inputs",
+      "type": "effect-forms",
+      "description": "Compile FormIR to GitHub Actions workflow_dispatch inputs for automated workflows.",
+      "files": [
+        "effect-forms/form-to-github-inputs.ts"
+      ],
+      "dependencies": [
+        "yaml"
+      ],
+      "tags": [
+        "dag",
+        "forms",
+        "remix"
+      ]
+    },
+    {
+      "name": "form-to-json-schema",
+      "type": "effect-forms",
+      "description": "Compile FormIR to JSON Schema Draft 7 for validation with Ajv, JSON Schema validators, etc.",
+      "files": [
+        "effect-forms/form-to-json-schema.ts"
+      ],
+      "dependencies": [
+        "ajv"
+      ],
+      "tags": [
+        "forms",
+        "schema",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "form-to-react-shadcn",
+      "type": "effect-forms",
+      "description": "Generate React component source code from FormIR with Zod validation and shadcn/ui components.",
+      "files": [
+        "effect-forms/form-to-react-shadcn.ts"
+      ],
+      "dependencies": [
+        "${imports.Button}",
+        "${imports.Checkbox}",
+        "${imports.Input}",
+        "${imports.Label}",
+        "${imports.Select}",
+        "${imports.Textarea}",
+        "node:fs",
+        "react",
+        "zod"
+      ],
+      "tags": [
+        "forms",
+        "schema",
+        "validation"
       ]
     },
     {
@@ -495,9 +664,25 @@
   ],
   "presets": [
     {
+      "name": "ci-dag",
+      "description": "DAG workflow definition and validation components",
+      "components": [
+        "dag-builder",
+        "dag-config",
+        "dag-types",
+        "dag-validation",
+        "dag-workflow"
+      ]
+    },
+    {
       "name": "ci-full",
       "description": "Complete effect-ci setup with all components",
       "components": [
+        "dag-builder",
+        "dag-config",
+        "dag-types",
+        "dag-validation",
+        "dag-workflow",
         "release-plan",
         "shell-runner",
         "transforms",
@@ -508,8 +693,8 @@
       "name": "ci-minimal",
       "description": "Minimal effect-ci with basic helpers",
       "components": [
-        "release-plan",
-        "shell-runner"
+        "dag-builder",
+        "dag-config"
       ]
     },
     {
@@ -558,6 +743,24 @@
       "components": [
         "dag-builder",
         "dag-config"
+      ]
+    },
+    {
+      "name": "forms-full",
+      "description": "Complete effect-forms setup with all components",
+      "components": [
+        "form-schema",
+        "form-to-github-inputs",
+        "form-to-json-schema",
+        "form-to-react-shadcn"
+      ]
+    },
+    {
+      "name": "forms-minimal",
+      "description": "Minimal effect-forms with basic helpers",
+      "components": [
+        "form-schema",
+        "form-to-github-inputs"
       ]
     },
     {
