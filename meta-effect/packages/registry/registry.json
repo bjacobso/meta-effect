@@ -164,6 +164,80 @@
       ]
     },
     {
+      "name": "form-schema",
+      "type": "effect-forms",
+      "description": "Effect Schema types for declarative form definitions that compile to multiple targets (JSON Schema, GitHub Actions, React components, etc).",
+      "files": [
+        "effect-forms/form-schema.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "forms",
+        "remix",
+        "schema",
+        "types"
+      ]
+    },
+    {
+      "name": "form-to-github-inputs",
+      "type": "effect-forms",
+      "description": "Compile FormIR to GitHub Actions workflow_dispatch inputs for automated workflows.",
+      "files": [
+        "effect-forms/form-to-github-inputs.ts"
+      ],
+      "dependencies": [
+        "yaml"
+      ],
+      "tags": [
+        "dag",
+        "forms",
+        "remix"
+      ]
+    },
+    {
+      "name": "form-to-json-schema",
+      "type": "effect-forms",
+      "description": "Compile FormIR to JSON Schema Draft 7 for validation with Ajv, JSON Schema validators, etc.",
+      "files": [
+        "effect-forms/form-to-json-schema.ts"
+      ],
+      "dependencies": [
+        "ajv"
+      ],
+      "tags": [
+        "forms",
+        "schema",
+        "types",
+        "validation"
+      ]
+    },
+    {
+      "name": "form-to-react-shadcn",
+      "type": "effect-forms",
+      "description": "Generate React component source code from FormIR with Zod validation and shadcn/ui components.",
+      "files": [
+        "effect-forms/form-to-react-shadcn.ts"
+      ],
+      "dependencies": [
+        "${imports.Button}",
+        "${imports.Checkbox}",
+        "${imports.Input}",
+        "${imports.Label}",
+        "${imports.Select}",
+        "${imports.Textarea}",
+        "node:fs",
+        "react",
+        "zod"
+      ],
+      "tags": [
+        "forms",
+        "schema",
+        "validation"
+      ]
+    },
+    {
       "name": "event-helpers",
       "type": "effect-livestore",
       "description": "Type-safe event creators and dispatchers for LiveStore with Effect Schema validation and automatic error handling. LiveStore uses event sourcing, where all state changes are described as immutable events. This component provides helpers to create and dispatch events in an Effect-friendly way with full type safety.",
@@ -453,6 +527,24 @@
         "shell-runner",
         "transforms",
         "types"
+      ]
+    },
+    {
+      "name": "forms-full",
+      "description": "Complete effect-forms setup with all components",
+      "components": [
+        "form-schema",
+        "form-to-github-inputs",
+        "form-to-json-schema",
+        "form-to-react-shadcn"
+      ]
+    },
+    {
+      "name": "forms-minimal",
+      "description": "Minimal effect-forms with basic helpers",
+      "components": [
+        "form-schema",
+        "form-to-github-inputs"
       ]
     },
     {
