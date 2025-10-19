@@ -96,17 +96,12 @@ When adding a new component to `meta-effect/packages/registry/src/`:
     */
    ```
 
-3. **Update `meta-effect/packages/registry/registry.json`**:
-   ```json
-   {
-     "name": "component-name",
-     "type": "effect-vite",
-     "description": "Brief description",
-     "files": ["effect-vite/component-name.ts"],
-     "dependencies": ["effect", "@effect/platform"],
-     "tags": ["relevant", "tags"]
-   }
+3. **Regenerate registry**: Run the generator to auto-update `registry.json`:
+   ```bash
+   cd meta-effect/packages/registry
+   pnpm exec tsx scripts/generate-registry.ts
    ```
+   The generator will automatically extract metadata, dependencies, and tags from your component's JSDoc.
 
 4. **Document in spec**: Update corresponding `docs/specs/effect-{type}.md`
 
@@ -193,6 +188,58 @@ The project pivoted from building a meta-framework (see `docs/rfcs/`) to vendora
 
 ## Common Tasks
 
+### Regenerating the Registry
+
+The `registry.json` file is **auto-generated** from component source files. Never edit it manually!
+
+**When to regenerate**:
+- After adding new components
+- After updating component JSDoc comments
+- After changing component dependencies
+- After modifying component descriptions
+
+**How to regenerate**:
+```bash
+cd meta-effect/packages/registry
+pnpm exec tsx scripts/generate-registry.ts         # Generate registry.json
+pnpm exec tsx scripts/generate-registry.ts --dry-run  # Preview changes
+```
+
+**What the generator does**:
+1. Scans all `.ts` files in `src/` subdirectories (skips `.test.ts`)
+2. Extracts component metadata from JSDoc:
+   - Title (first line of JSDoc)
+   - Description (lines before `@example`)
+   - Validates `@example` block exists
+   - Validates "Copy this file into your project" footer exists
+3. Parses `import` statements to extract external dependencies
+4. Infers tags from component type, filename, and description
+5. Auto-generates presets (`{type}-full`, `{type}-minimal`, special presets for CI)
+
+**Component requirements for generator**:
+- Must have JSDoc comment at top of file
+- JSDoc must include `@example` block
+- JSDoc must include "Copy this file into your project" footer
+- Must import external dependencies (warnings shown if none found)
+
+**Example valid component header**:
+```typescript
+/**
+ * Effect Loader
+ *
+ * Wraps Remix loaders to run Effect programs with automatic error handling.
+ *
+ * @example
+ * ```ts
+ * import { withEffect } from './lib/effect-remix/with-effect'
+ *
+ * export const loader = withEffect(...)
+ * ```
+ *
+ * Copy this file into your project and customize for your needs.
+ */
+```
+
 ### Adding a New Framework Type
 
 To add `effect-solidjs`:
@@ -200,7 +247,7 @@ To add `effect-solidjs`:
 1. Create `meta-effect/packages/registry/src/effect-solidjs/` directory
 2. Build 3-5 core components (~50-100 lines each)
 3. Create `docs/specs/effect-solidjs.md`
-4. Update `meta-effect/packages/registry/registry.json` with new components
+4. Regenerate registry: `cd meta-effect/packages/registry && pnpm exec tsx scripts/generate-registry.ts`
 5. Update root `README.md` with new section
 
 ### Updating Component Line Counts
