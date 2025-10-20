@@ -42,7 +42,7 @@ importers:
         version: 0.3.2
       '@effect/language-service':
         specifier: latest
-        version: 0.45.1
+        version: 0.46.0
       '@effect/vitest':
         specifier: latest
         version: 0.26.0(effect@3.18.4)(vitest@3.2.4(@types/node@22.18.11)(tsx@4.20.6)(yaml@2.8.1))
@@ -173,6 +173,9 @@ importers:
       '@effect/vitest':
         specifier: ^0.26.0
         version: 0.26.0(effect@3.18.4)(vitest@3.2.4(@types/node@22.18.11)(tsx@4.20.6)(yaml@2.8.1))
+      '@marcbachmann/cel-js':
+        specifier: ^2.6.1
+        version: 2.6.1
       '@types/node':
         specifier: ^22.8.5
         version: 22.18.11
@@ -404,8 +407,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.45.1':
-    resolution: {integrity: sha512-SEZ9TaVCpRKYumTQJPApg3os9O94bN2lCYQLgZbyK/xD+NSfYPPJZQ+6T5LkpcNgW8BRk1ACI7S1W2/noxm7Qg==}
+  '@effect/language-service@0.46.0':
+    resolution: {integrity: sha512-eWMuy/RNvDMdhi8NJ/pfHS1UHd5R7adXlO4ClRYMgF6cUqN6FdXw1HgJHF7gJILVPD0Mdo/XQYNJ5gZbsdaImg==}
     hasBin: true
 
   '@effect/platform-node-shared@0.51.6':
@@ -768,6 +771,10 @@ packages:
 
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
+
+  '@marcbachmann/cel-js@2.6.1':
+    resolution: {integrity: sha512-Ae0ZOuP73h5y4JPmUtXlkVaJJPNyRWcvyOI7C+PqCh57EmyjEq5rSJxcIhWfPe/pa8eKFoSZ+FxJN9DioVLxTg==}
+    engines: {node: '>=20.19.0'}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3':
     resolution: {integrity: sha512-QZHtlVgbAdy2zAqNA9Gu1UpIuI8Xvsd1v8ic6B2pZmeFnFcMWiPLfWXh7TVw4eGEZ/C9TH281KwhVoeQUKbyjw==}
@@ -3553,7 +3560,7 @@ snapshots:
       effect: 3.18.4
       uuid: 11.1.0
 
-  '@effect/language-service@0.45.1': {}
+  '@effect/language-service@0.46.0': {}
 
   '@effect/platform-node-shared@0.51.6(@effect/cluster@0.50.6(@effect/platform@0.92.1(effect@3.18.4))(@effect/rpc@0.71.1(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/sql@0.46.0(@effect/experimental@0.56.0(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/workflow@0.11.5(@effect/platform@0.92.1(effect@3.18.4))(@effect/rpc@0.71.1(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(effect@3.18.4))(effect@3.18.4))(@effect/platform@0.92.1(effect@3.18.4))(@effect/rpc@0.71.1(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/sql@0.46.0(@effect/experimental@0.56.0(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(effect@3.18.4)':
     dependencies:
@@ -3876,6 +3883,8 @@ snapshots:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
+
+  '@marcbachmann/cel-js@2.6.1': {}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3':
     optional: true
