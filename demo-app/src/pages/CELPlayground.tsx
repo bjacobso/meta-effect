@@ -115,20 +115,21 @@ export function CELPlayground() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen p-8" style={{ backgroundColor: '#F9FAFB', colorScheme: 'light' }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold mb-2" style={{ color: '#111827' }}>
             CEL Expression Playground
           </h1>
-          <p className="text-gray-600">
+          <p style={{ color: '#4B5563' }}>
             Test Common Expression Language (CEL) expressions in real-time with interactive editing
           </p>
           <div className="mt-4">
             <a
               href="/"
-              className="text-blue-600 hover:text-blue-800 underline"
+              className="underline"
+              style={{ color: '#2563EB' }}
             >
               ← Back to Registry
             </a>
@@ -137,13 +138,14 @@ export function CELPlayground() {
 
         {/* Examples */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Examples</h2>
+          <h2 className="text-lg font-semibold mb-3" style={{ color: '#374151' }}>Examples</h2>
           <div className="flex flex-wrap gap-2">
             {EXAMPLES.map((example) => (
               <button
                 key={example.name}
                 onClick={() => loadExample(example)}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors text-sm font-medium text-gray-700"
+                className="px-4 py-2 border rounded-lg hover:border-gray-400 transition-colors text-sm font-medium"
+                style={{ backgroundColor: '#FFFFFF', color: '#374151', borderColor: '#D1D5DB' }}
               >
                 {example.name}
               </button>
@@ -156,27 +158,29 @@ export function CELPlayground() {
           {/* Input Section */}
           <div className="space-y-6">
             {/* Expression Input */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="rounded-lg shadow-sm border p-6" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
+              <label className="block text-sm font-semibold mb-2" style={{ color: '#374151' }}>
                 CEL Expression
               </label>
               <textarea
                 value={expression}
                 onChange={(e) => setExpression(e.target.value)}
-                className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full h-32 px-4 py-3 border rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ backgroundColor: '#FFFFFF', color: '#111827', borderColor: '#D1D5DB' }}
                 placeholder="Enter CEL expression..."
               />
             </div>
 
             {/* Context Input */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="rounded-lg shadow-sm border p-6" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
+              <label className="block text-sm font-semibold mb-2" style={{ color: '#374151' }}>
                 Context (JSON)
               </label>
               <textarea
                 value={contextJson}
                 onChange={(e) => setContextJson(e.target.value)}
-                className="w-full h-64 px-4 py-3 border border-gray-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full h-64 px-4 py-3 border rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{ backgroundColor: '#FFFFFF', color: '#111827', borderColor: '#D1D5DB' }}
                 placeholder='{ "key": "value" }'
               />
             </div>
@@ -185,30 +189,30 @@ export function CELPlayground() {
           {/* Output Section */}
           <div className="space-y-6">
             {/* Result Display */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="rounded-lg shadow-sm border p-6" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold" style={{ color: '#374151' }}>
                   Result
                 </label>
                 {evaluating && (
-                  <span className="text-xs text-gray-500">Evaluating...</span>
+                  <span className="text-xs" style={{ color: '#6B7280' }}>Evaluating...</span>
                 )}
               </div>
               {error ? (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-800 font-mono text-sm whitespace-pre-wrap">
+                <div className="border rounded-lg p-4" style={{ backgroundColor: '#FEF2F2', borderColor: '#FECACA' }}>
+                  <p className="font-mono text-sm whitespace-pre-wrap" style={{ color: '#991B1B' }}>
                     {error}
                   </p>
                 </div>
               ) : result ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-green-900 font-mono text-sm whitespace-pre-wrap">
+                <div className="border rounded-lg p-4" style={{ backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }}>
+                  <p className="font-mono text-sm whitespace-pre-wrap" style={{ color: '#14532D' }}>
                     {result}
                   </p>
                 </div>
               ) : (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <p className="text-gray-500 text-sm italic">
+                <div className="border rounded-lg p-4" style={{ backgroundColor: '#F9FAFB', borderColor: '#E5E7EB' }}>
+                  <p className="text-sm italic" style={{ color: '#6B7280' }}>
                     Result will appear here...
                   </p>
                 </div>
@@ -216,11 +220,11 @@ export function CELPlayground() {
             </div>
 
             {/* Documentation */}
-            <div className="bg-blue-50 rounded-lg border border-blue-200 p-6">
-              <h3 className="text-sm font-semibold text-blue-900 mb-3">
+            <div className="rounded-lg border p-6" style={{ backgroundColor: '#EFF6FF', borderColor: '#BFDBFE' }}>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: '#1E3A8A' }}>
                 Supported Features
               </h3>
-              <ul className="space-y-2 text-sm text-blue-800">
+              <ul className="space-y-2 text-sm" style={{ color: '#1E40AF' }}>
                 <li>• <strong>Comparisons:</strong> ==, !=, &lt;, &lt;=, &gt;, &gt;=</li>
                 <li>• <strong>Logic:</strong> &&, ||, !</li>
                 <li>• <strong>Arithmetic:</strong> +, -, *, /, %</li>
@@ -228,12 +232,13 @@ export function CELPlayground() {
                 <li>• <strong>Ternary:</strong> condition ? true_val : false_val</li>
                 <li>• <strong>Strings:</strong> +, contains(), startsWith()</li>
               </ul>
-              <div className="mt-4 pt-4 border-t border-blue-200">
+              <div className="mt-4 pt-4" style={{ borderTopWidth: '1px', borderTopColor: '#BFDBFE' }}>
                 <a
                   href="https://github.com/marcbachmann/cel-js"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                  className="underline text-sm"
+                  style={{ color: '#2563EB' }}
                 >
                   View CEL Documentation →
                 </a>
