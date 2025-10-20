@@ -6,13 +6,20 @@
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './components/App'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { RegistryPage } from './pages/RegistryPage'
+import { DemoPage } from './pages/DemoPage'
 import './index.css'
 
 const rootElement = document.getElementById('app')!
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<RegistryPage />} />
+        <Route path="/demo" element={<DemoPage />} />
+      </Routes>
+    </BrowserRouter>
   </StrictMode>
 )
