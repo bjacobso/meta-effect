@@ -134,7 +134,13 @@ export class FaninNode extends Schema.TaggedStruct("fanin", {
   id: NodeId,
 }) {}
 
-export const Node = Schema.Union(TaskNode, GateNode, FanoutNode, FaninNode);
+export class CollectNode extends Schema.TaggedStruct("collect", {
+  id: NodeId,
+  formId: Schema.String.pipe(Schema.nonEmptyString()),
+  timeout: Schema.optional(Schema.Number.pipe(Schema.positive())),
+}) {}
+
+export const Node = Schema.Union(TaskNode, GateNode, FanoutNode, FaninNode, CollectNode);
 export type Node = Schema.Schema.Type<typeof Node>;
 
 // ---------------
