@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { RegistryPage } from './pages/RegistryPage'
 import { DemoPage } from './pages/DemoPage'
+import '@xyflow/react/dist/style.css'
 import './index.css'
 
 const rootElement = document.getElementById('app')!

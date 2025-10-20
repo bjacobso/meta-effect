@@ -26,6 +26,7 @@
     "@effect/schema": "^0.75.5",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.1",
+    "@xyflow/react": "^12.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "effect": "^3.18.4",
