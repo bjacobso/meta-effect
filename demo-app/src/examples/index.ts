@@ -5,11 +5,11 @@
  */
 
 import type { DagConfigType } from '../lib/effect-dag/dag-config'
-import { helloWorldDAG } from './simple/hello-world'
-import { onboardingDAG } from './hr/onboarding'
-import { performanceReviewDAG } from './hr/performance-review'
-import { buildAndDeployDAG } from './ci-cd/build-and-deploy'
-import { etlWorkflowDAG } from './data-pipeline/etl-workflow'
+import { helloWorldDAG } from './hello-world'
+import { onboardingDAG } from './onboarding'
+import { performanceReviewDAG } from './performance-review'
+import { buildAndDeployDAG } from './build-and-deploy'
+import { etlWorkflowDAG } from './etl-workflow'
 
 export interface DagExample {
   id: string

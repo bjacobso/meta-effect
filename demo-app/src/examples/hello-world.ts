@@ -4,7 +4,7 @@
  * A basic linear workflow demonstrating task nodes in sequence.
  */
 
-import type { DagConfigType } from '../../lib/effect-dag/dag-config'
+import type { DagConfigType } from '../lib/effect-dag/dag-config'
 
 export const helloWorldDAG: DagConfigType = {
   name: "hello_world",

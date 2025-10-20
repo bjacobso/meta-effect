@@ -4,7 +4,7 @@
  * Demonstrates a complete CI/CD pipeline with parallel builds and deployments.
  */
 
-import type { DagConfigType } from '../../lib/effect-dag/dag-config'
+import type { DagConfigType } from '../lib/effect-dag/dag-config'
 
 export const buildAndDeployDAG: DagConfigType = {
   name: "build_and_release",

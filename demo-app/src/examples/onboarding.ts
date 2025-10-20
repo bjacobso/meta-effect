@@ -4,7 +4,7 @@
  * Demonstrates collect nodes for gathering employee information during onboarding.
  */
 
-import type { DagConfigType } from '../../lib/effect-dag/dag-config'
+import type { DagConfigType } from '../lib/effect-dag/dag-config'
 
 export const onboardingDAG: DagConfigType = {
   name: "employee_onboarding",

@@ -4,7 +4,7 @@
  * Demonstrates fanout/fanin nodes for parallel data processing from multiple sources.
  */
 
-import type { DagConfigType } from '../../lib/effect-dag/dag-config'
+import type { DagConfigType } from '../lib/effect-dag/dag-config'
 
 export const etlWorkflowDAG: DagConfigType = {
   name: "etl_data_pipeline",

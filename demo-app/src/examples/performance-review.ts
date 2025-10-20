@@ -4,7 +4,7 @@
  * Demonstrates gate nodes for conditional workflow execution based on review scores.
  */
 
-import type { DagConfigType } from '../../lib/effect-dag/dag-config'
+import type { DagConfigType } from '../lib/effect-dag/dag-config'
 
 export const performanceReviewDAG: DagConfigType = {
   name: "performance_review",
