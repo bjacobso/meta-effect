@@ -13,6 +13,7 @@ export function Navigation() {
   const links = [
     { path: '/', label: 'Registry' },
     { path: '/demo', label: 'DAG Demo' },
+    { path: '/cel-playground', label: 'CEL Playground' },
   ]
 
   return (

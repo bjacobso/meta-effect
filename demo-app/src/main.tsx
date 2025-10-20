@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { RegistryPage } from './pages/RegistryPage'
 import { DemoPage } from './pages/DemoPage'
+import { CELPlayground } from './pages/CELPlayground'
 import '@xyflow/react/dist/style.css'
 import './index.css'
 
@@ -20,6 +21,7 @@ createRoot(rootElement).render(
       <Routes>
         <Route path="/" element={<RegistryPage />} />
         <Route path="/demo" element={<DemoPage />} />
+        <Route path="/cel-playground" element={<CELPlayground />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
