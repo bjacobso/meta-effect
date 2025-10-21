@@ -10,6 +10,7 @@ import { Navigation } from '../components/Navigation'
 import { DagVisualization } from '../components/DagVisualization'
 import { IrObjectPreview } from '../components/IrObjectPreview'
 import { NodeTypesPanel } from '../components/NodeTypesPanel'
+import { SimulationPanel } from '../components/SimulationPanel'
 import { parseDAG } from '../lib/effect-dag/dag-config'
 import type { DagConfigType } from '../lib/effect-dag/dag-config'
 import { dagExamples, type DagExample } from '../examples'
@@ -18,7 +19,11 @@ export function DemoPage() {
   const [selectedExample, setSelectedExample] = useState<DagExample>(dagExamples[0])
   const [dag, setDag] = useState<DagConfigType | null>(null)
   const [error, setError] = useState<Error | null>(null)
-  const [highlightedNodeId, setHighlightedNodeId] = useState<string | undefined>()
+  const [highlightedNodeId, setHighlightedNodeId] = useState<string | null>(null)
+
+  const handleHighlightNode = (nodeId: string | null) => {
+    setHighlightedNodeId(nodeId)
+  }
 
   useEffect(() => {
     // Parse and validate the selected example DAG
@@ -123,8 +128,8 @@ export function DemoPage() {
               </div>
               <DagVisualization
                 dag={dag}
-                highlightedNodeId={highlightedNodeId}
-                onNodeClick={setHighlightedNodeId}
+                highlightedNodeId={highlightedNodeId ?? undefined}
+                onNodeClick={handleHighlightNode}
               />
             </section>
 
@@ -135,14 +140,15 @@ export function DemoPage() {
               </p>
               <IrObjectPreview
                 dag={dag}
-                highlightedNodeId={highlightedNodeId}
-                onNodeClick={setHighlightedNodeId}
+                highlightedNodeId={highlightedNodeId ?? undefined}
+                onNodeClick={handleHighlightNode}
               />
             </section>
           </div>
 
-          {/* Right Column - Node Types Panel */}
-          <div className="lg:col-span-1">
+          {/* Right Column - Simulation and Node Types */}
+          <div className="lg:col-span-1 space-y-8">
+            <SimulationPanel dag={dag} onHighlightNode={handleHighlightNode} />
             <NodeTypesPanel dag={dag} />
           </div>
         </main>
