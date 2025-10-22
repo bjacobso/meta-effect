@@ -36,6 +36,8 @@ function getNodeColor(nodeType: string): { bg: string; border: string; text: str
       return { bg: 'bg-purple-100 dark:bg-purple-900', border: 'border-purple-300 dark:border-purple-700', text: 'text-purple-900 dark:text-purple-100' }
     case 'fanin':
       return { bg: 'bg-green-100 dark:bg-green-900', border: 'border-green-300 dark:border-green-700', text: 'text-green-900 dark:text-green-100' }
+    case 'collect':
+      return { bg: 'bg-cyan-100 dark:bg-cyan-900', border: 'border-cyan-300 dark:border-cyan-700', text: 'text-cyan-900 dark:text-cyan-100' }
     default:
       return { bg: 'bg-gray-100 dark:bg-gray-900', border: 'border-gray-300 dark:border-gray-700', text: 'text-gray-900 dark:text-gray-100' }
   }
@@ -74,6 +76,11 @@ function DagNode({ data }: { data: { node: Node; isHighlighted: boolean; onClick
             {data.node.uses.split('@')[0]}
           </div>
         )}
+        {data.node._tag === 'collect' && (
+          <div className="text-xs text-muted-foreground truncate mt-1">
+            {data.node.formId}
+          </div>
+        )}
       </div>
 
       {/* Output handle (right side) */}
@@ -88,7 +95,6 @@ const nodeTypes = {
 
 // Simple layered layout algorithm
 function computeLayout(nodes: readonly Node[], edges: readonly Edge[]): Map<string, { x: number; y: number }> {
-  const nodeMap = new Map(nodes.map(n => [n.id as string, n]))
   const inDegree = new Map<string, number>()
   const outgoing = new Map<string, string[]>()
 
@@ -227,6 +233,7 @@ export function DagVisualization({ dag, highlightedNodeId, onNodeClick }: DagVis
                    colors.border.includes('amber') ? '#fbbf24' :
                    colors.border.includes('purple') ? '#a78bfa' :
                    colors.border.includes('green') ? '#34d399' :
+                   colors.border.includes('cyan') ? '#06b6d4' :
                    '#9ca3af'
           }}
           pannable
