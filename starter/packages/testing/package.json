@@ -1,0 +1,21 @@
+{
+  "name": "@acme/testing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./msw": "./src/msw/handlers.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/domain": "workspace:*",
+    "@acme/routes": "workspace:*",
+    "msw": "^2.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
