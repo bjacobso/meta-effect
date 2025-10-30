@@ -2,101 +2,6 @@
   "$schema": "./schema.json",
   "components": [
     {
-      "name": "dag-builder",
-      "type": "effect-ci",
-      "description": "Ergonomic builder functions for constructing DAG nodes and edges without manual type casting. Provides a fluent API for building workflow definitions.",
-      "files": [
-        "effect-ci/dag-builder.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "api",
-        "builder",
-        "ci",
-        "dag"
-      ]
-    },
-    {
-      "name": "dag-config",
-      "type": "effect-ci",
-      "description": "Main orchestration for typed CI/CD workflow DAGs. Combines types, validation, and builder helpers into a validated DagConfig schema with JSON/YAML serialization.",
-      "files": [
-        "effect-ci/dag-config.ts"
-      ],
-      "dependencies": [
-        "effect",
-        "effect/Effect",
-        "effect/Schema",
-        "yaml"
-      ],
-      "tags": [
-        "builder",
-        "ci",
-        "config",
-        "dag",
-        "schema",
-        "types",
-        "validation"
-      ]
-    },
-    {
-      "name": "dag-types",
-      "type": "effect-ci",
-      "description": "Branded types and Effect Schema definitions for typed CI/CD DAG workflows. Defines nodes (task, gate, fanout, fanin), edges, triggers, and configuration.",
-      "files": [
-        "effect-ci/dag-types.ts"
-      ],
-      "dependencies": [
-        "effect/Brand",
-        "effect/Schema"
-      ],
-      "tags": [
-        "ci",
-        "config",
-        "dag",
-        "schema",
-        "types"
-      ]
-    },
-    {
-      "name": "dag-validation",
-      "type": "effect-ci",
-      "description": "Pure validation functions for CI/CD workflow DAGs. Validates edge references, detects cycles, checks for self-loops, and ensures gate nodes have valid conditions.",
-      "files": [
-        "effect-ci/dag-validation.ts"
-      ],
-      "dependencies": [
-        "effect",
-        "effect/Effect",
-        "effect/HashMap",
-        "effect/HashSet",
-        "effect/ParseResult",
-        "effect/Schema"
-      ],
-      "tags": [
-        "ci",
-        "dag",
-        "schema",
-        "validation"
-      ]
-    },
-    {
-      "name": "dag-workflow",
-      "type": "effect-ci",
-      "description": "High-level declarative API for defining CI/CD workflows, inspired by Effect's RpcGroup and HttpApi patterns. Provides a fluent, schema-based interface for building validated workflow definitions.",
-      "files": [
-        "effect-ci/dag-workflow.ts"
-      ],
-      "dependencies": [],
-      "tags": [
-        "api",
-        "ci",
-        "dag",
-        "schema",
-        "types"
-      ]
-    },
-    {
       "name": "release-plan",
       "type": "effect-ci",
       "description": "Effect CLI program for generating weekly release notes from git/GitHub activity. Composes git, gh, and Claude CLI commands into typed pipelines.",
@@ -339,6 +244,67 @@
         "dag",
         "schema",
         "types"
+      ]
+    },
+    {
+      "name": "expr-cel",
+      "type": "effect-expressions",
+      "description": "Production-grade expression evaluator using CEL for sandboxed, deterministic expression evaluation. Safe for untrusted expressions with built-in resource limits and no access to system resources. CEL is an industry standard used by Google Cloud, Kubernetes, and others.",
+      "files": [
+        "effect-expressions/expr-cel.ts"
+      ],
+      "dependencies": [
+        "@marcbachmann/cel-js",
+        "effect"
+      ],
+      "tags": [
+        "database",
+        "expressions"
+      ]
+    },
+    {
+      "name": "expr-cel-demo",
+      "type": "effect-expressions",
+      "description": "Demonstrates practical usage patterns for the CEL evaluator including: - Feature flags and gates - Access control policies - Business rules - Custom functions Run with: pnpm tsx src/effect-expressions/expr-cel-demo.ts",
+      "files": [
+        "effect-expressions/expr-cel-demo.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "ci",
+        "expressions"
+      ]
+    },
+    {
+      "name": "expr-service",
+      "type": "effect-expressions",
+      "description": "Effect service interface for evaluating expressions safely in Effect programs. Provides typed, sandboxed expression evaluation for gates, conditions, and feature flags. Swap implementations (simple vs CEL) via dependency injection.",
+      "files": [
+        "effect-expressions/expr-service.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "database",
+        "expressions",
+        "service"
+      ]
+    },
+    {
+      "name": "expr-simple",
+      "type": "effect-expressions",
+      "description": "Minimal expression evaluator using JavaScript's Function() constructor. SECURITY WARNING: Only use with trusted expressions or in development! This evaluator can execute arbitrary JavaScript code. For production use with untrusted expressions, use expr-cel.ts instead.",
+      "files": [
+        "effect-expressions/expr-simple.ts"
+      ],
+      "dependencies": [
+        "effect"
+      ],
+      "tags": [
+        "expressions"
       ]
     },
     {
@@ -589,6 +555,64 @@
       ]
     },
     {
+      "name": "mock-data",
+      "type": "effect-testing",
+      "description": "Generate type-safe mock data from Effect Schemas for testing. Uses @effect/schema's Arbitrary support to create valid instances that conform to your schema constraints.",
+      "files": [
+        "effect-testing/mock-data.ts"
+      ],
+      "dependencies": [
+        "@effect/schema/Arbitrary",
+        "effect",
+        "fast-check"
+      ],
+      "tags": [
+        "forms",
+        "schema",
+        "testing",
+        "types"
+      ]
+    },
+    {
+      "name": "msw-handlers",
+      "type": "effect-testing",
+      "description": "Type-safe Mock Service Worker handlers generated from Effect HttpApi definitions. Provides automatic request validation, response mocking, and Effect service integration for testing API clients without real network calls.",
+      "files": [
+        "effect-testing/msw-handlers.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "msw",
+        "msw/node"
+      ],
+      "tags": [
+        "api",
+        "schema",
+        "service",
+        "shell",
+        "testing",
+        "validation"
+      ]
+    },
+    {
+      "name": "msw-service",
+      "type": "effect-testing",
+      "description": "Effect Service wrapper for Mock Service Worker lifecycle and configuration. Provides a composable way to manage MSW server setup, teardown, and handler management within Effect test suites.",
+      "files": [
+        "effect-testing/msw-service.ts"
+      ],
+      "dependencies": [
+        "effect",
+        "msw/node",
+        "vitest"
+      ],
+      "tags": [
+        "config",
+        "service",
+        "testing"
+      ]
+    },
+    {
       "name": "api-atom",
       "type": "effect-vite",
       "description": "Wraps HttpApi client calls in reactive atoms for fine-grained reactivity. Provides query (read) and mutation (write) atoms with automatic caching and invalidation.",
@@ -664,25 +688,9 @@
   ],
   "presets": [
     {
-      "name": "ci-dag",
-      "description": "DAG workflow definition and validation components",
-      "components": [
-        "dag-builder",
-        "dag-config",
-        "dag-types",
-        "dag-validation",
-        "dag-workflow"
-      ]
-    },
-    {
       "name": "ci-full",
       "description": "Complete effect-ci setup with all components",
       "components": [
-        "dag-builder",
-        "dag-config",
-        "dag-types",
-        "dag-validation",
-        "dag-workflow",
         "release-plan",
         "shell-runner",
         "transforms",
@@ -693,8 +701,8 @@
       "name": "ci-minimal",
       "description": "Minimal effect-ci with basic helpers",
       "components": [
-        "dag-builder",
-        "dag-config"
+        "release-plan",
+        "shell-runner"
       ]
     },
     {
@@ -743,6 +751,24 @@
       "components": [
         "dag-builder",
         "dag-config"
+      ]
+    },
+    {
+      "name": "expressions-full",
+      "description": "Complete effect-expressions setup with all components",
+      "components": [
+        "expr-cel",
+        "expr-cel-demo",
+        "expr-service",
+        "expr-simple"
+      ]
+    },
+    {
+      "name": "expressions-minimal",
+      "description": "Minimal effect-expressions with basic helpers",
+      "components": [
+        "expr-cel",
+        "expr-cel-demo"
       ]
     },
     {
@@ -812,6 +838,23 @@
       "components": [
         "effect-action",
         "effect-loader"
+      ]
+    },
+    {
+      "name": "testing-full",
+      "description": "Complete effect-testing setup with all components",
+      "components": [
+        "mock-data",
+        "msw-handlers",
+        "msw-service"
+      ]
+    },
+    {
+      "name": "testing-minimal",
+      "description": "Minimal effect-testing with basic helpers",
+      "components": [
+        "mock-data",
+        "msw-handlers"
       ]
     },
     {
