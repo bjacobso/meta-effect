@@ -49,6 +49,18 @@ Components for Prisma ORM with Effect services:
 
 **Total**: ~215 lines
 
+### effect-testing
+
+Components for testing Effect applications with Mock Service Worker (MSW):
+
+| Component | Description | Lines |
+|-----------|-------------|-------|
+| `msw-handlers` | Type-safe MSW handlers from HttpApi | ~155 |
+| `msw-service` | MSW lifecycle as Effect Service | ~105 |
+| `mock-data` | Generate mocks from Schemas | ~130 |
+
+**Total**: ~390 lines
+
 ### effect-htmx
 
 Components for HTMX with Effect backend (coming soon):
@@ -98,6 +110,10 @@ registry/
 ├── effect-prisma/         # Prisma ORM components
 │   ├── db-client.ts
 │   └── db-transaction.ts
+├── effect-testing/        # Testing with MSW
+│   ├── msw-handlers.ts
+│   ├── msw-service.ts
+│   └── mock-data.ts
 └── effect-htmx/           # HTMX-related components (planned)
     ├── html-response.ts
     └── htmx-attrs.ts
@@ -131,6 +147,19 @@ After adding a component, it's **yours**. Common customizations:
 - Query logging
 - Performance metrics
 - Retry strategies
+
+### msw-handlers
+- Add authentication checks
+- Custom response delays
+- Request logging
+- Error simulation
+- Response transformations
+
+### mock-data
+- Custom data generators
+- Deterministic seeds
+- Domain-specific factories
+- Relation handling
 
 ## Why Not npm Packages?
 
