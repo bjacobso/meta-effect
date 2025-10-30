@@ -8,8 +8,11 @@ Slidev presentation for the inaugural Effect SF Meetup.
 # Install dependencies (if not already done)
 pnpm install
 
-# Start development server
+# Start development server (will prompt for slide deck selection)
 pnpm dev
+
+# Or manually select slides first
+pnpm select
 
 # Build for production
 pnpm build
@@ -18,7 +21,21 @@ pnpm build
 pnpm export
 ```
 
-## Presentation Structure
+## Multiple Slide Decks
+
+This presentation supports multiple slide decks in the `slides/` directory. When you run `pnpm dev`, you'll be prompted to select which deck to present.
+
+### Adding a New Deck
+
+1. Create a new `.md` file in `slides/` (e.g., `slides/workshop.md`)
+2. Run `pnpm dev` and select your new deck
+3. The script will create a symlink: `slides.md -> slides/your-deck.md`
+
+### Available Decks
+
+- **meta-effect.md** - Main presentation for Effect SF Meetup
+
+## Presentation Structure (meta-effect.md)
 
 1. **Opening (Slides 1-3)** - Title, hook, problem statement
 2. **Solution (Slides 4-6)** - Philosophy, how it works
@@ -32,7 +49,7 @@ pnpm export
 
 ## Customization
 
-Edit `slides.md` to customize:
+Create or edit slide decks in `slides/`:
 - Content and examples
 - Code snippets
 - Transitions and animations

@@ -4,12 +4,19 @@
   "description": "Meta Effect pitch for Effect SF Meetup",
   "type": "module",
   "scripts": {
-    "dev": "slidev --open",
+    "select": "tsx select-slides.ts",
+    "dev": "tsx select-slides.ts && slidev --open",
     "build": "slidev build",
     "export": "slidev export"
   },
   "dependencies": {
     "@slidev/cli": "^0.49.0",
-    "@slidev/theme-default": "latest"
+    "@slidev/theme-default": "latest",
+    "effect": "^3.10.0",
+    "@effect/platform": "^0.68.0",
+    "@effect/platform-node": "^0.63.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6"
   }
 }
