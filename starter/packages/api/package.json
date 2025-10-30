@@ -1,0 +1,27 @@
+{
+  "name": "@acme/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./employee": "./src/employee.api.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@acme/domain": "workspace:*",
+    "@acme/routes": "workspace:*",
+    "@effect/platform": "^0.75.11",
+    "@effect/schema": "^0.79.5",
+    "effect": "^3.11.9"
+  },
+  "devDependencies": {
+    "@effect/vitest": "^0.16.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

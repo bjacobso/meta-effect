@@ -1,0 +1,25 @@
+{
+  "name": "@acme/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/api": "workspace:*",
+    "@acme/domain": "workspace:*",
+    "@effect/platform": "^0.75.11",
+    "@effect/platform-node": "^0.68.11",
+    "@effect/schema": "^0.79.5",
+    "effect": "^3.11.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
