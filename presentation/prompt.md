@@ -1,116 +1,133 @@
 # Meta Effect Presentation Prompt
 
-This is the source-of-truth prompt for generating `slides.md`. Use this to iterate the vision, vibes, and narrative arc before compiling to slides.
+When generating slides for Meta Effect presentations, create a lightning talk that feels alive, irreverent, meta-aware, and visionary. The presentation should sound like a hacker manifesto meets a New Yorker cartoon meets a Vite demo - tuned for short, high-impact meetup slots.
 
-## Core Thesis
+Make sure the presentation conveys concrete, specific language, avoids abstract nouns, and maintains the philosophy that "Meta Effect is not a framework, not an npm package - it's a vibe."
 
-- Meta Effect is NOT a framework or npm package
-- It's a collection of vendorable components (like shadcn/ui, but for Effect-TS)
-- Copy. Paste. Own.
-- Each component is 50-100 lines of focused, Effect-based code
-- Users vendor components into their codebase and customize freely
+**Any specific instructions about presentation content or structure should supersede these defaults.**
 
-## Dual Nature: Art Project + Science Experiment
+---
 
-- **Art Project**: Specs are design manifestos showing what Effect integrations could be
-- **Science Experiment**: Exploring Effect patterns at scale through living specifications
-- "None of them work... yet" - that's the point, not a bug
-- Community-driven evolution through PRs (spec or implementation)
+## Act 1 — The Hook
 
-## Key Messages & Vibes
+> *"What if integrating Effect felt like copying a component from shadcn/ui?"*
 
-### The Problem (Traditional Frameworks)
-- npm packages create version lock-in
-- Frameworks dictate architecture
-- Abstractions hide Effect primitives
-- Updates require migrations
-- You don't own the code
+Every framework tells you what to do.
+Every npm package traps you in version purgatory.
+You don't *own* your tools anymore.
 
-### The Meta Effect Way
-- Vendor directly into your project
-- Own the implementation completely
-- Customize without forking
-- Learn from minimal examples (50-100 lines)
-- No version dependencies
-- Framework-aware, not framework-replacing
+**Meta Effect flips that.**
+It's *copy–paste architecture*.
+Every component is ~50 lines of pure Effect.
+You vendor it, tweak it, own it.
+No updates. No lock-in. No drama.
 
-### Spec-Driven Development Model
-- Specs are living documents in `docs/specs/`
-- Define desired DSL and API surface
-- Specify compilation targets (GitHub Actions, Prisma, React, etc.)
-- Provide comprehensive examples of what should exist
-- Implementation follows specification
-- Status: "Planned" = aspirational vision
+---
 
-### Component Philosophy
-- **Effect-First**: Every operation is an Effect
-- **Composable**: Components compose with each other
-- **Framework-Aware**: Integrate, don't replace
-- **Zero Magic**: Everything visible in ~50 lines
-- **Educational**: Code teaches Effect patterns by example
-- **Self-Contained**: Copy-paste ready
+## Act 2 — The Pattern
 
-## Narrative Arc
+> *"Not a framework — a library of living blueprints."*
 
-### Act 1: The Hook
-1. Opening: "What if Effect integrations worked like shadcn/ui?"
-2. Problem: Traditional frameworks lock you in
-3. Solution: Vendorable components give you control
-4. Philosophy: "Not a framework. Not an npm package. Just Meta Effects."
+Each component = one well-lit example of Effect at work:
 
-### Act 2: Show, Don't Tell
-5. How it works: `npx meta-effect add` or curl from GitHub
-6. Component showcase: Vite Loader (60 lines)
-7. Component showcase: Remix Actions (60 lines)
-8. Component showcase: CI/CD DAG Runner (80 lines)
-9. Architecture: Registry structure
-10. Effect Service Pattern: DI with Effect.Service
+* `effect-vite` → bootstrapping Vite as an Effect service
+* `effect-remix` → turning Remix actions into typed Effects
+* `effect-ci` → DAG runner for GitHub workflows
+* `effect-livestore` → local-first reactive storage
 
-### Act 3: Live Demo
-11. Demo setup: Copy → Customize → Compose
-12. Demo: Adding Effect to Vite (3 steps)
+They all *fit in your head.*
+Each file is a poem about dependency injection.
 
-### Act 4: Why It Matters
-13. Why 50-100 lines matters: Readability, Ownership, Educational, Composable
-14. Comparison: npm package vs Meta Effect (side-by-side)
-15. Inspiration: shadcn/ui proved the pattern works
-16. Current library: effect-vite, effect-remix, effect-ci, effect-livestore
-17. Effect-First Principles: Teaching Effect patterns
+---
 
-### Act 5: Deep Dive
-18. Component example: Form validation with Effect Schema
-19. Why now? Effect 3.0 stable, shadcn/ui success, ownership demand
-20. Roadmap: Q1-Q3 2025
+## Act 3 — The Demo (Show, Don't Tell)
 
-### Act 6: Community
-21. How to contribute: Add components, improve existing, share patterns, build tools
-22. Contribution guidelines: 50-100 lines, JSDoc, Effect-first, "Copy this file" footer
-23. Get started today: Clone, browse, copy, customize
-24. Resources: GitHub, docs, registry, examples
+```bash
+npx meta-effect add vite
+```
 
-### Act 7: Q&A Bridge
-25. Questions? (Discussion prompt)
+Now open the file.
+Everything you see — you can understand.
+You can fork the universe from here.
 
-### Act 8: The Reveal (Art + Science)
-26. **"But Wait..."** - This is half art project, half science experiment
-27. **Spec-Driven Development**: Specs ship alongside code
-28. **Specs Define the Future**: Examples of effect-dag (workflows) and effect-entities (DDD)
-29. **"None of Them Work... Yet"**: Aspirational by design
-   - Art: Design manifestos
-   - Science: Explore design space first
-   - Community: Anyone can inch them closer
-30. **Two Ways to Contribute**:
-   - Path 1: Implement the spec (PR the component)
-   - Path 2: Challenge the spec (PR the design)
-   - No gatekeepers, just consensus
-31. **AI Agent Era**: Why this model wins
-   - Specs are self-documenting (JSON Schema, MCP, tool calling)
-   - Vendorable = AI-modifiable (fits in context window)
-   - Spec-driven = incremental implementation by agents
-   - "The future of code isn't frameworks. It's living specifications."
+Copy → Customize → Compose.
+That's the loop.
 
-### Act 9: Closing
-32. Thank you! Copy. Paste. Own.
+---
+
+## Act 4 — The Philosophy
+
+npm packages say: "trust us."
+Meta Effect says: "own this."
+
+* No versioning.
+* No abstraction hiding.
+* No secret runtime.
+* Every operation is an Effect.
+* Every abstraction is transparent.
+* Every component teaches you something.
+
+> *"If it's over 100 lines, it's not a component — it's a framework."*
+
+---
+
+## Act 5 — The Art + Science Bit
+
+This isn't just code.
+It's a **living design lab**.
+
+* **Art Project:** Specs are design manifestos.
+  "What *could* an Effect-first world look like?"
+* **Science Experiment:** None of these components *work perfectly yet.*
+  That's intentional.
+  The repo is a garden, not a museum.
+
+> "The bugs are the research questions."
+
+---
+
+## Act 6 — Specs as the New Source Code
+
+Specs live in `docs/specs/`.
+They describe what *should* exist — API surface, DSL, examples.
+The implementation comes later.
+
+Specs are executable philosophy:
+
+* `status: "planned"` = aspirational
+* `status: "implemented"` = iteration one
+* `status: "deprecated"` = evolution complete
+
+This model is built for AI-assisted collaboration.
+Specs are small enough to fit in a context window.
+Vendored code is small enough to rewrite.
+That's how agents will help us maintain code at scale.
+
+---
+
+## Act 7 — The Invitation
+
+Two paths:
+
+1. **Implement the spec.**
+   Submit a 50-line component.
+2. **Challenge the spec.**
+   Rewrite the design. Prove it better.
+
+No gatekeepers.
+Just consensus through code.
+
+---
+
+## Act 8 — Closing
+
+> "The future of code isn't frameworks.
+> It's living specifications."
+
+Copy. Paste. Own.
+That's the Meta Effect.
+
+---
 
 ## Slide Design Principles
 
@@ -118,41 +135,24 @@ This is the source-of-truth prompt for generating `slides.md`. Use this to itera
 - Keep code examples focused and readable
 - Use two-cols layout for comparisons
 - Center text for dramatic moments
-- Include GitHub links and resources
-- Emoji-free (professional tone)
+- Tight, lightning-talk rhythm (15-18 slides, 5 minutes)
+- No emoji unless explicitly requested
 - Monospace-friendly formatting
+- Dramatic effect through spacing and pauses
 
 ## Target Audience
 
-- Effect-TS developers
-- Web framework users (Vite, Remix, Next.js, SolidJS)
+- Effect-TS developers and enthusiasts
 - Developers frustrated with framework lock-in
-- Open source maintainers
+- Open source maintainers exploring new models
 - AI/LLM tooling builders
-
-## Key Takeaways
-
-1. Vendorable > npm packages for Effect integrations
-2. 50-100 lines = readable, ownable, educational
-3. Specs are living documents, not requirements
-4. Anyone can contribute implementations or challenge designs
-5. Perfect for AI agents: self-documenting, modifiable, incremental
+- Hacker/builder community at meetups
 
 ## Compilation Notes
 
-- Use Slidev as the presentation framework (already in slides.md front matter)
-- Maintain existing slide syntax and layouts
-- Preserve v-click animations for flow
-- Keep code blocks syntax-highlighted with Shiki
-- Use two-cols for side-by-side comparisons
-- Use center layout for dramatic reveals
-- End with layout: end for closing slide
-
-## Meta
-
-This prompt itself follows the Meta Effect philosophy:
-- It's vendorable (copy into your project)
-- It's focused (~200 lines of spec)
-- It's the source-of-truth for compilation
-- It's version-free (you own it)
-- It's AI-friendly (structured, bulleted, clear)
+- Compile into Slidev-ready format with centered text
+- Use Acts 1-8 structure for organization
+- Include `v-click` transitions for dramatic reveals
+- Code samples should be minimal and illustrative
+- Maintain conversational, irreverent tone throughout
+- Each slide should feel punchy and quotable
