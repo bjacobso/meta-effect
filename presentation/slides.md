@@ -671,6 +671,217 @@ class: text-center
 Let's discuss Effect, vendorable components, and building better integrations
 
 ---
+layout: center
+class: text-center
+---
+
+# But Wait...
+
+<v-click>
+
+## This is half art project, half science experiment
+
+</v-click>
+
+---
+
+# The Spec-Driven Development Model
+
+Meta Effect doesn't just ship code - it ships **specifications**
+
+<v-clicks>
+
+## Specs are living documents that:
+- Define the **desired DSL** and API surface
+- Specify **compilation targets** (GitHub Actions, Prisma, React, etc.)
+- Provide **comprehensive examples** of what should exist
+- Live in `docs/specs/` alongside the registry
+
+## Implementation follows specification:
+- Specs declare the **vision** (~500 lines of examples)
+- Components implement the **primitives** (~50-100 lines each)
+- Compilers transform specs to **multiple targets**
+
+</v-clicks>
+
+---
+layout: two-cols
+---
+
+# Specs Define the Future
+
+**Status: Planned** means "this is what should exist"
+
+### effect-dag
+Airflow/Temporal meets Effect - workflows as typed DAGs
+
+```ts
+const workflow = [
+  task("build", { run: "pnpm build" }),
+  gate("only_main", "github.ref == 'main'"),
+  fanout("parallel_tests"),
+  task("test_unit", { run: "vitest" }),
+  task("test_e2e", { run: "playwright" }),
+  fanin("join_tests"),
+  task("deploy", { run: "deploy.sh" })
+]
+```
+
+::right::
+
+<v-click>
+
+### effect-entities
+Database schema as code - DDD entities that compile to SQL/Prisma
+
+```ts
+const User = Entity.make("User", {
+  id: Attr.uuid({ primary: true }),
+  email: Attr.valueObject(EmailAddress),
+  address: Attr.valueObject(Address),
+  role: Attr.enum(["user", "admin"])
+})
+
+// Compiles to:
+// - PostgreSQL CREATE TABLE
+// - Prisma schema
+// - TypeScript types
+// - Query builders
+```
+
+</v-click>
+
+---
+layout: center
+class: text-center
+---
+
+# None of Them Work... Yet
+
+<div class="text-2xl pt-8">
+
+<v-click>
+
+That's not a bug. **It's the point.**
+
+</v-click>
+
+</div>
+
+<v-clicks>
+
+<div class="pt-12 text-left max-w-2xl mx-auto">
+
+## The Art Project
+Specs are **design manifestos** showing what Effect integrations could be
+
+## The Science Experiment
+Building specs first lets us **explore the design space** before committing to implementations
+
+## The Community Model
+Anyone can **inch them closer** with a PR - or challenge the design itself
+
+</div>
+
+</v-clicks>
+
+---
+layout: two-cols
+---
+
+# Two Ways to Contribute
+
+## Path 1: Implement the Spec
+
+```bash
+# Pick a "Planned" component
+cd meta-effect/packages/registry/src
+
+# Implement it (50-100 lines)
+mkdir effect-dag
+vim effect-dag/dag-types.ts
+
+# Add JSDoc, examples, "Copy this file"
+# PR: "Implements effect-dag/dag-types"
+```
+
+<v-click>
+
+✅ Inch the spec closer to reality
+✅ Learn Effect patterns by building
+✅ Your implementation guides others
+
+</v-click>
+
+::right::
+
+<v-click>
+
+## Path 2: Challenge the Spec
+
+```bash
+# Disagree with the DSL?
+cd docs/specs
+
+# Propose a better design
+vim effect-dag.md
+
+# Update examples, API surface
+# PR: "Refines effect-dag API for..."
+```
+
+✅ Debate design before code
+✅ No wasted implementation effort
+✅ Specs evolve with community
+
+</v-click>
+
+<v-click>
+
+<div class="pt-8 col-span-2 text-center text-2xl">
+
+**No gatekeepers. Just consensus.**
+
+</div>
+
+</v-click>
+
+---
+
+# In a World of AI Agents, This Model Wins
+
+<v-clicks>
+
+## Why Specs + Vendorable = Perfect for AI
+
+### 1. Specs are Self-Documenting
+- JSON Schema, OpenAPI, form definitions
+- AI agents can **parse and understand** the DSL
+- Specs define **tool calling interfaces** (MCP, function calling)
+
+### 2. Vendorable Components are AI-Modifiable
+- 50-100 lines = **fits in context window**
+- Copy into project = agent can **edit freely**
+- No npm lock-in = agent can **adapt to user needs**
+
+### 3. Spec-Driven Implementation is Incremental
+- AI agents can **implement one component at a time**
+- Specs provide **clear success criteria**
+- Community reviews = **human-in-the-loop validation**
+
+</v-clicks>
+
+<v-click>
+
+<div class="pt-8 text-center text-2xl">
+
+**The future of code isn't frameworks. It's living specifications.**
+
+</div>
+
+</v-click>
+
+---
 layout: end
 class: text-center
 ---
