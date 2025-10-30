@@ -126,35 +126,178 @@ Each file is a poem about dependency injection.
 </v-click>
 
 ---
-layout: center
-class: text-center
----
 
-# Show, Don't Tell
+# Show, Don't Tell: DAG Workflow DSL
 
-```bash
-npx meta-effect add vite
+```typescript {all|1-8|10-14|16-23}{maxHeight:'400px'}
+class ETLPipeline extends Workflow.make(
+  "etl_pipeline",
+  "1.0.0",
+  { triggers: [ScheduleTrigger.make({ cron: "0 2 * * *" })] },
+
+  // Define nodes
+  Task.make("extract", { run: "python extract.py" }),
+  Gate.make("quality_check", { condition: "row_count > 1000" }),
+
+  Fanout.make("parallel_transform"),
+  Task.make("transform_a", { run: "python transform_a.py" }),
+  Task.make("transform_b", { run: "python transform_b.py" }),
+  Fanin.make("join_results"),
+  Task.make("load", { run: "python load.py" }),
+
+  // Define edges (execution flow)
+  Edge.make("extract", "quality_check"),
+  Edge.make("quality_check", "parallel_transform", { condition: "expr" }),
+  Edge.make("parallel_transform", "transform_a"),
+  Edge.make("parallel_transform", "transform_b"),
+  Edge.make("transform_a", "join_results"),
+  Edge.make("transform_b", "join_results"),
+  Edge.make("join_results", "load")
+) {}
 ```
 
 <v-click>
 
-<div class="pt-8">
-
-Now open the file.
-
-Everything you see — you can understand.
-
-</div>
+**That's 24 lines. Type-safe. Compiles to GitHub Actions, AWS Step Functions, or runs locally.**
 
 </v-click>
 
+---
+
+# Expression Evaluation: CEL Integration
+
+```typescript {all|3-5|7-10|12-14}{maxHeight:'400px'}
+const evaluator = createCELEvaluator()
+
+// Boolean conditions for workflow gates
+const isCritical = yield* evaluator.evalBoolean(
+  "severity == 'SEV-1' && customerImpact == true",
+  { severity: "SEV-1", customerImpact: true })
+
+// Collection operations
+const hasRole = yield* evaluator.evalBoolean(
+  "has(user.roles) && 'admin' in user.roles",
+  { user: { roles: ['admin', 'user'] } })
+
+// Feature flags with complex logic
+const canAccessBeta = yield* evaluator.evalBoolean(
+  "user.plan == 'enterprise' && has(user.betaOptIn) && user.betaOptIn",
+  { user: { plan: "enterprise", betaOptIn: true } })
+```
+
 <v-click>
 
-<div class="pt-8 text-2xl font-bold">
+**Sandboxed, production-safe expression evaluation. Copy the 60-line CEL wrapper.**
 
-You can fork the universe from here.
+</v-click>
 
-</div>
+---
+
+# Schema-Driven Multi-Target Compilation
+
+```typescript {all|1-12|14-19|21-24}{maxHeight:'400px'}
+// Single DAG definition
+const workflow: DagConfig = {
+  name: "build_and_release",
+  nodes: [
+    { _tag: "task", id: "build", run: "pnpm build" },
+    { _tag: "gate", id: "only_main",
+      condition: "github.ref == 'refs/heads/main'" },
+    { _tag: "task", id: "deploy", run: "pnpm deploy" }
+  ],
+  edges: [
+    { from: "build", to: "only_main" },
+    { from: "only_main", to: "deploy" }
+  ]
+}
+
+// Compile to multiple targets in parallel
+const [gha, stepFn, mermaid] = yield* Effect.all([
+  compileDagToGitHubActions(workflow),
+  compileDagToStepFunctions(workflow),
+  dagToMermaid(workflow)
+])
+
+// One source → GitHub Actions YAML, AWS Step Functions ASL, docs
+yield* writeFile(".github/workflows/release.yml", YAML.stringify(gha))
+yield* writeFile("infra/state-machine.json", JSON.stringify(stepFn, null, 2))
+```
+
+<v-click>
+
+**Write once, run anywhere. ~80 lines per compiler.**
+
+</v-click>
+
+---
+
+# Effect Service Pattern: Dependency Injection
+
+```typescript {all|1-8|10-16|18-21}{maxHeight:'400px'}
+// Define service interface
+const evaluator = createCELEvaluator()
+
+const workflow = Effect.gen(function*() {
+  // Services are injected via Effect's context
+  const eval = yield* ExpressionEvaluator
+
+  const isCritical = yield* eval.evalBoolean(
+    "severity == 'SEV-1'",
+    { severity: "SEV-1" })
+
+  if (isCritical) {
+    yield* pageExecutives()
+  }
+})
+
+// Swap implementations at runtime
+Effect.runPromise(workflow.pipe(
+  Effect.provideService(ExpressionEvaluator, evaluator)
+))
+
+// Or use mock in tests
+Effect.runPromise(workflow.pipe(
+  Effect.provideService(ExpressionEvaluator, mockEvaluator)
+))
+```
+
+<v-click>
+
+**Testable, composable, swappable. No DI framework required.**
+
+</v-click>
+
+---
+
+# Branded Types & Schema Validation
+
+```typescript {all|2-6|9-14|17-21}{maxHeight:'400px'}
+// Branded types for compile-time safety
+export type NodeId = string & Brand.Brand<"NodeId">
+export const NodeId = Schema.String.pipe(
+  Schema.pattern(/^[a-z][a-z0-9_]*$/i),
+  Schema.brand("NodeId")
+)
+
+// Effect Schema classes with runtime validation
+export class TaskNode extends Schema.TaggedStruct("task", {
+  id: NodeId,
+  uses: Schema.optional(Schema.String),
+  run: Schema.optional(Schema.String),
+  env: Schema.optional(Schema.Record({ key: Schema.String, value: Schema.String }))
+}) {}
+
+// Automatic validation on construction
+const node = TaskNode.make({
+  _tag: "task",
+  id: "build" as NodeId,  // Branded at compile time
+  run: "pnpm build"
+})  // Throws ParseError if invalid at runtime
+```
+
+<v-click>
+
+**Compile-time + runtime safety. Zero-cost abstractions.**
 
 </v-click>
 
@@ -202,6 +345,44 @@ layout: two-cols
 "own this."
 
 </div>
+
+</v-click>
+
+---
+
+# Real Domain: Release Orchestration
+
+```typescript {all|1-3|5-7|9-11|13-15}{maxHeight:'380px'}
+class ReleaseWorkflow extends Workflow.make(
+  "release",
+  "1.0.0",
+  { triggers: [PushTrigger.make({ branches: ["main"] })] },
+
+  Task.make("validate_version", { run: "pnpm tsx scripts/validate-version.ts" }),
+  Task.make("run_tests", { run: "pnpm test" }),
+  Fanout.make("parallel_builds"),
+
+  Task.make("build_packages", { run: "pnpm build" }),
+  Task.make("generate_changelog", { run: "pnpm changeset version" }),
+  Fanin.make("builds_complete"),
+
+  Gate.make("tests_passed", { condition: "success() && github.ref == 'refs/heads/main'" }),
+  Task.make("publish", { run: "pnpm changeset publish", secrets: ["NPM_TOKEN"] }),
+
+  Edge.make("validate_version", "run_tests"),
+  Edge.make("run_tests", "parallel_builds"),
+  Edge.make("parallel_builds", "build_packages"),
+  Edge.make("parallel_builds", "generate_changelog"),
+  Edge.make("build_packages", "builds_complete"),
+  Edge.make("generate_changelog", "builds_complete"),
+  Edge.make("builds_complete", "tests_passed"),
+  Edge.make("tests_passed", "publish", { condition: "expr" })
+) {}
+```
+
+<v-click>
+
+**Compiles to .github/workflows/release.yml. Or runs locally with mocked tasks.**
 
 </v-click>
 
