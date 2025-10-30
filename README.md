@@ -4,11 +4,23 @@
 
 ## What is Meta Effect?
 
-Meta Effect is a collection of **vendorable components** for building web applications with Effect-TS. Inspired by shadcn/ui, these aren't packages you install - they're **Meta Effects** you copy directly into your project and own.
+Meta Effect is a collection of **vendorable components** for building applications with Effect-TS. Inspired by shadcn/ui, these aren't packages you install - they're **Meta Effects** you copy directly into your project and own.
 
-Each component is a concise (~50-100 lines), focused primitive that shows how to compose Effect with Vite, Remix, HTMX, and other frameworks. Copy what you need, leave what you don't, and customize everything.
+Each component is a concise, focused primitive that demonstrates how to compose Effect primitives with frameworks, databases, workflows, and tooling. Copy what you need, leave what you don't, and customize everything.
 
 **Meta Effects** = Minimal, Effect-based primitives you vendor into your codebase.
+
+**Scope**: From web framework integrations (Vite, Remix) to workflow orchestration (DAGs, CI/CD), data modeling (entities, forms), domain-specific tools (e-signatures), and developer infrastructure (testing, code generation).
+
+### Component Categories
+
+| Category | Examples |
+|----------|----------|
+| **Web Frameworks** | Vite HttpApi, Remix loaders, HTMX |
+| **Workflows** | DAG interpreter, CI automation, human-in-the-loop |
+| **Data & Validation** | Forms, expressions, entities, Prisma |
+| **Code Generation** | Schema → GHA/Step Functions/TypeScript |
+| **Specialized Domains** | E-signatures, testing utilities |
 
 ## Installation
 
@@ -32,39 +44,93 @@ Components are copied to `src/lib/` in your project. You own them. Modify freely
 
 ## Available Components
 
-### effect-vite (~275 lines total)
+### Web Framework Integration
 
-Build reactive Vite apps with Effect HttpApi:
+**effect-vite** - Build reactive Vite apps with Effect HttpApi
+- http-api - Type-safe API definitions
+- vite-plugin - Dev server integration
+- api-atom - Reactive atoms for APIs
+- route-atom - URL-synchronized atoms
 
-- **http-api** - Type-safe API definitions (~65 lines)
-- **vite-plugin** - Dev server integration (~60 lines)
-- **api-atom** - Reactive atoms for APIs (~80 lines)
-- **route-atom** - URL-synchronized atoms (~70 lines)
+**effect-remix** - Compose Effect services with Remix
+- with-effect - Simple loader/action helpers
+- effect-loader - Advanced loader patterns
+- effect-action - Form actions with validation
 
-### effect-remix (~245 lines total)
+**effect-htmx** (planned) - Hypermedia-driven apps with Effect
+- html-response - HTML rendering utilities
+- htmx-attrs - Type-safe HTMX attributes
+- sse-stream - Server-sent events
 
-Compose Effect services with Remix:
+### Workflow & Orchestration
 
-- **with-effect** - Simple loader/action helpers (~60 lines)
-- **effect-loader** - Advanced loader patterns (~90 lines)
-- **effect-action** - Form actions with validation (~95 lines)
+**effect-dag** - General-purpose workflow orchestration with typed DAGs
+- dag-types - Node/Edge schemas
+- dag-builder - Ergonomic constructors
+- dag-validation - Cycle detection, validation
+- dag-workflow - Declarative Workflow.make() DSL
+- dag-interpreter - Local execution engine
+- dag-to-mermaid - Diagram generation
 
-### effect-ci (~400 lines total)
+**effect-ci** - Typed CI/CD pipelines with Effect
+- ci-types - Schema types for git/GitHub data
+- shell-runner - Typed git/gh/claude commands
+- transforms - Pipeline transform utilities
+- release-plan - Weekly release automation
 
-Build typed CI/CD pipelines with Effect:
+**effect-collect** - Human-in-the-loop collection primitives
+- collect-node - Schema for collection points
+- collect-service - Collection Effect service
 
-- **ci-types** - Schema types for git/GitHub data (~60 lines)
-- **shell-runner** - Typed git/gh/claude commands (~140 lines)
-- **transforms** - Pipeline transform utilities (~130 lines)
-- **release-plan** - Weekly release automation (~180 lines)
+### Data & Validation
 
-### effect-htmx (planned)
+**effect-forms** - Type-safe form definitions that compile to multiple targets
+- form-schema - FormIR type definitions
+- form-to-json-schema - JSON Schema compiler
+- form-to-github-inputs - GHA workflow inputs
+- form-to-react-shadcn - React component generator
 
-Hypermedia-driven apps with Effect:
+**effect-expressions** - Safe expression evaluation for workflows
+- expr-service - ExpressionEvaluator interface
+- expr-simple - Function() based evaluator
+- expr-cel - CEL (Common Expression Language) evaluator
 
-- **html-response** - HTML rendering utilities
-- **htmx-attrs** - Type-safe HTMX attributes
-- **sse-stream** - Server-sent events
+**effect-entities** - Domain entity definitions that compile to SQL/Prisma/migrations
+- entity-schema - Entity and ValueObject DSL
+- entity-relationships - Relation definitions
+- entity-to-sql - SQL schema compiler
+- entity-to-migration - Migration generator
+- entity-to-prisma - Prisma schema compiler
+- entity-query-builder - Type-safe queries
+
+**effect-prisma** - Prisma ORM Effect wrappers (✅ Implemented)
+- db-client - Basic Prisma Client wrapper
+- db-transaction - Advanced transaction patterns
+
+### Code Generation
+
+**effect-compilers** - Multi-target code generation from schemas
+- compiler-service - Generic Compiler interface
+- dag-to-github-actions - DAG → GHA YAML
+- dag-to-step-functions - DAG → AWS Step Functions ASL
+- form-to-typescript-types - Form → TypeScript types
+
+### Specialized Domains
+
+**effect-esign** - Electronic signature workflow components
+- signature-capture - Signature input modalities
+- signature-crypto - Web Crypto API wrapper
+- document-state-machine - Signing workflow state
+- audit-trail - Event sourcing for compliance
+- signature-field-parser - PDF field extraction
+- signing-session - Session management
+- consent-tracking - ESIGN Act compliance
+- pdf-signer - Apply signatures to PDF
+
+**effect-testing** - Testing utilities for Effect applications (🚧 In Development)
+- msw-handlers - MSW handlers from HttpApi
+- msw-service - MSW lifecycle service
+- mock-data - Schema-based mock generation
 
 ## Why Vendorable?
 
@@ -82,22 +148,31 @@ Like shadcn/ui, but for Effect.
 
 ## Philosophy
 
-Meta Effect is an exploration of Effect from first principles. We're not building abstractions - we're discovering primitives.
+Meta Effect is an exploration of Effect from first principles. We're not building abstractions - we're discovering primitives that compose.
 
 Each component asks:
-- How do Effect primitives naturally compose with this framework?
-- What's the minimal code needed?
-- Can this fit in ~50-100 lines?
+- How do Effect primitives naturally compose with this system (framework, database, workflow engine, etc.)?
+- What's the minimal code needed to demonstrate the pattern?
+- Does this generalize across domains?
 
-The goal is discovery, not invention.
+**Core Themes**:
+1. **Composition Over Frameworks** - Effect primitives compose with anything (Vite, Remix, Prisma, GitHub Actions)
+2. **Schema-Driven Design** - Use Effect Schema as source of truth (forms, entities, workflows, compilers)
+3. **Multi-Target Compilation** - Define once, compile to many (DAGs → GHA/Step Functions, Forms → React/JSON Schema)
+4. **Human-in-the-Loop** - Workflows can pause for human input (approvals, forms, signatures)
+5. **Type-Safe Everything** - From database queries to CI pipelines to electronic signatures
+
+The goal is discovery, not invention. We find patterns that emerge naturally from Effect's primitives.
 
 ### Principles
 
-- **Minimal** - Each component is ~50-100 lines
+- **Minimal** - Each component is concise and focused
 - **Vendorable** - Copy into your codebase, you own it
 - **Composable** - Mix and match what you need
 - **Educational** - Learn Effect patterns by reading
 - **Framework-Aware** - Integrate with, don't replace
+- **Schema-Driven** - Effect Schema as source of truth
+- **Multi-Target** - Compile once, deploy everywhere
 
 ## Component Registry
 
@@ -134,10 +209,28 @@ See [registry README](./meta-effect/packages/registry/README.md) for details.
 
 Each component type has a living specification that evolves with implementation:
 
-- [**effect-vite Spec**](docs/specs/effect-vite.md) - Vite components and patterns
-- [**effect-remix Spec**](docs/specs/effect-remix.md) - Remix components and patterns
-- [**effect-ci Spec**](docs/specs/effect-ci.md) - CI/CD pipeline components
-- [**effect-htmx Spec**](docs/specs/effect-htmx.md) - HTMX components and patterns
+**Web Framework Integration**:
+- [**effect-vite Spec**](docs/specs/effect-vite.md) - Vite + HttpApi + Atom components
+- [**effect-remix Spec**](docs/specs/effect-remix.md) - Remix loaders, actions, and Effect integration
+- [**effect-htmx Spec**](docs/specs/effect-htmx.md) - HTMX hypermedia patterns (planned)
+
+**Workflow & Orchestration**:
+- [**effect-dag Spec**](docs/specs/effect-dag.md) - General-purpose DAG workflow primitives
+- [**effect-ci Spec**](docs/specs/effect-ci.md) - CI/CD automation with git/GitHub
+- [**effect-collect Spec**](docs/specs/effect-collect.md) - Human-in-the-loop collection
+
+**Data & Validation**:
+- [**effect-forms Spec**](docs/specs/effect-forms.md) - Type-safe form definitions and compilers
+- [**effect-expressions Spec**](docs/specs/effect-expressions.md) - Safe expression evaluators
+- [**effect-entities Spec**](docs/specs/effect-entities.md) - Domain entities to SQL/Prisma/migrations
+- [**effect-prisma Spec**](docs/specs/effect-prisma.md) - Prisma ORM Effect wrappers (✅ Implemented)
+
+**Code Generation**:
+- [**effect-compilers Spec**](docs/specs/effect-compilers.md) - Multi-target code generation
+
+**Specialized Domains**:
+- [**effect-esign Spec**](docs/specs/effect-esign.md) - Electronic signature workflows (ESIGN Act, eIDAS)
+- [**effect-testing Spec**](docs/specs/effect-testing.md) - MSW and mock data for Effect (🚧 In Development)
 
 ### Design & Philosophy
 
@@ -275,25 +368,41 @@ export const weeklyPlan: ReleasePlan = {
 
 ## Project Status
 
-**Current**: Building the component registry and CLI
+**Vision**: A comprehensive collection of vendorable Effect primitives spanning web frameworks, workflows, data modeling, and specialized domains.
 
-### Completed
-- ✅ Component registry structure
-- ✅ effect-vite components (4 components, ~275 lines)
-- ✅ effect-remix components (3 components, ~245 lines)
-- ✅ effect-ci components (4 components, ~400 lines)
-- ✅ Registry metadata (registry.json)
+### Implemented (✅)
+- **effect-vite** - 4 components
+- **effect-remix** - 3 components
+- **effect-ci** - 4 components
+- **effect-prisma** - 2 components
+- Component registry structure
+- Registry metadata (registry.json)
 
-### In Progress
-- 🚧 CLI `add` command implementation
-- 🚧 Component documentation improvements
-- 🚧 Example applications
+### In Development (🚧)
+- **effect-testing** - MSW and mock data utilities
+- CLI `add` command implementation
+- Component documentation improvements
+- Example applications
 
-### Planned
-- 📋 effect-htmx components
-- 📋 Component testing utilities
-- 📋 Interactive component browser
-- 📋 Video tutorials showing customization
+### Planned - Core Infrastructure (📋)
+- **effect-dag** - General-purpose workflow DAGs
+- **effect-collect** - Human-in-the-loop primitives
+- **effect-forms** - Type-safe form schemas
+- **effect-expressions** - Safe expression evaluation
+- **effect-compilers** - Multi-target code generation
+
+### Planned - Data & Entities (📋)
+- **effect-entities** - Domain modeling to SQL/Prisma
+
+### Planned - Specialized Domains (📋)
+- **effect-esign** - Electronic signature workflows
+- **effect-htmx** - Hypermedia-driven patterns
+
+### Future Enhancements
+- Interactive component browser
+- Video tutorials and workshops
+- More framework integrations (SolidJS, Svelte, etc.)
+- Additional specialized domain components
 
 ## Contributing
 
@@ -360,11 +469,20 @@ Meta Effect builds on brilliant work from:
 
 ## Inspiration
 
-This project asks: "What if shadcn/ui's philosophy applied to Effect bindings?"
+This project asks: "What if shadcn/ui's philosophy applied to Effect primitives across all domains?"
 
-Instead of installing `@effect/remix`, you copy `with-effect.ts` (60 lines) into your codebase. You see exactly how Effect composes with Remix. You modify it for your needs. You own it.
+Instead of installing `@effect/remix`, you copy `with-effect.ts` into your codebase. Instead of installing a workflow engine, you copy `dag-interpreter.ts`. Instead of using a form library, you copy `form-schema.ts` and generate your forms.
 
-That's a **Meta Effect**.
+You see exactly how Effect composes with Remix, Prisma, GitHub Actions, and more. You modify it for your needs. You own it.
+
+**Meta Effect** explores Effect primitives across:
+- **Web Frameworks** - Vite, Remix, HTMX integrations
+- **Workflows** - DAG orchestration, CI/CD automation, human-in-the-loop
+- **Data** - Forms, expressions, entities, database layers
+- **Code Generation** - Schema → multiple targets (SQL, React, YAML)
+- **Specialized Domains** - E-signatures, testing utilities
+
+That's a **Meta Effect**: A minimal, composable primitive you vendor and own.
 
 ---
 
