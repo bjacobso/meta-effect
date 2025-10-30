@@ -6,9 +6,9 @@ highlighter: shiki
 lineNumbers: true
 info: |
   ## Meta Effect
-  Vendorable Effect Components for Web Frameworks
+  Copy-Paste Architecture for Effect-TS
 
-  Presented at Effect SF Meetup
+  A lightning talk about vendorable components
 drawings:
   persist: false
 transition: slide-left
@@ -16,9 +16,9 @@ title: Meta Effect
 mdc: true
 ---
 
-# Meta Effect
+# META EFFECT
 
-Vendorable Effect Components for Web Frameworks
+Not a framework. Not an npm package. A vibe.
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -31,363 +31,233 @@ layout: center
 class: text-center
 ---
 
-# What if Effect integrations worked like shadcn/ui?
+# What if integrating Effect felt like copying a component from shadcn/ui?
 
 <v-click>
 
-## Copy. Paste. Own.
+<div class="pt-8 text-2xl">
 
-</v-click>
+Every framework tells you what to do.
 
----
-layout: two-cols
----
-
-# The Problem
-
-Traditional frameworks lock you in:
-
-<v-clicks>
-
-- **npm packages** create version dependencies
-- **Frameworks** dictate your architecture
-- **Abstractions** hide the Effect primitives
-- **Updates** require migration
-
-</v-clicks>
-
-::right::
-
-<v-click>
-
-# The Meta Effect Way
-
-Vendorable components give you control:
-
-- **Copy** the code directly
-- **Own** the implementation
-- **Customize** without forking
-- **Learn** from minimal examples
-
-</v-click>
-
----
-
-# Core Philosophy
-
-<div class="text-3xl font-bold mb-8 text-center">
-  <v-click>Not a framework.</v-click>
-  <v-click>Not an npm package.</v-click>
-  <v-click>Just Meta Effects.</v-click>
 </div>
 
-<v-click>
-
-## Each component is:
-- **50-100 lines** of focused TypeScript
-- **Effect-first** - every operation is an Effect
-- **Framework-aware** - integrates, doesn't replace
-- **Self-contained** - copy-paste ready
-
 </v-click>
 
----
-layout: center
----
-
-# How It Works
-
-```bash
-# Copy a component into your project
-npx meta-effect add effect-vite/loader
-
-# Or just copy from GitHub
-curl https://raw.githubusercontent.com/.../effect-loader.ts > ./lib/effect-loader.ts
-```
-
 <v-click>
 
-That's it. You now **own** the code.
+<div class="pt-4 text-2xl">
 
-</v-click>
+Every npm package traps you in version purgatory.
 
----
-
-# Component Showcase: Vite Loader
-
-60 lines of Effect + Vite integration
-
-```ts {all|1-3|5-10|12-18|all}
-import { Effect } from "effect"
-import type { HttpRouter } from "@effect/platform"
-import { NodeHttpServer } from "@effect/platform-node"
-
-export const createEffectLoader = (
-  router: HttpRouter.HttpRouter,
-  layer: Layer.Layer<never>
-) => {
-  return async (req: Request) => {
-    const response = await router.handle(req)
-      .pipe(Effect.provide(layer), Effect.runPromise)
-
-    return response
-  }
-}
-
-// Copy this file into your project and customize for your needs.
-```
-
-<v-click>
-
-**What you get**: Type-safe routing, automatic Layer provision, Effect.gen support
-
-</v-click>
-
----
-
-# Component Showcase: Remix Actions
-
-60 lines to run Effect programs in Remix
-
-```ts {all|1-5|7-15|17-22|all}
-import { Effect, Layer } from "effect"
-import type { ActionFunctionArgs } from "@remix-run/node"
-
-export const withEffect = <E, A>(
-  effectFn: (args: ActionFunctionArgs) => Effect.Effect<A, E>,
-  layer: Layer.Layer<never>
-) => {
-  return async (args: ActionFunctionArgs) => {
-    return await effectFn(args)
-      .pipe(
-        Effect.provide(layer),
-        Effect.runPromise
-      )
-  }
-}
-
-export const loader = withEffect(
-  ({ request }) => Effect.gen(function*() {
-    const data = yield* DataService
-    return json({ data })
-  }),
-  AppLayer
-)
-```
-
----
-
-# Component Showcase: CI/CD DAG Runner
-
-80 lines for Effect-based CI workflows
-
-```ts {all|1-5|7-12|14-20|all}
-import { Effect, Schedule } from "effect"
-import type { Step, DAG } from "./types"
-
-// Validate DAG has no cycles
-export const validateDAG = (dag: DAG) => Effect.gen(function*() {
-  // Topological sort to detect cycles
-  yield* detectCycles(dag)
-})
-
-// Run steps in dependency order
-export const runDAG = (dag: DAG) => Effect.gen(function*() {
-  const sorted = yield* topologicalSort(dag)
-
-  yield* Effect.forEach(sorted, (step) =>
-    runStep(step).pipe(
-      Effect.retry(Schedule.exponential("1 second")),
-      Effect.timeout("5 minutes")
-    ),
-    { concurrency: 4 }
-  )
-})
-```
-
-<v-click>
-
-**Real Effect patterns**: Error handling, retries, timeouts, concurrency
-
-</v-click>
-
----
-layout: two-cols
----
-
-# Architecture
-
-```
-meta-effect/
-└── packages/
-    └── registry/
-        ├── registry.json
-        └── src/
-            ├── effect-vite/
-            ├── effect-remix/
-            ├── effect-ci/
-            ├── effect-livestore/
-            └── effect-prisma/
-```
-
-::right::
-
-<v-click>
-
-## Registry Features
-
-- **Auto-generated** from JSDoc
-- **Dependency tracking**
-- **Tag-based search**
-- **Preset bundles**
+</div>
 
 </v-click>
 
 <v-click>
 
-```json
-{
-  "components": {
-    "effect-vite/loader": {
-      "files": ["loader.ts"],
-      "dependencies": {
-        "effect": "^3.0.0",
-        "@effect/platform": "^0.60.0"
-      }
-    }
-  }
-}
-```
+<div class="pt-4 text-2xl">
+
+You don't *own* your tools anymore.
+
+</div>
 
 </v-click>
-
----
-
-# Effect Service Pattern
-
-Components use Effect's service pattern for DI
-
-```ts {all|1-3|5-12|14-18|all}
-export class DatabaseService extends Effect.Service<DatabaseService>()(
-  "DatabaseService",
-  {
-    effect: Effect.gen(function*() {
-      const prisma = new PrismaClient()
-
-      return {
-        query: (sql: string) => Effect.tryPromise(() =>
-          prisma.$queryRaw(sql)
-        ),
-        close: () => Effect.sync(() => prisma.$disconnect())
-      } as const
-    })
-  }
-) {}
-
-// Use in your application
-const program = Effect.gen(function*() {
-  const db = yield* DatabaseService
-  const result = yield* db.query("SELECT * FROM users")
-  return result
-})
-```
 
 ---
 layout: center
 class: text-center
 ---
 
-# Live Demo
-
-Let's vendor a component and customize it
+# Meta Effect flips that.
 
 <v-click>
 
-## Copy → Customize → Compose
+<div class="pt-8 text-3xl font-bold">
+
+It's *copy–paste architecture*.
+
+</div>
+
+</v-click>
+
+<v-click>
+
+<div class="pt-12">
+
+Every component is ~50 lines of pure Effect.
+
+You vendor it, tweak it, own it.
+
+**No updates. No lock-in. No drama.**
+
+</div>
 
 </v-click>
 
 ---
 
-# Demo: Adding Effect to Vite
-
-Step 1: Copy the loader
-
-```bash
-curl https://raw.githubusercontent.com/meta-effect/registry/main/effect-vite/loader.ts \
-  > ./src/lib/effect-loader.ts
-```
+# Not a framework — a library of living blueprints.
 
 <v-click>
 
-Step 2: Install dependencies
-
-```bash
-pnpm add effect @effect/platform @effect/platform-node
-```
+Each component = one well-lit example of Effect at work:
 
 </v-click>
-
-<v-click>
-
-Step 3: Customize for your needs
-
-```ts
-// src/lib/effect-loader.ts - Edit line 45
-export const createEffectLoader = (router, layer) => {
-  // Add your custom logging
-  console.log("Starting Effect loader...")
-  // ... rest of implementation
-}
-```
-
-</v-click>
-
----
-
-# Why 50-100 Lines Matters
 
 <v-clicks>
 
-## Readability
-You can understand the entire component in one sitting
-
-## Ownership
-Small enough to confidently modify without fear
-
-## Educational
-Learn Effect patterns by reading real implementations
-
-## Composable
-Mix and match components without bloat
+* `effect-vite` → bootstrapping Vite as an Effect service
+* `effect-remix` → turning Remix actions into typed Effects
+* `effect-ci` → DAG runner for GitHub workflows
+* `effect-livestore` → local-first reactive storage
 
 </v-clicks>
+
+<v-click>
+
+<div class="pt-8 text-xl italic">
+
+They all *fit in your head.*
+
+Each file is a poem about dependency injection.
+
+</div>
+
+</v-click>
+
+---
+layout: center
+class: text-center
+---
+
+# Show, Don't Tell
+
+```bash
+npx meta-effect add vite
+```
+
+<v-click>
+
+<div class="pt-8">
+
+Now open the file.
+
+Everything you see — you can understand.
+
+</div>
+
+</v-click>
+
+<v-click>
+
+<div class="pt-8 text-2xl font-bold">
+
+You can fork the universe from here.
+
+</div>
+
+</v-click>
+
+---
+layout: center
+class: text-center
+---
+
+<div class="text-4xl font-bold">
+
+Copy → Customize → Compose
+
+</div>
+
+<v-click>
+
+<div class="pt-12 text-2xl">
+
+That's the loop.
+
+</div>
+
+</v-click>
 
 ---
 layout: two-cols
 ---
 
-# Comparison: npm Package
+# npm packages say:
 
-```ts
-// Install framework
-npm install effect-framework
+<div class="pt-8 text-3xl italic">
 
-// Use abstraction
-import { createApp } from 'effect-framework'
+"trust us."
 
-const app = createApp({
-  // Magic happens here
-  // How does it work? 🤷
-})
-```
+</div>
+
+::right::
 
 <v-click>
 
-❌ Hidden implementation
-❌ Version lock-in
-❌ Breaking changes
-❌ Framework opinions
+# Meta Effect says:
+
+<div class="pt-8 text-3xl italic">
+
+"own this."
+
+</div>
+
+</v-click>
+
+---
+
+# The Philosophy
+
+<v-clicks>
+
+* No versioning.
+* No abstraction hiding.
+* No secret runtime.
+* Every operation is an Effect.
+* Every abstraction is transparent.
+* Every component teaches you something.
+
+</v-clicks>
+
+<v-click>
+
+<div class="pt-12 text-2xl italic text-center">
+
+*"If it's over 100 lines, it's not a component — it's a framework."*
+
+</div>
+
+</v-click>
+
+---
+layout: center
+class: text-center
+---
+
+# This isn't just code.
+
+<v-click>
+
+<div class="pt-8 text-3xl font-bold">
+
+It's a **living design lab**.
+
+</div>
+
+</v-click>
+
+---
+layout: two-cols
+---
+
+# Art Project
+
+<v-click>
+
+Specs are design manifestos.
+
+*"What could an Effect-first world look like?"*
 
 </v-click>
 
@@ -395,265 +265,110 @@ const app = createApp({
 
 <v-click>
 
-# Comparison: Meta Effect
+# Science Experiment
 
-```ts
-// Copy component (60 lines)
-// ./lib/effect-loader.ts
+None of these components *work perfectly yet.*
 
-import { Effect } from "effect"
+That's intentional.
 
-export const createEffectLoader =
-  (router, layer) => {
-    // You can see exactly
-    // what it does!
-  }
-```
+**The repo is a garden, not a museum.**
 
-✅ Transparent code
-✅ No dependencies
-✅ Your changes
-✅ Your architecture
+</v-click>
+
+---
+layout: center
+class: text-center
+---
+
+<div class="text-3xl italic">
+
+"The bugs are the research questions."
+
+</div>
+
+---
+
+# Specs as the New Source Code
+
+Specs live in `docs/specs/`.
+
+They describe what *should* exist — API surface, DSL, examples.
+
+The implementation comes later.
+
+<v-click>
+
+<div class="pt-8">
+
+Specs are executable philosophy:
+
+* `status: "planned"` = aspirational
+* `status: "implemented"` = iteration one
+* `status: "deprecated"` = evolution complete
+
+</div>
 
 </v-click>
 
 ---
 
-# Inspired by shadcn/ui
+# Built for AI-Assisted Collaboration
 
-<div class="grid grid-cols-2 gap-4">
+<v-clicks>
+
+Specs are small enough to fit in a context window.
+
+Vendored code is small enough to rewrite.
+
+That's how agents will help us maintain code at scale.
+
+</v-clicks>
+
+---
+
+# The Invitation
+
+<div class="grid grid-cols-2 gap-12 pt-8">
 
 <div>
 
-### shadcn/ui
-- Copy UI components
-- Customize styles
-- Own the code
-- No npm package
+<v-click>
+
+## Path 1
+
+**Implement the spec.**
+
+Submit a 50-line component.
+
+</v-click>
 
 </div>
 
 <div>
 
-### Meta Effect
-- Copy Effect components
-- Customize logic
-- Own the code
-- No npm package
-
-</div>
-
-</div>
-
 <v-click>
 
-## The Pattern Works
+## Path 2
 
-shadcn/ui proved developers want **ownership** over **convenience**
+**Challenge the spec.**
+
+Rewrite the design. Prove it better.
 
 </v-click>
 
----
-
-# Current Component Library
-
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-### effect-vite
-- HTTP routing
-- Server integration
-- Atom state management
-- Request handlers
-
-### effect-remix
-- Loaders
-- Actions
-- Error boundaries
-- Progressive enhancement
-
-</div>
-
-<div>
-
-### effect-ci
-- DAG validation
-- Pipeline runner
-- Step transforms
-- Workflow composition
-
-### effect-livestore
-- Real-time sync
-- WebSocket integration
-- Conflict resolution
-
 </div>
 
 </div>
 
----
-
-# Effect-First Principles
-
-Every component teaches Effect patterns:
-
-<v-clicks>
-
-1. **Effect.gen** - Generator syntax for sequencing
-2. **Services** - Dependency injection with Effect.Service
-3. **Layers** - Composable dependency provision
-4. **Schema** - Runtime validation with Effect Schema
-5. **Error handling** - Typed errors with Effect.fail
-6. **Retries** - Built-in retry policies
-7. **Concurrency** - Effect.forEach with concurrency control
-
-</v-clicks>
-
----
-
-# Component Example: Form Validation
-
-```ts {all|1-6|8-15|17-24|all}
-import { Schema } from "@effect/schema"
-import { Effect } from "effect"
-
-// Define schema
-const UserSchema = Schema.Struct({
-  email: Schema.String.pipe(Schema.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)),
-  age: Schema.Number.pipe(Schema.between(0, 120))
-})
-
-// Validate with Effect
-export const validateUser = (data: unknown) =>
-  Schema.decode(UserSchema)(data).pipe(
-    Effect.mapError(error => ({
-      _tag: "ValidationError" as const,
-      message: error.message
-    }))
-  )
-
-// Use in your app
-const program = Effect.gen(function*() {
-  const user = yield* validateUser({ email: "test@example.com", age: 25 })
-  yield* saveUser(user)
-})
-```
-
----
-layout: center
-class: text-center
----
-
-# Why Now?
-
-<v-clicks>
-
-Effect 3.0 is **stable**
-
-Web frameworks need **Effect integrations**
-
-Developers want **ownership** of their code
-
-The shadcn/ui pattern **proved successful**
-
-</v-clicks>
-
----
-
-# Roadmap
-
-<v-clicks>
-
-## Q1 2025
-- ✅ Registry with 20+ components
-- ✅ effect-vite, effect-remix, effect-ci
-- 🚧 CLI for easy copying (`npx meta-effect add`)
-
-## Q2 2025
-- effect-solidjs components
-- effect-nextjs components
-- Interactive playground
-- Video tutorials
-
-## Q3 2025
-- Community contributions
-- Component marketplace
-- Advanced patterns library
-
-</v-clicks>
-
----
-
-# How to Contribute
-
-<v-clicks>
-
-## 1. Add Components
-Create minimal Effect integrations for your favorite frameworks
-
-## 2. Improve Existing
-PRs welcome for better patterns or bug fixes
-
-## 3. Share Patterns
-Document your Effect + framework learnings
-
-## 4. Build Tools
-Help with CLI, docs, or playground
-
-</v-clicks>
-
 <v-click>
 
-All contributions must follow:
-- **50-100 line** limit
-- **JSDoc** with examples
-- **Effect-first** design
-- **"Copy this file"** footer
+<div class="pt-12 text-2xl text-center">
 
-</v-click>
+No gatekeepers.
 
----
-layout: two-cols
----
+Just consensus through code.
 
-# Get Started Today
-
-```bash
-# Clone the registry
-git clone github.com/effect-meta/meta-effect
-
-# Browse components
-cd meta-effect/packages/registry/src
-
-# Copy what you need
-cp effect-vite/loader.ts \
-   ~/my-project/lib/
-
-# Make it yours
-code ~/my-project/lib/loader.ts
-```
-
-::right::
-
-<v-click>
-
-## Resources
-
-- **GitHub**: github.com/effect-meta/meta-effect
-- **Docs**: docs.meta-effect.dev
-- **Registry**: registry.meta-effect.dev
-- **Examples**: examples.meta-effect.dev
-
-</v-click>
-
-<v-click>
-
-## Connect
-
-- Effect Discord: #meta-effect
-- Twitter: @meta_effect
-- Issues: github.com/effect-meta/meta-effect/issues
+</div>
 
 </v-click>
 
@@ -662,238 +377,27 @@ layout: center
 class: text-center
 ---
 
-# Questions?
+<div class="text-4xl italic">
 
-<div class="text-6xl mb-8">
-🤔
-</div>
+"The future of code isn't frameworks.
 
-Let's discuss Effect, vendorable components, and building better integrations
-
----
-layout: center
-class: text-center
----
-
-# But Wait...
-
-<v-click>
-
-## This is half art project, half science experiment
-
-</v-click>
-
----
-
-# The Spec-Driven Development Model
-
-Meta Effect doesn't just ship code - it ships **specifications**
-
-<v-clicks>
-
-## Specs are living documents that:
-- Define the **desired DSL** and API surface
-- Specify **compilation targets** (GitHub Actions, Prisma, React, etc.)
-- Provide **comprehensive examples** of what should exist
-- Live in `docs/specs/` alongside the registry
-
-## Implementation follows specification:
-- Specs declare the **vision** (~500 lines of examples)
-- Components implement the **primitives** (~50-100 lines each)
-- Compilers transform specs to **multiple targets**
-
-</v-clicks>
-
----
-layout: two-cols
----
-
-# Specs Define the Future
-
-**Status: Planned** means "this is what should exist"
-
-### effect-dag
-Airflow/Temporal meets Effect - workflows as typed DAGs
-
-```ts
-const workflow = [
-  task("build", { run: "pnpm build" }),
-  gate("only_main", "github.ref == 'main'"),
-  fanout("parallel_tests"),
-  task("test_unit", { run: "vitest" }),
-  task("test_e2e", { run: "playwright" }),
-  fanin("join_tests"),
-  task("deploy", { run: "deploy.sh" })
-]
-```
-
-::right::
-
-<v-click>
-
-### effect-entities
-Database schema as code - DDD entities that compile to SQL/Prisma
-
-```ts
-const User = Entity.make("User", {
-  id: Attr.uuid({ primary: true }),
-  email: Attr.valueObject(EmailAddress),
-  address: Attr.valueObject(Address),
-  role: Attr.enum(["user", "admin"])
-})
-
-// Compiles to:
-// - PostgreSQL CREATE TABLE
-// - Prisma schema
-// - TypeScript types
-// - Query builders
-```
-
-</v-click>
-
----
-layout: center
-class: text-center
----
-
-# None of Them Work... Yet
-
-<div class="text-2xl pt-8">
-
-<v-click>
-
-That's not a bug. **It's the point.**
-
-</v-click>
+It's living specifications."
 
 </div>
-
-<v-clicks>
-
-<div class="pt-12 text-left max-w-2xl mx-auto">
-
-## The Art Project
-Specs are **design manifestos** showing what Effect integrations could be
-
-## The Science Experiment
-Building specs first lets us **explore the design space** before committing to implementations
-
-## The Community Model
-Anyone can **inch them closer** with a PR - or challenge the design itself
-
-</div>
-
-</v-clicks>
-
----
-layout: two-cols
----
-
-# Two Ways to Contribute
-
-## Path 1: Implement the Spec
-
-```bash
-# Pick a "Planned" component
-cd meta-effect/packages/registry/src
-
-# Implement it (50-100 lines)
-mkdir effect-dag
-vim effect-dag/dag-types.ts
-
-# Add JSDoc, examples, "Copy this file"
-# PR: "Implements effect-dag/dag-types"
-```
-
-<v-click>
-
-✅ Inch the spec closer to reality
-✅ Learn Effect patterns by building
-✅ Your implementation guides others
-
-</v-click>
-
-::right::
-
-<v-click>
-
-## Path 2: Challenge the Spec
-
-```bash
-# Disagree with the DSL?
-cd docs/specs
-
-# Propose a better design
-vim effect-dag.md
-
-# Update examples, API surface
-# PR: "Refines effect-dag API for..."
-```
-
-✅ Debate design before code
-✅ No wasted implementation effort
-✅ Specs evolve with community
-
-</v-click>
-
-<v-click>
-
-<div class="pt-8 col-span-2 text-center text-2xl">
-
-**No gatekeepers. Just consensus.**
-
-</div>
-
-</v-click>
-
----
-
-# In a World of AI Agents, This Model Wins
-
-<v-clicks>
-
-## Why Specs + Vendorable = Perfect for AI
-
-### 1. Specs are Self-Documenting
-- JSON Schema, OpenAPI, form definitions
-- AI agents can **parse and understand** the DSL
-- Specs define **tool calling interfaces** (MCP, function calling)
-
-### 2. Vendorable Components are AI-Modifiable
-- 50-100 lines = **fits in context window**
-- Copy into project = agent can **edit freely**
-- No npm lock-in = agent can **adapt to user needs**
-
-### 3. Spec-Driven Implementation is Incremental
-- AI agents can **implement one component at a time**
-- Specs provide **clear success criteria**
-- Community reviews = **human-in-the-loop validation**
-
-</v-clicks>
-
-<v-click>
-
-<div class="pt-8 text-center text-2xl">
-
-**The future of code isn't frameworks. It's living specifications.**
-
-</div>
-
-</v-click>
 
 ---
 layout: end
 class: text-center
 ---
 
-# Thank You!
+# Copy. Paste. Own.
 
-## Copy. Paste. Own.
+<div class="pt-8 text-3xl">
 
-<div class="pt-8 text-xl">
-  Not a framework. Not an npm package. Just Meta Effects.
+That's the Meta Effect.
+
 </div>
 
-<div class="pt-12 text-sm opacity-75">
+<div class="pt-12 text-xl opacity-75">
   github.com/effect-meta/meta-effect
 </div>
